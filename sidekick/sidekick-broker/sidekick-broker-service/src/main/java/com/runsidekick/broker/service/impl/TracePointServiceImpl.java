@@ -1,0 +1,125 @@
+package com.runsidekick.broker.service.impl;
+
+import com.runsidekick.broker.model.ApplicationFilter;
+import com.runsidekick.broker.model.ProbeType;
+import com.runsidekick.broker.model.TracePoint;
+import com.runsidekick.broker.model.TracePointConfig;
+import com.runsidekick.broker.repository.TracePointExpireCountRepository;
+import com.runsidekick.broker.repository.TracePointRepository;
+import com.runsidekick.broker.service.ReferenceEventService;
+import com.runsidekick.broker.service.TracePointService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * @author ozge.lule
+ */
+@RequiredArgsConstructor
+@Service
+public class TracePointServiceImpl implements TracePointService {
+
+    private final TracePointRepository tracePointRepository;
+
+    private final TracePointExpireCountRepository tracePointExpireCountRepository;
+
+    private final ReferenceEventService referenceEventService;
+
+    @Override
+    @Cacheable(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId")
+    public TracePointConfig getTracePoint(String workspaceId, String tracePointId) {
+        return tracePointRepository.getTracePoint(workspaceId, tracePointId);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "TracePoint", key = "#tracePointId")
+    public TracePoint getTracePointById(String tracePointId) {
+        return tracePointRepository.getTracePointById(tracePointId);
+    }
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointConfig.id"),
+            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointConfig.id")
+    })
+    public void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
+            throws Exception {
+        tracePointRepository.putTracePoint(workspaceId, userId, tracePointConfig, fromApi);
+        if (!tracePointConfig.isPredefined()) {
+            tracePointExpireCountRepository.putTracePointExpireCount(workspaceId, tracePointConfig.getId(),
+                    tracePointConfig.getExpireCount(), tracePointConfig.getExpireSecs());
+        }
+    }
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId"),
+            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointId")
+    })
+    public void removeTracePoint(String workspaceId, String userId, String tracePointId) {
+        tracePointRepository.removeTracePoint(workspaceId, userId, tracePointId);
+        tracePointExpireCountRepository.removeTracePointExpireCount(workspaceId, tracePointId);
+        referenceEventService.removeReferenceEvent(tracePointId, ProbeType.TRACEPOINT);
+    }
+
+    @Override
+    public long removeTracePoints(String workspaceId, String userId, List<String> tracePointIds) {
+        long deletedCount = tracePointRepository.removeTracePoints(workspaceId, userId, tracePointIds);
+        tracePointExpireCountRepository.removeTracePointsExpireCount(workspaceId, tracePointIds);
+        referenceEventService.removeReferenceEvents(tracePointIds, ProbeType.TRACEPOINT);
+        return deletedCount;
+    }
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId"),
+            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointId")
+    })
+    public void enableDisableTracePoint(String workspaceId, String userId, String tracePointId, boolean disable) {
+        tracePointRepository.enableDisableTracePoint(workspaceId, userId, tracePointId, disable);
+    }
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId"),
+            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointId")
+    })
+    public void updateTracePoint(String workspaceId, String userId, String tracePointId, TracePoint tracePoint) {
+        tracePointRepository.updateTracePoint(workspaceId, userId, tracePointId, tracePoint);
+        if (tracePoint.isPredefined()) {
+            tracePointExpireCountRepository.removeTracePointExpireCount(workspaceId, tracePointId);
+        } else {
+            tracePointExpireCountRepository.putTracePointExpireCount(
+                    workspaceId, tracePointId, tracePoint.getExpireCount(), tracePoint.getExpireSecs());
+            referenceEventService.removeReferenceEvent(tracePointId, ProbeType.TRACEPOINT);
+        }
+    }
+
+    @Override
+    public List<TracePoint> listTracePoints(String workspaceId, String userId) {
+        return tracePointRepository.listTracePoints(workspaceId, userId);
+    }
+
+    @Override
+    public Collection<TracePoint> queryTracePoints(String workspaceId, ApplicationFilter filter) {
+        return tracePointRepository.queryTracePoints(workspaceId, filter);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> checkExpireAndDecrementTracePointExpireCount(
+            String workspaceId, String tracePointId) {
+        return tracePointExpireCountRepository.checkExpireAndDecrementTracePointExpireCount(workspaceId, tracePointId);
+    }
+
+    @Override
+    public List<TracePoint> listPredefinedTracePoints(String workspaceId, String userId) {
+        return tracePointRepository.listPredefinedTracePoints(workspaceId, userId);
+    }
+
+}

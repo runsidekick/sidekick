@@ -1,0 +1,30 @@
+name: publish-sidekick-api-docker
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-latest
+    env:
+      REPO: runsidekick/sidekick-api
+      DOCKERFILE: sidekick/sidekick-api/Dockerfile
+      JAR_FILE: sidekick/sidekick-api/target/sidekick-api.jar
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Create artifact
+        run: mvn -f sidekick -B clean package -DskipTests
+      - name: Login to Docker Hub
+        run: docker login -u runsidekick -p ${{ secrets.SIDEKICK_DOCKERHUB_PASSWORD }}
+      - name: Build Docker image
+        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} -f $DOCKERFILE --build-arg JAR_FILE=$JAR_FILE .
+      - name: Publish Docker image
+        run: docker push $REPO -a

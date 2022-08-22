@@ -1,0 +1,14 @@
+broker:
+  port: 7777
+  connection:
+    auth:
+      timeout: 3000
+  token: test
+  client:
+    authToken: test
+
+redis:
+  url: localhost
+  useClusterMode: false
+  profile: test
+

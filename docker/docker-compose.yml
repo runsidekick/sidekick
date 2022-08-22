@@ -1,0 +1,64 @@
+version: '3.1'
+services:
+  sidekick-db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    container_name: sidekick-db
+    env_file: .env
+    ports:
+      - 3306:3306
+    volumes:
+      - sidekick-db:/var/lib/mysql
+      - ./scripts/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  sidekick-cache:
+    image: redis:6.2-alpine
+    restart: always
+    container_name: sidekick-cache
+    command: redis-server --save 20 1 --loglevel warning
+    ports:
+      - 6379:6379
+    volumes:
+      - sidekick-cache:/data
+  sidekick-mq:
+    image: rabbitmq:3-management
+    container_name: sidekick-mq
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 61613:61613
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+    restart: always
+  sidekick-broker:
+    image: runsidekick/sidekick-broker:latest
+    restart: always
+    container_name: sidekick-broker
+    depends_on:
+      - sidekick-cache
+      - sidekick-db
+      - sidekick-mq
+    ports:
+      - 7777:7777
+      - 8080:8080
+    env_file: .env
+  sidekick-api:
+    image: runsidekick/sidekick-api:latest
+    restart: always
+    container_name: sidekick-api
+    depends_on:
+      - sidekick-cache
+      - sidekick-db
+      - sidekick-mq
+      - sidekick-broker
+    ports:
+      - 8084:8084
+    env_file: .env
+volumes:
+  sidekick-db:
+  sidekick-cache:
+  rabbitmq-data:
+  rabbitmq-log:
+  redis-data:
+

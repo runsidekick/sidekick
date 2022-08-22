@@ -1,0 +1,14 @@
+package com.runsidekick.broker.model.response.impl.logpoint;
+
+import lombok.Data;
+
+/**
+ * @author yasin.kalafat
+ */
+@Data
+public class RemoveBatchLogPointResponse extends ApplicationAwareLogPointResponse {
+
+    private Long deletedLogPointCount;
+    private Long undeletedLogPointCount;
+
+}

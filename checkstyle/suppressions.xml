@@ -1,0 +1,17 @@
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+
+    <!--GLOBAL SUPPRESSIONS-->
+    <suppress files ="" checks = "InterfaceIsType"></suppress>
+    <suppress files ="" checks = "javadoc"></suppress>
+    <suppress files ="" checks = "OperatorWrapCheck"></suppress>
+    <suppress files ="" checks = "DesignForExtensionCheck"></suppress>
+    <suppress files ="" checks = "HiddenFieldCheck"></suppress>
+    <suppress files ="" checks = "FinalParameters"></suppress>
+    <suppress files ="" checks = "RegexpSingleline"></suppress>
+    <suppress files ="[\\/]sidekick-app[\\/]" checks = "HideUtilityClassConstructor"></suppress>
+
+</suppressions>

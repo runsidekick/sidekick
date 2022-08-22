@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: sidekick-broker-app
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: sidekick
+    url: jdbc:mysql://127.0.0.1:3306/sidekick?allowMultiQueries=true&verifyServerCertificate=false&useSSL=true&requireSSL=true
+    username: sidekick
+  rabbitmq:
+    addresses: amqp://127.0.0.1:5672
+    username: guest
+    password: guest
+
+redis:
+  url: 127.0.0.1
+  useClusterMode: false
+  useSSL: false
+  ttl: 300000
+  profile: prod
+
+broker:
+  port: 7777
+  connection:
+    auth:
+      timeout: 5000
+  token: test
+  client:
+    authToken: test
+
+amq:
+  webhookQueueName: webhook-queue
