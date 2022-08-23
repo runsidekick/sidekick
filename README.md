@@ -60,18 +60,21 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
    2. Open `.env` file via any text editor
         1. Set your secret token (you can set any value, this will be your master key)
             1. `API_TOKEN`, `BROKER_CLIENT_AUTHTOKEN` and `BROKER_TOKEN` must be the same, otherwise, you can’t connect your apps and your client
-
         2. Set MySQL secrets
             1. Set MySQL root password (`MYSQL_ROOT_PASSWORD`)
-            2. Set mysql user (`MYSQL_USER`, `SPRING_DATASOURCE_USERNAME`)
-            3. Set mysql password (`MYSQL_PASSWORD`, `SPRING_DATASOURCE_PASSWORD`)
+            2. Set MySQL user (`MYSQL_USER`, `SPRING_DATASOURCE_USERNAME`)
+            3. Set MySQL password (`MYSQL_PASSWORD`, `SPRING_DATASOURCE_PASSWORD`)
 
 3. #### Running Application Stack
     - Go to the docker folder under the project
     - Run command `docker-compose up -d` and wait for a minute
     - App is ready
-    - You can connect to the broker suing the url `ws://<your-server-hostname-or-ip>:7777`
-    - You can see the API's swagger interface at `http://<your-server-hostname-or-ip>:8084/swagger-ui.html`
+    - You can connect to the broker using the url 
+      
+      `ws://<your-server-hostname-or-ip>:7777`
+    - You can see the API's swagger interface at
+      
+        `http://<your-server-hostname-or-ip>:8084/swagger-ui.html`
 
 Check out **Clients** section for interface options.
 
