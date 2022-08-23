@@ -48,18 +48,18 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
 #### Build Sidekick
  1. ##### Build Service Images
     1. ###### Build Sidekick Broker Image
-        1. Go to sidekick/sidekick-broker-app folder under project
-        2. Execute release.sh
+        1. Go to `sidekick/sidekick-broker-app` folder under project
+        2. Execute `release.sh`
     
     2. ###### Build Sidekick Api Image
         1. Go to `sidekick/sidekick-api` folder under project
-        2. Execute release.sh
+        2. Execute `release.sh`
 
 2. ##### Configure Environment Variables
    1. Go to the docker folder under the project
-   2. Open .env file via any text editor
+   2. Open `.env` file via any text editor
         1. Set your secret token (you can set any value, this will be your master key)
-            1. `API_TOKEN`, `BROKER_CLIENT_AUTHTOKEN`, and `BROKER_TOKEN` must be the same, otherwise, you can’t connect your apps and your client
+            1. `API_TOKEN`, `BROKER_CLIENT_AUTHTOKEN` and `BROKER_TOKEN` must be the same, otherwise, you can’t connect your apps and your client
 
         2. Set MySQL secrets
             1. Set MySQL root password (`MYSQL_ROOT_PASSWORD`)
@@ -79,43 +79,42 @@ Check out Clients section for interface options.
 
 #### Documentation
 
-- Sidekick Docs: https://docs.runsidekick.com/
+- [Sidekick Docs](https://docs.runsidekick.com/)
 
-- Thundra APM Integration: https://docs.runsidekick.com/integrations/tracing-integrations
+- [Thundra APM Integration](https://docs.runsidekick.com/integrations/tracing-integrations)
 
 #### Agents
-- Java: https://docs.runsidekick.com/installation/installing-agents/java
+- [Java](https://docs.runsidekick.com/installation/installing-agents/java)
 
-- Python: https://docs.runsidekick.com/installation/installing-agents/python
+- [Python](https://docs.runsidekick.com/installation/installing-agents/python)
 
-- Node.js: https://docs.runsidekick.com/installation/installing-agents/node.js
+- [Node.js](https://docs.runsidekick.com/installation/installing-agents/node.js)
 
 #### Clients
 - ###### VSCode Extension:
-    - Extension: https://marketplace.visualstudio.com/items?itemName=Sidekick.sidekick-debugger
+    - [Extension](https://marketplace.visualstudio.com/items?itemName=Sidekick.sidekick-debugger)
 
-    - Docs: https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js
+    - [Docs](https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js)
 
 - ###### IntelliJ IDEA:
-    - Plugin: https://plugins.jetbrains.com/plugin/18566-sidekick
+    - [Plugin](https://plugins.jetbrains.com/plugin/18566-sidekick)
 
-    - Docs: https://docs.runsidekick.com/plugins/intellij-idea-plugin
+    - [Docs](https://docs.runsidekick.com/plugins/intellij-idea-plugin)
 
 - ###### Sidekick Node.js Client:
-    Sidekick Node Client opens up a new & headless way to use Sidekick. It allows you to both use custom ingest functions for the tracepoint/logpoint events and put/edit/delete your tracepoints/logpoints easily using code.
-    https://www.npmjs.com/package/@runsidekick/sidekick-client
-
+    [Sidekick Node Client](https://www.npmjs.com/package/@runsidekick/sidekick-client) opens up a new & headless way to use Sidekick. It allows you to both use custom ingest functions for the **tracepoint** or **logpoint** events and put/edit/delete your tracepoints/logpoints easily using code.
+    
         Note this can be used with agents from all runtimes.
 
 - ###### REST API
-    Sidekick REST API Doc: https://api.service.runsidekick.com/swagger-ui.html
+    [Sidekick REST API Doc](https://api.service.runsidekick.com/swagger-ui.html)
 
 #### Sidekick Recipes
 1. Ingest your Sidekick logs & snapshots to Loki. https://github.com/boroskoyo/sidekick-loki
 
     Related blog post: https://medium.com/runsidekick/sidekick-recipes-2-add-missing-logs-to-your-running-microservices-and-send-them-to-loki-1f5a3449343c
 
-2. Send your collected tracepoint & logpoint events to Elasticsearch https://github.com/boroskoyo/sidekick-elastic
+2. Send your collected **tracepoint** & **logpoint** events to Elasticsearch https://github.com/boroskoyo/sidekick-elastic
 
     Related blog post: https://medium.com/runsidekick/sidekick-recipes-1-elasticsearch-ingest-561d0970c030
 
