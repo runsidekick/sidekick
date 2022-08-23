@@ -58,7 +58,7 @@
 </details>
 
 ## What is Sidekick?
-Sidekick is a live application debugger that lets you troubleshoot your applications while they keep on running. 
+Sidekick is a live application debugger that lets you troubleshoot your applications while they keep on running.
 
 Add dynamic logs and put non-breaking breakpoints in your running application without the need of stopping & redeploying.
 
@@ -74,6 +74,7 @@ Sidekick has two major actions; Tracepoints & Logpoints.
 - A **tracepoint** is a non-breaking remote breakpoint. In short, it takes a snapshot of the variables when the code hits that line.
 - **Logpoints** open the way for dynamic(on-demand) logging to Sidekick users. Replacing traditional logging with dynamic logging has the potential to lower stage sizes, costs, and time for log searching while adding the ability to add new logpoints without editing the source code, redeploying, or restarting the application.
 
+Supported runtimes: Java, Python, Node.js
 
 To learn more about Sidekick features and capabilities, see our [web page.](https://www.runsidekick.com)
 
@@ -127,6 +128,10 @@ All these with almost no overhead. PS: Check out [our benchmark blogs](https://m
 
 ## Who should use Sidekick?
 While utilizing log data seems the most obvious choice for debugging a remote application, Sidekick provides an extra edge with a seamless debugging experience that is similar to debugging an application on your local environment. 
+
+<p align="center">
+  <img src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/you.png">
+</p>
 
 Whether you're a developer, testing software engineer, or QA engineer, Sidekick is here to help you find the root cause of the errors.
 
