@@ -1,6 +1,6 @@
-## Sidekick
+# Sidekick
 
-#### What is Sidekick?
+## What is Sidekick?
 Sidekick is a production debugging and on-demand logging tool where you can debug your running applications while they keep on running. Sidekick allows you to add logs and put non-breaking breakpoints in your application code, which captures the snapshot of the application state, the call stack, variables, etc.
 
 Sidekick Actions:
@@ -10,7 +10,7 @@ Sidekick Actions:
 
 [-> try in sandbox <-](https://app.runsidekick.me/sandbox?utm_source=github&utm_medium=readme)
 
-#### Why Sidekick?
+## Why Sidekick?
 You can use Sidekick in any stage of your development for your live debugging & logging needs, with Sidekick you can:
 
 - Debug your remote application (monoliths or microservices on Kubernetes, Docker, VMs, or Local) and collect actionable data from your remote application.
@@ -25,9 +25,9 @@ You can use Sidekick in any stage of your development for your live debugging & 
 - Reduce the time spent context-switching between different tools.
 - Open-source (duh!)
 
-        All these with almost no overhead. PS: Check out our benchmark blogs
+All these with almost no overhead. PS: Check out [our benchmark blogs](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
-#### Features
+## Features
 - Conditions & custom hit limits for your logpoints and tracepoints -> collect only what you need
 - Mustache powered expression system for logpoints -> easily add variable data to your logs context
 - Customizable agents -> configure how your agents work, define depth and frame numbers
@@ -40,97 +40,101 @@ You can use Sidekick in any stage of your development for your live debugging & 
 
 
 
-### Getting Started
+## Getting Started
 The simplest way to use Sidekick is to create an account on Sidekick Cloud. For the self-hosted version, you can either build Sidekick yourself or use our Docker image.
         
     Note: Be sure Docker installed and running.
 
-#### Build Sidekick
- 1. ##### Build Service Images
-    1. ###### Build Sidekick Broker Image
+### Build Sidekick
+ 1. #### Build Service Images
+    1. ##### Build Sidekick Broker Image
         1. Go to `sidekick/sidekick-broker-app` folder under project
         2. Execute `release.sh`
     
-    2. ###### Build Sidekick Api Image
+    2. ##### Build Sidekick Api Image
         1. Go to `sidekick/sidekick-api` folder under project
         2. Execute `release.sh`
 
-2. ##### Configure Environment Variables
+2. #### Configure Environment Variables
    1. Go to the docker folder under the project
    2. Open `.env` file via any text editor
         1. Set your secret token (you can set any value, this will be your master key)
             1. `API_TOKEN`, `BROKER_CLIENT_AUTHTOKEN` and `BROKER_TOKEN` must be the same, otherwise, you can’t connect your apps and your client
-
         2. Set MySQL secrets
             1. Set MySQL root password (`MYSQL_ROOT_PASSWORD`)
-            2. Set mysql user (`MYSQL_USER`, `SPRING_DATASOURCE_USERNAME`)
-            3. Set mysql password (`MYSQL_PASSWORD`, `SPRING_DATASOURCE_PASSWORD`)
+            2. Set MySQL user (`MYSQL_USER`, `SPRING_DATASOURCE_USERNAME`)
+            3. Set MySQL password (`MYSQL_PASSWORD`, `SPRING_DATASOURCE_PASSWORD`)
 
-3. ##### Running Application Stack
+3. #### Running Application Stack
     - Go to the docker folder under the project
     - Run command `docker-compose up -d` and wait for a minute
     - App is ready
-    - You can connect to the broker suing the url `ws://<your-server-hostname-or-ip>:7777`
-    - You can see the API's swagger interface at `http://<your-server-hostname-or-ip>:8084/swagger-ui.html`
+    - You can connect to the broker using the url 
+      
+      `ws://<your-server-hostname-or-ip>:7777`
+    - You can see the API's swagger interface at
+      
+        `http://<your-server-hostname-or-ip>:8084/swagger-ui.html`
 
-Check out Clients section for interface options.
+Check out **Clients** section for interface options.
 
-### Sidekick Ecosystem
+## Sidekick Ecosystem
 
-#### Documentation
+### Documentation
 
-- [Sidekick Docs](https://docs.runsidekick.com/)
+- [Sidekick Docs Page](https://docs.runsidekick.com/)
 
-- [Thundra APM Integration](https://docs.runsidekick.com/integrations/tracing-integrations)
+- [Thundra APM Integration Page](https://docs.runsidekick.com/integrations/tracing-integrations)
 
-#### Agents
-- [Java](https://docs.runsidekick.com/installation/installing-agents/java)
+### Agents
+- [Sidekick Java Agent](https://docs.runsidekick.com/installation/installing-agents/java)
 
-- [Python](https://docs.runsidekick.com/installation/installing-agents/python)
+- [Sidekick Python Agent](https://docs.runsidekick.com/installation/installing-agents/python)
 
-- [Node.js](https://docs.runsidekick.com/installation/installing-agents/node.js)
+- [Sidekick Node.js Agent](https://docs.runsidekick.com/installation/installing-agents/node.js)
 
-#### Clients
-- ###### VSCode Extension:
-    - [Extension](https://marketplace.visualstudio.com/items?itemName=Sidekick.sidekick-debugger)
+### Clients
+- ##### VSCode Extension:
+    - [Extension Page](https://marketplace.visualstudio.com/items?itemName=Sidekick.sidekick-debugger)
 
-    - [Docs](https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js)
+    - [Docs Page](https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js)
 
-- ###### IntelliJ IDEA:
-    - [Plugin](https://plugins.jetbrains.com/plugin/18566-sidekick)
+- ##### IntelliJ IDEA:
+    - [Plugin Page](https://plugins.jetbrains.com/plugin/18566-sidekick)
 
-    - [Docs](https://docs.runsidekick.com/plugins/intellij-idea-plugin)
+    - [Docs Page](https://docs.runsidekick.com/plugins/intellij-idea-plugin)
 
-- ###### Sidekick Node.js Client:
+- ##### Sidekick Node.js Client:
     [Sidekick Node Client](https://www.npmjs.com/package/@runsidekick/sidekick-client) opens up a new & headless way to use Sidekick. It allows you to both use custom ingest functions for the **tracepoint** or **logpoint** events and put/edit/delete your tracepoints/logpoints easily using code.
     
         Note this can be used with agents from all runtimes.
 
-- ###### REST API
+- ##### REST API
     [Sidekick REST API Doc](https://api.service.runsidekick.com/swagger-ui.html)
 
-#### Sidekick Recipes
+### Sidekick Recipes
 1. Ingest your Sidekick logs & snapshots to Loki. https://github.com/boroskoyo/sidekick-loki
 
-    Related blog post: https://medium.com/runsidekick/sidekick-recipes-2-add-missing-logs-to-your-running-microservices-and-send-them-to-loki-1f5a3449343c
+    Related blog post: [Sidekick Recipes #2: Send logs to Loki -Add missing logs to your running microservices. Easy as 1–2–3](https://medium.com/runsidekick/sidekick-recipes-2-add-missing-logs-to-your-running-microservices-and-send-them-to-loki-1f5a3449343c)
 
 2. Send your collected **tracepoint** & **logpoint** events to Elasticsearch https://github.com/boroskoyo/sidekick-elastic
 
-    Related blog post: https://medium.com/runsidekick/sidekick-recipes-1-elasticsearch-ingest-561d0970c030
+    Related blog post: [Sidekick Recipes #1: Elasticsearch Ingest](https://medium.com/runsidekick/sidekick-recipes-1-elasticsearch-ingest-561d0970c030)
 
    
-#### Publications
+### Publications
 - [Past, Present, and Future of Sidekick](https://medium.com/runsidekick/past-present-and-future-of-sidekick-d75649395be2)
 - [Production Debuggers — 2022 Benchmark Results](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
 
-#### Contribute
+### Contribute
 Checkout [CONTRIBUTING.md](CONTRIBUTING.md)
 
-#### Questions? Problems? Suggestions?
+### Questions? Problems? Suggestions?
 
+To report a bug or request a feature, create a [GitHub Issue](https://github.com/runsidekick/sidekick/issues). Please ensure someone else has not created an issue for the same topic.
 
-To report a bug or request a feature, create a GitHub Issue. Please ensure someone else has not created an issue for the same topic.
+### Need help using Sidekick? 
 
-Need help using Sidekick? [Reach out on the Discord](https://www.runsidekick.com/discord-invitation) A fellow community member or Sidekick engineer will be happy to help you out.
+[Reach out on the Discord](https://www.runsidekick.com/discord-invitation). A fellow community member or Sidekick engineer will be happy to help you out.
 
