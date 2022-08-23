@@ -9,6 +9,8 @@
     
 </p>
 
+<a name="readme-top"></a>
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -26,10 +28,10 @@
       <a href="#features">Features</a>
     </li>
     <li>
-      <a href="#who-should-use-sidekick">Who should use Sidekick ?</a>
+      <a href="#who-should-use-sidekick">Who should use Sidekick?</a>
     </li>
     <li>
-      <a href="#how-does-sidekick-work">How does Sidekick work ?</a>
+      <a href="#how-does-sidekick-work">How does Sidekick work?</a>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -83,6 +85,8 @@ To learn more about Sidekick features and capabilities, see our [web page.](http
   <a href="https://www.runsidekick.com/discord-invitation" target="_blank"><img width="40%" height="40%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/joindiscord.png"></a>
 </p>
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Why Sidekick?
 You can use Sidekick in any stage of your development for your live debugging & logging needs. With Sidekick you can:
 
@@ -99,6 +103,8 @@ You can use Sidekick in any stage of your development for your live debugging & 
 
 
 All these with almost no overhead. PS: Check out [our benchmark blogs](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Features
 - Conditions & custom hit limits for your logpoints and tracepoints -> collect only what you need
@@ -117,12 +123,16 @@ All these with almost no overhead. PS: Check out [our benchmark blogs](https://m
   <img width="60%" height="60%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/meetlogpoints(2).gif">
 </p>
 
-## Who should use Sidekick ?
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Who should use Sidekick?
 While utilizing log data seems the most obvious choice for debugging a remote application, Sidekick provides an extra edge with a seamless debugging experience that is similar to debugging an application on your local environment. 
 
 Whether you're a developer, testing software engineer, or QA engineer, Sidekick is here to help you find the root cause of the errors.
 
-## How does Sidekick work ?
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## How does Sidekick work?
 
 Sidekick consists of 3 layers;
 The broker is the central unit of Sidekick. It controls all the data flow between clients and agents. This very repository contains the Sidekick broker.
@@ -133,6 +143,8 @@ Clients let you interact with the agents. They send commands to agents via the b
 - The first one is Sidekick Web IDE, which you can use with our SaaS & on-prem versions, it lets you collaborate with other developers, and control your agents, workspaces & users from your browser. Since it is a web app, it does not require any installation. To learn more about Sidekick SaaS & On-prem features and capabilities, see our [web page.](https://www.runsidekick.com)
 - Secondly, we have our IDE extensions. They enable you to control your agents with the comfort of your IDE. Currently, we have extensions for Visual Studio Code & IntelliJ IDEA. Check out the Clients section below.
 - Last but not least, you can also use Sidekick with a headless approach. Sidekick Rest API lets you apply CRUD operations over logpoints & tracepoints via HTTP protocol and other clients like Sidekick Node.js Client lets you control your agents programmatically and make use of your collected data using code.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Getting Started
 The simplest way to use Sidekick is to create an account on Sidekick Cloud. For the self-hosted version, you can either build Sidekick yourself or use our Docker image.
@@ -179,6 +191,7 @@ Now that your broker is ready, you need to install your agents & clients to star
 
 To learn more see our [docs.](https://docs.runsidekick.com)
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Sidekick Ecosystem
 
@@ -187,6 +200,10 @@ To learn more see our [docs.](https://docs.runsidekick.com)
 - [Sidekick Docs](https://docs.runsidekick.com/)
 
 - [Thundra APM & Open-telemetry Integration](https://docs.runsidekick.com/integrations/tracing-integrations)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 ### Agents
 
@@ -203,6 +220,10 @@ Note: Agents are going open-source too! ETA: 30th of Aug
 - [Sidekick Python Agent](https://docs.runsidekick.com/installation/installing-agents/python)
 
 - [Sidekick Node.js Agent](https://docs.runsidekick.com/installation/installing-agents/node.js)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 ### Clients
 
@@ -225,6 +246,9 @@ Check out [docs](https://docs.runsidekick.com/) to learn how you can use clients
 
 - ##### REST API
     [Sidekick REST API Doc](https://api.service.runsidekick.com/swagger-ui.html)
+    
+    
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Usage Examples
 - [Collect Realtime Stack Traces from NodeJS Applications](https://medium.com/runsidekick/collect-realtime-stack-traces-from-nodejs-applications-a300d1e91c1a)
@@ -232,6 +256,8 @@ Check out [docs](https://docs.runsidekick.com/) to learn how you can use clients
 
 Check out [docs](https://docs.runsidekick.com/) for more!
 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Sidekick Recipes
 1. Ingest your Sidekick logs & snapshots to Loki. https://github.com/boroskoyo/sidekick-loki
@@ -242,18 +268,28 @@ Check out [docs](https://docs.runsidekick.com/) for more!
 
     Related blog post: [Sidekick Recipes #1: Elasticsearch Ingest](https://medium.com/runsidekick/sidekick-recipes-1-elasticsearch-ingest-561d0970c030)
 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
    
 ### Recent Publications
 - [Past, Present, and Future of Sidekick](https://medium.com/runsidekick/past-present-and-future-of-sidekick-d75649395be2)
 - [Production Debuggers — 2022 Benchmark Results](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Contributing
 Checkout [CONTRIBUTING.md](CONTRIBUTING.md)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Questions? Problems? Suggestions?
 
 To report a bug or request a feature, create a [GitHub Issue](https://github.com/runsidekick/sidekick/issues). Please ensure someone else has not created an issue for the same topic.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Contact
 
 [Reach out on the Discord](https://www.runsidekick.com/discord-invitation). A fellow community member or Sidekick engineer will be happy to help you out.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
