@@ -154,7 +154,7 @@ Clients let you interact with the agents. They send commands to agents via the b
 ## Getting Started
 The simplest way to use Sidekick is to create an account on Sidekick Cloud. For the self-hosted version, you can either build Sidekick yourself or use our Docker image.
         
-    Note: Be sure Docker installed and running.
+    Note: Make sure docker daemon is running.
 
 ### Running Sidekick using our Docker image
 
