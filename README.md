@@ -117,10 +117,10 @@ All these with almost no overhead. PS: Check out [our benchmark blogs](https://m
 - Work with your collected data in your way using Sidekick clients
 
 <p align="center">
-  <img width="60%" height="60%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/meettracepoints%20(1).gif">
+  <img width="70%" height="70%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/meettracepoints%20(1).gif">
 </p>
 <p align="center">
-  <img width="60%" height="60%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/meetlogpoints(2).gif">
+  <img width="70%" height="70%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/meetlogpoints(2).gif">
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
