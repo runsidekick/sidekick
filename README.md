@@ -14,24 +14,44 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#what-is-sidekick">What is Sidekick?</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#sidekick-actions">Sidekick Actions</a></li>
       </ul>
+    </li>
+    <li>
+      <a href="#why-sidekick">Why Sidekick?</a>
+    </li>
+    <li>
+      <a href="#features">Features</a>
+    </li>
+    <li>
+      <a href="#who-should-use-sidekick">Who should use Sidekick ?</a>
+    </li>
+    <li>
+      <a href="#how-does-sidekick-work">How does Sidekick work ?</a>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#running-sidekick-using-our-docker-image">Running Sidekick using our Docker image</a></li>
+        <li><a href="#building-sidekick">Building Sidekick</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li>
+      <a href="#sidekick-ecosystem">Sidekick Ecosystem</a>
+      <ul>
+        <li><a href="#documentation">Documentation</a></li>
+        <li><a href="#agents">Agents</a></li>
+        <li><a href="#clients">Clients</a></li>
+        <li><a href="#usage-examples">Usage Examples</a></li>
+        <li><a href="#sidekick-recipes">Sidekick Recipes</a></li>
+        <li><a href="#recent-publications">Recent Publications</a></li>
+      </ul>
+    </li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
+    <li><a href="#questions-problems-suggestions">Questions? Problems? Suggestions?</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -44,6 +64,8 @@ Sidekick Open Source is here to allow self-hosting and make live debugging more 
 <p align="center">
   <img width="70%" height="70%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/HowSidekickWorks.gif">
 </p>
+
+
 #####Sidekick Actions:
 Sidekick has two major actions; Tracepoints & Logpoints.
 
@@ -225,17 +247,13 @@ Check out [docs](https://docs.runsidekick.com/) for more!
 - [Past, Present, and Future of Sidekick](https://medium.com/runsidekick/past-present-and-future-of-sidekick-d75649395be2)
 - [Production Debuggers — 2022 Benchmark Results](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
-### Contribute
+## Contributing
 Checkout [CONTRIBUTING.md](CONTRIBUTING.md)
 
-### Questions? Problems? Suggestions?
+## Questions? Problems? Suggestions?
 
 To report a bug or request a feature, create a [GitHub Issue](https://github.com/runsidekick/sidekick/issues). Please ensure someone else has not created an issue for the same topic.
 
-### Contact
-
-Barış Kaya @boroskoyo - baris@thundra.io
-### Need help using Sidekick? 
+## Contact
 
 [Reach out on the Discord](https://www.runsidekick.com/discord-invitation). A fellow community member or Sidekick engineer will be happy to help you out.
-
