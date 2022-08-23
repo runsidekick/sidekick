@@ -66,7 +66,7 @@ Sidekick Open Source is here to allow self-hosting and make live debugging more 
 </p>
 
 
-#####Sidekick Actions:
+##### Sidekick Actions:
 Sidekick has two major actions; Tracepoints & Logpoints.
 
 - A **tracepoint** is a non-breaking remote breakpoint. In short, it takes a snapshot of the variables when the code hits that line.
