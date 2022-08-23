@@ -3,6 +3,10 @@
 Welcome to Sidekick contribution guidelines
 
 
+<p align="center">
+  <a href="https://www.runsidekick.com/discord-invitation" target="_blank"><img width="40%" height="40%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/joindiscord.png"></a>
+</p>
+
 ## Issues
 
 The best way to contribute to Sidekick is opening a issue. If you found any bug on Sidekick or mistake in our documents, contents
