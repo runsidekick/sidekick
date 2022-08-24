@@ -237,12 +237,12 @@ Note: Agents are going open-source too! ETA: 30th of Aug
 
 Check out [docs](https://docs.runsidekick.com/) to learn how you can use clients with Sidekick Open Source!
 
-- ##### VSCode Extension:
+- ##### VSCode Extension (Python & Node.js):
     - [Extension Page](https://marketplace.visualstudio.com/items?itemName=Sidekick.sidekick-debugger)
 
     - [Docs Page](https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js)
 
-- ##### IntelliJ IDEA:
+- ##### IntelliJ IDEA (Java):
     - [Plugin Page](https://plugins.jetbrains.com/plugin/18566-sidekick)
 
     - [Docs Page](https://docs.runsidekick.com/plugins/intellij-idea-plugin)
