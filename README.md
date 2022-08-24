@@ -1,17 +1,98 @@
-# Sidekick
+<p align="center">
+  <img width="30%" height="30%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/logo-1.png">
+</p>
+<p align="center">
+    <a href="https://github.com/runsidekick/sidekick" target="_blank"><img src="https://img.shields.io/github/license/runsidekick/sidekick?style=for-the-badge" alt="Sidekick Licence" /></a>&nbsp;
+    <a href="https://discord.gg/MJbUjwskdH" target="_blank"><img src="https://img.shields.io/discord/958745045308174416?style=for-the-badge&logo=discord&label=DISCORD" alt="Sidekick Discord Channel" /></a>&nbsp;
+    <a href="https://www.runforesight.com/" target="_blank"><img src="https://img.shields.io/badge/Monitored%20by-Foresight-%239900F0?style=for-the-badge" alt="Foresight monitoring" /></a>&nbsp;
+    <a href="https://app.runsidekick.com/sandbox" target="_blank"><img src="https://img.shields.io/badge/try%20in-sandbox-brightgreen?style=for-the-badge" alt="Sidekick Sandbox" /></a>&nbsp;
+    
+</p>
+
+<a name="readme-top"></a>
+
+<div align="center">
+<a href="https://www.producthunt.com/posts/sidekick-12?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sidekick&#0045;12" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=357053&theme=light" alt="Sidekick - Like&#0032;Chrome&#0032;DevTools&#0032;for&#0032;your&#0032;backend&#0032;→&#0032;now&#0032;open&#0032;source&#0033; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a> </div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#what-is-sidekick">What is Sidekick?</a>
+      <ul>
+        <li><a href="#sidekick-actions">Sidekick Actions</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#why-sidekick">Why Sidekick?</a>
+    </li>
+    <li>
+      <a href="#features">Features</a>
+    </li>
+    <li>
+      <a href="#who-should-use-sidekick">Who should use Sidekick?</a>
+    </li>
+    <li>
+      <a href="#how-does-sidekick-work">How does Sidekick work?</a>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#running-sidekick-using-our-docker-image">Running Sidekick using our Docker image</a></li>
+        <li><a href="#building-sidekick">Building Sidekick</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#sidekick-ecosystem">Sidekick Ecosystem</a>
+      <ul>
+        <li><a href="#documentation">Documentation</a></li>
+        <li><a href="#agents">Agents</a></li>
+        <li><a href="#clients">Clients</a></li>
+        <li><a href="#usage-examples">Usage Examples</a></li>
+        <li><a href="#sidekick-recipes">Sidekick Recipes</a></li>
+        <li><a href="#recent-publications">Recent Publications</a></li>
+      </ul>
+    </li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#questions-problems-suggestions">Questions? Problems? Suggestions?</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
 ## What is Sidekick?
-Sidekick is a production debugging and on-demand logging tool where you can debug your running applications while they keep on running. Sidekick allows you to add logs and put non-breaking breakpoints in your application code, which captures the snapshot of the application state, the call stack, variables, etc.
+Sidekick is a live application debugger that lets you troubleshoot your applications while they keep on running.
 
-Sidekick Actions:
+Add dynamic logs and put non-breaking breakpoints in your running application without the need of stopping & redeploying.
 
-- A **tracepoint** is a non-breaking remote breakpoint. In short, it takes a screenshot of the variables when the code hits that line.
+Sidekick Open Source is here to allow self-hosting and make live debugging more accessible. Built for everyone who needs extra information from their running applications. 
+<p align="center">
+  <img width="70%" height="70%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/HowSidekickWorks.gif">
+</p>
+
+
+##### Sidekick Actions:
+Sidekick has two major actions; Tracepoints & Logpoints.
+
+- A **tracepoint** is a non-breaking remote breakpoint. In short, it takes a snapshot of the variables when the code hits that line.
 - **Logpoints** open the way for dynamic(on-demand) logging to Sidekick users. Replacing traditional logging with dynamic logging has the potential to lower stage sizes, costs, and time for log searching while adding the ability to add new logpoints without editing the source code, redeploying, or restarting the application.
 
-[-> try in sandbox <-](https://app.runsidekick.me/sandbox?utm_source=github&utm_medium=readme)
+Supported runtimes: Java, Python, Node.js
+
+To learn more about Sidekick features and capabilities, see our [web page.](https://www.runsidekick.com)
+
+<p align="center">
+  <a href="https://app.runsidekick.com/sandbox?utm_source=github&utm_medium=readme" target="_blank"><img width="345" height="66" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/try(1)%201.png"></a>
+</p>
+
+<p align="center">
+  <a href="https://www.runsidekick.com/discord-invitation" target="_blank"><img width="40%" height="40%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/joindiscord.png"></a>
+</p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Why Sidekick?
-You can use Sidekick in any stage of your development for your live debugging & logging needs, with Sidekick you can:
+You can use Sidekick in any stage of your development for your live debugging & logging needs. With Sidekick you can:
 
 - Debug your remote application (monoliths or microservices on Kubernetes, Docker, VMs, or Local) and collect actionable data from your remote application.
 - Add logs to your production apps without redeploying or restarting
@@ -23,39 +104,64 @@ You can use Sidekick in any stage of your development for your live debugging & 
 - Evaluate the impact of an error on applications with integrated distributed tracing.
 - Collaborate with your colleagues by sharing snapshots taken by Sidekick.
 - Reduce the time spent context-switching between different tools.
-- Open-source (duh!)
+
 
 All these with almost no overhead. PS: Check out [our benchmark blogs](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Features
 - Conditions & custom hit limits for your logpoints and tracepoints -> collect only what you need
 - Mustache powered expression system for logpoints -> easily add variable data to your logs context
 - Customizable agents -> configure how your agents work, define depth and frame numbers
 - Aggregate your collected data with Thundra APM and Open-telemetry traces
-- Collect errors automatically and send them to your target of choice (Node.js only)
-- Define custom data redaction functions to control what is being collected(Node.js only)
+- Collect errors automatically and send them to your target of choice (will be available at 30th Aug)
+- Define custom data redaction functions to control what is being collected (Node.js only)
 - Control your logpoints and tracepoints using programmatically
 - Work with your collected data in your way using Sidekick clients
 
+<p align="center">
+  <img width="70%" height="70%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/meettracepoints%20(1).gif">
+</p>
+<p align="center">
+  <img width="70%" height="70%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/meetlogpoints(2).gif">
+</p>
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Who should use Sidekick?
+While utilizing log data seems the most obvious choice for debugging a remote application, Sidekick provides an extra edge with a seamless debugging experience that is similar to debugging an application on your local environment. 
+
+<p align="center">
+  <img src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/you.png">
+</p>
+
+Whether you're a developer, testing software engineer, or QA engineer, Sidekick is here to help you find the root cause of the errors.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## How does Sidekick work?
+
+Sidekick consists of 3 layers;
+The broker is the central unit of Sidekick. It controls all the data flow between clients and agents. This very repository contains the Sidekick broker.
+
+Agents are the layer where Sidekick actions meet with your applications. Agents deployed with your software lets you collect snapshot data and generate dynamic logs without modifying your code. Agents get orders from clients and start listening to the targeted lines with given properties. Then whenever your code hits a logpoint or a tracepoint, agents collect stack & log data and send them to the clients via the broker. Currently, we have agents for Java, Python & Node.js runtimes. 
+
+Clients let you interact with the agents. They send commands to agents via the broker and let you control your tracepoints & logpoints. Clients come in many different ways:
+- The first one is Sidekick Web IDE, which you can use with our SaaS & on-prem versions, it lets you collaborate with other developers, and control your agents, workspaces & users from your browser. Since it is a web app, it does not require any installation. To learn more about Sidekick SaaS & On-prem features and capabilities, see our [web page.](https://www.runsidekick.com)
+- Secondly, we have our IDE extensions. They enable you to control your agents with the comfort of your IDE. Currently, we have extensions for Visual Studio Code & IntelliJ IDEA. Check out the Clients section below.
+- Last but not least, you can also use Sidekick with a headless approach. Sidekick Rest API lets you apply CRUD operations over logpoints & tracepoints via HTTP protocol and other clients like Sidekick Node.js Client lets you control your agents programmatically and make use of your collected data using code.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Getting Started
 The simplest way to use Sidekick is to create an account on Sidekick Cloud. For the self-hosted version, you can either build Sidekick yourself or use our Docker image.
         
-    Note: Be sure Docker installed and running.
+    Note: Make sure docker daemon is running.
 
-### Build Sidekick
- 1. #### Build Service Images
-    1. ##### Build Sidekick Broker Image
-        1. Go to `sidekick/sidekick-broker-app` folder under project
-        2. Execute `release.sh`
-    
-    2. ##### Build Sidekick Api Image
-        1. Go to `sidekick/sidekick-api` folder under project
-        2. Execute `release.sh`
+### Running Sidekick using our Docker image
 
-2. #### Configure Environment Variables
+1. #### Configure Environment Variables
    1. Go to the docker folder under the project
    2. Open `.env` file via any text editor
         1. Set your secret token (you can set any value, this will be your master key)
@@ -65,7 +171,7 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
             2. Set MySQL user (`MYSQL_USER`, `SPRING_DATASOURCE_USERNAME`)
             3. Set MySQL password (`MYSQL_PASSWORD`, `SPRING_DATASOURCE_PASSWORD`)
 
-3. #### Running Application Stack
+2. #### Running Application Stack
     - Go to the docker folder under the project
     - Run command `docker-compose up -d` and wait for a minute
     - App is ready
@@ -76,30 +182,67 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
       
         `http://<your-server-hostname-or-ip>:8084/swagger-ui.html`
 
-Check out **Clients** section for interface options.
+### Building Sidekick
+
+ 1. #### Build Service Images
+    1. ##### Build Sidekick Broker Image
+        1. Go to `sidekick/sidekick-broker-app` folder under project
+        2. Execute `release.sh`
+    
+    2. ##### Build Sidekick Api Image
+        1. Go to `sidekick/sidekick-api` folder under project
+        2. Execute `release.sh`
+
+### 
+
+Now that your broker is ready, you need to install your agents & clients to start using Sidekick. Check out them below.
+
+To learn more see our [docs.](https://docs.runsidekick.com)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Sidekick Ecosystem
 
 ### Documentation
 
-- [Sidekick Docs Page](https://docs.runsidekick.com/)
+- [Sidekick Docs](https://docs.runsidekick.com/)
 
-- [Thundra APM Integration Page](https://docs.runsidekick.com/integrations/tracing-integrations)
+- [Thundra APM & Open-telemetry Integration](https://docs.runsidekick.com/integrations/tracing-integrations)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 ### Agents
+
+<p align="center">
+  <img width="650" height="389" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/Frame%2012agents%201.png">
+</p>
+
+Check out [docs](https://docs.runsidekick.com/) to learn how you can use agents with Sidekick Open Source!
+
+Note: Agents are going open-source too! ETA: 30th of Aug
+
 - [Sidekick Java Agent](https://docs.runsidekick.com/installation/installing-agents/java)
 
 - [Sidekick Python Agent](https://docs.runsidekick.com/installation/installing-agents/python)
 
 - [Sidekick Node.js Agent](https://docs.runsidekick.com/installation/installing-agents/node.js)
 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 ### Clients
-- ##### VSCode Extension:
+
+Check out [docs](https://docs.runsidekick.com/) to learn how you can use clients with Sidekick Open Source!
+
+- ##### VSCode Extension (Python & Node.js):
     - [Extension Page](https://marketplace.visualstudio.com/items?itemName=Sidekick.sidekick-debugger)
 
     - [Docs Page](https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js)
 
-- ##### IntelliJ IDEA:
+- ##### IntelliJ IDEA (Java):
     - [Plugin Page](https://plugins.jetbrains.com/plugin/18566-sidekick)
 
     - [Docs Page](https://docs.runsidekick.com/plugins/intellij-idea-plugin)
@@ -107,10 +250,22 @@ Check out **Clients** section for interface options.
 - ##### Sidekick Node.js Client:
     [Sidekick Node Client](https://www.npmjs.com/package/@runsidekick/sidekick-client) opens up a new & headless way to use Sidekick. It allows you to both use custom ingest functions for the **tracepoint** or **logpoint** events and put/edit/delete your tracepoints/logpoints easily using code.
     
-        Note this can be used with agents from all runtimes.
+        Note: This can be used with agents from all runtimes.
 
 - ##### REST API
     [Sidekick REST API Doc](https://api.service.runsidekick.com/swagger-ui.html)
+    
+    
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Usage Examples
+- [Collect Realtime Stack Traces from NodeJS Applications](https://medium.com/runsidekick/collect-realtime-stack-traces-from-nodejs-applications-a300d1e91c1a)
+- [How to add missing logpoints to your running applicatons without stopping and send them to Loki ](https://dev.to/boroskoyo/how-to-add-missing-logpoints-to-your-running-applicatons-without-stopping-and-send-them-to-loki-8l3)
+
+Check out [docs](https://docs.runsidekick.com/) for more!
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Sidekick Recipes
 1. Ingest your Sidekick logs & snapshots to Loki. https://github.com/boroskoyo/sidekick-loki
@@ -121,20 +276,28 @@ Check out **Clients** section for interface options.
 
     Related blog post: [Sidekick Recipes #1: Elasticsearch Ingest](https://medium.com/runsidekick/sidekick-recipes-1-elasticsearch-ingest-561d0970c030)
 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
    
-### Publications
+### Recent Publications
 - [Past, Present, and Future of Sidekick](https://medium.com/runsidekick/past-present-and-future-of-sidekick-d75649395be2)
 - [Production Debuggers — 2022 Benchmark Results](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Contribute
+## Contributing
 Checkout [CONTRIBUTING.md](CONTRIBUTING.md)
 
-### Questions? Problems? Suggestions?
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Questions? Problems? Suggestions?
 
 To report a bug or request a feature, create a [GitHub Issue](https://github.com/runsidekick/sidekick/issues). Please ensure someone else has not created an issue for the same topic.
 
-### Need help using Sidekick? 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Contact
 
 [Reach out on the Discord](https://www.runsidekick.com/discord-invitation). A fellow community member or Sidekick engineer will be happy to help you out.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
