@@ -158,7 +158,8 @@ Clients let you interact with the agents. They send commands to agents via the b
 ## Getting Started
 The simplest way to use Sidekick is to create an account on Sidekick Cloud. For the self-hosted version, you can either build Sidekick yourself or use our Docker image.
         
-    Note: Make sure docker daemon is running.
+  > **Note**  
+  > Make sure docker daemon is running.
 
 ### Running Sidekick using our Docker image
 
@@ -250,8 +251,10 @@ Check out [docs](https://docs.runsidekick.com/) to learn how you can use clients
 
 - ##### Sidekick Node.js Client:
     [Sidekick Node Client](https://www.npmjs.com/package/@runsidekick/sidekick-client) opens up a new & headless way to use Sidekick. It allows you to both use custom ingest functions for the **tracepoint** or **logpoint** events and put/edit/delete your tracepoints/logpoints easily using code.
+      
+    > **Note**  
+    > This can be used with agents from all runtimes.
     
-        Note: This can be used with agents from all runtimes.
 
 - ##### REST API
     [Sidekick REST API Doc](https://api.service.runsidekick.com/swagger-ui.html)
