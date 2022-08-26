@@ -12,8 +12,12 @@
 <a name="readme-top"></a>
 
 <div align="center">
-<a href="https://www.producthunt.com/products/sidekick-12?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-sidekick&#0045;12" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=357053&theme=light&period=daily" alt="Sidekick - Like&#0032;Chrome&#0032;DevTools&#0032;for&#0032;your&#0032;backend&#0044;&#0032;now&#0032;open&#0032;source | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a></div>
-
+<a href="https://www.producthunt.com/posts/sidekick-12?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-sidekick&#0045;12" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=357053&theme=light&period=daily" alt="Sidekick - Like&#0032;Chrome&#0032;DevTools&#0032;for&#0032;your&#0032;backend&#0044;&#0032;now&#0032;open&#0032;source | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+</div>
+<div align="center">
+    <a href="https://docs.runsidekick.com/"><strong>Explore Docs »</strong></a>
+	    <a href="https://medium.com/runsidekick/sidekick-open-source-live-debugger-get-started-in-5-mins-efc0845a2288"><strong>Quick Start Tutorial »</strong></a>
+</div>
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -284,6 +288,7 @@ Check out [docs](https://docs.runsidekick.com/) for more!
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
    
 ### Recent Publications
+- [Sidekick Open Source Live Debugger : Get started in 5 mins](https://medium.com/runsidekick/sidekick-open-source-live-debugger-get-started-in-5-mins-efc0845a2288)
 - [Past, Present, and Future of Sidekick](https://medium.com/runsidekick/past-present-and-future-of-sidekick-d75649395be2)
 - [Production Debuggers — 2022 Benchmark Results](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
