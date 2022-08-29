@@ -140,8 +140,8 @@ All these with almost no overhead. PS: Check out [our benchmark blogs](https://m
 ## Who should use Sidekick?
 While utilizing log data seems the most obvious choice for debugging a remote application, Sidekick provides an extra edge with a seamless debugging experience that is similar to debugging an application on your local environment. 
 
-<p align="center">
-  <img src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/you.png">
+<p align="center">	
+  *you*	
 </p>
 
 Whether you're a developer, testing software engineer, or QA engineer, Sidekick is here to help you find the root cause of the errors.
