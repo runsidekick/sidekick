@@ -113,6 +113,9 @@ You can use Sidekick in any stage of your development for your live debugging & 
 
 All these with almost no overhead. PS: Check out [our benchmark blogs](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
+[![Star History Chart](https://api.star-history.com/svg?repos=runsidekick/sidekick&type=Date)](https://star-history.com/#runsidekick/sidekick&Date)
+
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Features
@@ -310,3 +313,5 @@ To report a bug or request a feature, create a [GitHub Issue](https://github.com
 [Reach out on the Discord](https://www.runsidekick.com/discord-invitation?utm_source=sidekick-readme). A fellow community member or Sidekick engineer will be happy to help you out.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
