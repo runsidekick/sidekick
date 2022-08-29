@@ -3,9 +3,9 @@
 </p>
 <p align="center">
     <a href="https://github.com/runsidekick/sidekick" target="_blank"><img src="https://img.shields.io/github/license/runsidekick/sidekick?style=for-the-badge" alt="Sidekick Licence" /></a>&nbsp;
-    <a href="https://www.runsidekick.com/discord-invitation" target="_blank"><img src="https://img.shields.io/discord/958745045308174416?style=for-the-badge&logo=discord&label=DISCORD" alt="Sidekick Discord Channel" /></a>&nbsp;
-    <a href="https://www.runforesight.com/" target="_blank"><img src="https://img.shields.io/badge/Monitored%20by-Foresight-%239900F0?style=for-the-badge" alt="Foresight monitoring" /></a>&nbsp;
-    <a href="https://app.runsidekick.com/sandbox" target="_blank"><img src="https://img.shields.io/badge/try%20in-sandbox-brightgreen?style=for-the-badge" alt="Sidekick Sandbox" /></a>&nbsp;
+    <a href="https://www.runsidekick.com/discord-invitation?utm_source=sidekick-readme" target="_blank"><img src="https://img.shields.io/discord/958745045308174416?style=for-the-badge&logo=discord&label=DISCORD" alt="Sidekick Discord Channel" /></a>&nbsp;
+    <a href="https://www.runforesight.com?utm_source=sidekick-readme" target="_blank"><img src="https://img.shields.io/badge/Monitored%20by-Foresight-%239900F0?style=for-the-badge" alt="Foresight monitoring" /></a>&nbsp;
+    <a href="https://app.runsidekick.com/sandbox?utm_source=sidekick-readme" target="_blank"><img src="https://img.shields.io/badge/try%20in-sandbox-brightgreen?style=for-the-badge" alt="Sidekick Sandbox" /></a>&nbsp;
     
 </p>
 
@@ -91,7 +91,7 @@ To learn more about Sidekick features and capabilities, see our [web page.](http
 </p>
 
 <p align="center">
-  <a href="https://www.runsidekick.com/discord-invitation" target="_blank"><img width="40%" height="40%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/joindiscord.png"></a>
+  <a href="https://www.runsidekick.com/discord-invitation?utm_source=sidekick-readme" target="_blank"><img width="40%" height="40%" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/joindiscord.png"></a>
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -153,7 +153,7 @@ The broker is the central unit of Sidekick. It controls all the data flow betwee
 Agents are the layer where Sidekick actions meet with your applications. Agents deployed with your software lets you collect snapshot data and generate dynamic logs without modifying your code. Agents get orders from clients and start listening to the targeted lines with given properties. Then whenever your code hits a logpoint or a tracepoint, agents collect stack & log data and send them to the clients via the broker. Currently, we have agents for Java, Python & Node.js runtimes. 
 
 Clients let you interact with the agents. They send commands to agents via the broker and let you control your tracepoints & logpoints. Clients come in many different ways:
-- The first one is Sidekick Web IDE, which you can use with our SaaS & on-prem versions, it lets you collaborate with other developers, and control your agents, workspaces & users from your browser. Since it is a web app, it does not require any installation. To learn more about Sidekick SaaS & On-prem features and capabilities, see our [web page.](https://www.runsidekick.com)
+- The first one is Sidekick Web IDE, which you can use with our SaaS & on-prem versions, it lets you collaborate with other developers, and control your agents, workspaces & users from your browser. Since it is a web app, it does not require any installation. To learn more about Sidekick SaaS & On-prem features and capabilities, see our [web page.](https://www.runsidekick.com?utm_source=sidekick-readme)
 - Secondly, we have our IDE extensions. They enable you to control your agents with the comfort of your IDE. Currently, we have extensions for Visual Studio Code & IntelliJ IDEA. Check out the Clients section below.
 - Last but not least, you can also use Sidekick with a headless approach. Sidekick Rest API lets you apply CRUD operations over logpoints & tracepoints via HTTP protocol and other clients like Sidekick Node.js Client lets you control your agents programmatically and make use of your collected data using code.
 
@@ -203,7 +203,7 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
 
 Now that your broker is ready, you need to install your agents & clients to start using Sidekick. Check out them below.
 
-To learn more see our [docs.](https://docs.runsidekick.com)
+To learn more see our [docs.](https://docs.runsidekick.com?utm_source=sidekick-readme)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -211,9 +211,9 @@ To learn more see our [docs.](https://docs.runsidekick.com)
 
 ### Documentation
 
-- [Sidekick Docs](https://docs.runsidekick.com/)
+- [Sidekick Docs](https://docs.runsidekick.com?utm_source=sidekick-readme)
 
-- [Thundra APM & Open-telemetry Integration](https://docs.runsidekick.com/integrations/tracing-integrations)
+- [Thundra APM & Open-telemetry Integration](https://docs.runsidekick.com/integrations/tracing-integrations?utm_source=sidekick-readme)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -225,15 +225,15 @@ To learn more see our [docs.](https://docs.runsidekick.com)
   <img width="650" height="389" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/Frame%2012agents%201.png">
 </p>
 
-Check out [docs](https://docs.runsidekick.com/) to learn how you can use agents with Sidekick Open Source!
+Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) to learn how you can use agents with Sidekick Open Source!
 
 Note: Agents are going open-source too! ETA: 30th of Aug
 
-- [Sidekick Java Agent](https://docs.runsidekick.com/installation/installing-agents/java)
+- [Sidekick Java Agent](https://docs.runsidekick.com/installation/installing-agents/java?utm_source=sidekick-readme)
 
-- [Sidekick Python Agent](https://docs.runsidekick.com/installation/installing-agents/python)
+- [Sidekick Python Agent](https://docs.runsidekick.com/installation/installing-agents/python?utm_source=sidekick-readme)
 
-- [Sidekick Node.js Agent](https://docs.runsidekick.com/installation/installing-agents/node.js)
+- [Sidekick Node.js Agent](https://docs.runsidekick.com/installation/installing-agents/node.js?utm_source=sidekick-readme)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -241,17 +241,17 @@ Note: Agents are going open-source too! ETA: 30th of Aug
 
 ### Clients
 
-Check out [docs](https://docs.runsidekick.com/) to learn how you can use clients with Sidekick Open Source!
+Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) to learn how you can use clients with Sidekick Open Source!
 
 - ##### VSCode Extension (Python & Node.js):
     - [Extension Page](https://marketplace.visualstudio.com/items?itemName=Sidekick.sidekick-debugger)
 
-    - [Docs Page](https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js)
+    - [Docs Page](https://docs.runsidekick.com/plugins/visual-studio-code-extension-python-and-node.js?utm_source=sidekick-readme)
 
 - ##### IntelliJ IDEA (Java):
     - [Plugin Page](https://plugins.jetbrains.com/plugin/18566-sidekick)
 
-    - [Docs Page](https://docs.runsidekick.com/plugins/intellij-idea-plugin)
+    - [Docs Page](https://docs.runsidekick.com/plugins/intellij-idea-plugin?utm_source=sidekick-readme)
 
 - ##### Sidekick Node.js Client:
     [Sidekick Node Client](https://www.npmjs.com/package/@runsidekick/sidekick-client) opens up a new & headless way to use Sidekick. It allows you to both use custom ingest functions for the **tracepoint** or **logpoint** events and put/edit/delete your tracepoints/logpoints easily using code.
@@ -270,7 +270,7 @@ Check out [docs](https://docs.runsidekick.com/) to learn how you can use clients
 - [Collect Realtime Stack Traces from NodeJS Applications](https://medium.com/runsidekick/collect-realtime-stack-traces-from-nodejs-applications-a300d1e91c1a)
 - [How to add missing logpoints to your running applicatons without stopping and send them to Loki ](https://dev.to/boroskoyo/how-to-add-missing-logpoints-to-your-running-applicatons-without-stopping-and-send-them-to-loki-8l3)
 
-Check out [docs](https://docs.runsidekick.com/) for more!
+Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) for more!
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -307,6 +307,6 @@ To report a bug or request a feature, create a [GitHub Issue](https://github.com
 
 ## Contact
 
-[Reach out on the Discord](https://www.runsidekick.com/discord-invitation). A fellow community member or Sidekick engineer will be happy to help you out.
+[Reach out on the Discord](https://www.runsidekick.com/discord-invitation?utm_source=sidekick-readme). A fellow community member or Sidekick engineer will be happy to help you out.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
