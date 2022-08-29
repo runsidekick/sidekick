@@ -31,10 +31,6 @@
             <groupId>io.thundra.swark</groupId>
             <artifactId>thundra-cache-spring</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.thundra.swark</groupId>
-            <artifactId>thundra-utils</artifactId>
-        </dependency>
         <!-- ========================================== -->
 
         <!-- Spring dependencies                        -->
