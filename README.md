@@ -113,9 +113,6 @@ You can use Sidekick in any stage of your development for your live debugging & 
 
 All these with almost no overhead. PS: Check out [our benchmark blogs](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
 
-[![Star History Chart](https://api.star-history.com/svg?repos=runsidekick/sidekick&type=Date)](https://star-history.com/#runsidekick/sidekick&Date)
-
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Features
