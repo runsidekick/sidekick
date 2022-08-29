@@ -11,6 +11,8 @@ jobs:
   publish:
     name: Release to Maven Central
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./sidekick
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -42,14 +44,14 @@ jobs:
           passphrase: ${{ secrets.SIDEKICK_GPG_PASSPHRASE}}
       - name: Increase Minor Version
         if: ${{ github.event.inputs.version_scale == 'minor' }}
-        run: mvn -f sidekick build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0-SNAPSHOT versions:commit
-        working-directory: sidekick
+        run: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0-SNAPSHOT versions:commit
+        working-directory: ${{env.working-directory}}
       - name: Increase Major Version
         if: ${{ github.event.inputs.version_scale == 'major' }}
-        run: mvn -f sidekick build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0-SNAPSHOT versions:commit
-        working-directory: sidekick
+        run: mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0-SNAPSHOT versions:commit
+        working-directory: ${{env.working-directory}}
       - name: Build and Release with Maven
         env:
           GITHUB_TOKEN: ${{ secrets.SIDEKICK_DEVOPS_GITHUB_ACCESS_TOKEN }}
         run: mvn clean package release:clean release:prepare release:perform release:clean --batch-mode -P release
-        working-directory: sidekick
+        working-directory: ${{env.working-directory}}
