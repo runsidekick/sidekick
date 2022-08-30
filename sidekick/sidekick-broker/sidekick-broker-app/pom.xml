@@ -143,31 +143,31 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>release</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <docker.image.prefix>runsidekick</docker.image.prefix>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.spotify</groupId>
-                        <artifactId>dockerfile-maven-plugin</artifactId>
-                        <version>1.4.13</version>
-                        <configuration>
-                            <repository>${docker.image.prefix}/${project.parent.artifactId}</repository>
-                            <tag>latest</tag>
-                            <buildArgs>
-                                <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
-                            </buildArgs>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+<!--        <profile>-->
+<!--            <id>release</id>-->
+<!--            <activation>-->
+<!--                <activeByDefault>false</activeByDefault>-->
+<!--            </activation>-->
+<!--            <properties>-->
+<!--                <docker.image.prefix>runsidekick</docker.image.prefix>-->
+<!--            </properties>-->
+<!--            <build>-->
+<!--                <plugins>-->
+<!--                    <plugin>-->
+<!--                        <groupId>com.spotify</groupId>-->
+<!--                        <artifactId>dockerfile-maven-plugin</artifactId>-->
+<!--                        <version>1.4.13</version>-->
+<!--                        <configuration>-->
+<!--                            <repository>${docker.image.prefix}/${project.parent.artifactId}</repository>-->
+<!--                            <tag>latest</tag>-->
+<!--                            <buildArgs>-->
+<!--                                <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>-->
+<!--                            </buildArgs>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+<!--                </plugins>-->
+<!--            </build>-->
+<!--        </profile>-->
     </profiles>
 
 </project>
