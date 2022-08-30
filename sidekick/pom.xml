@@ -25,7 +25,7 @@
     <scm>
         <connection>scm:git:https://${GITHUB_TOKEN}@github.com/runsidekick/sidekick.git</connection>
         <developerConnection>scm:git:https://${GITHUB_TOKEN}@github.com/runsidekick/sidekick.git</developerConnection>
-        <url>https://github.com/runsidekick/sidekick</url>
+        <url>https://github.com/runsidekick/sidekick.git</url>
         <tag>HEAD</tag>
     </scm>
     <developers>
