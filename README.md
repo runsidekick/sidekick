@@ -15,7 +15,7 @@
 <a href="https://www.producthunt.com/posts/sidekick-12?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-sidekick&#0045;12" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=357053&theme=light&period=daily" alt="Sidekick - Like&#0032;Chrome&#0032;DevTools&#0032;for&#0032;your&#0032;backend&#0044;&#0032;now&#0032;open&#0032;source | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </div>
 <div align="center">
-    <a href="https://docs.runsidekick.com/"><strong>Explore Docs »</strong></a>
+    <a href="https://docs.runsidekick.com/?utm_source=sidekick-readme"><strong>Explore Docs »</strong></a>
 	    <a href="https://medium.com/runsidekick/sidekick-open-source-live-debugger-get-started-in-5-mins-efc0845a2288"><strong>Quick Start Tutorial »</strong></a>
 </div>
 
@@ -84,7 +84,7 @@ Sidekick has two major actions; Tracepoints & Logpoints.
 
 Supported runtimes: Java, Python, Node.js
 
-To learn more about Sidekick features and capabilities, see our [web page.](https://www.runsidekick.com)
+To learn more about Sidekick features and capabilities, see our [web page.](https://www.runsidekick.com/?utm_source=sidekick-readme)
 
 <p align="center">
   <a href="https://app.runsidekick.com/sandbox?utm_source=github&utm_medium=readme" target="_blank"><img width="345" height="66" src="https://4750167.fs1.hubspotusercontent-na1.net/hubfs/4750167/Sidekick%20OS%20repo/try(1)%201.png"></a>
