@@ -1,5 +1,9 @@
 package com.runsidekick.broker;
 
+import com.runsidekick.service.PhoneHomeMetricService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -15,7 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @RestController
 @EnableScheduling
-public class SidekickBrokerApplication {
+public class SidekickBrokerApplication implements CommandLineRunner {
+
+    @Value("${phone-home.enabled:true}")
+    private boolean phoneHomeEnabled;
+
+    @Autowired
+    private PhoneHomeMetricService phoneHomeMetricService;
 
     @RequestMapping("/")
     public String home() {
@@ -29,6 +39,13 @@ public class SidekickBrokerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SidekickBrokerApplication.class, args);
+    }
+
+    @Override
+    public void run(String...args) throws Exception {
+        if (phoneHomeEnabled) {
+            phoneHomeMetricService.sendServerUpEvent();
+        }
     }
 
 }

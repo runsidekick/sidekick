@@ -13,6 +13,10 @@
             <groupId>com.runsidekick</groupId>
             <artifactId>sidekick-broker-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.runsidekick</groupId>
+            <artifactId>sidekick-phone-home</artifactId>
+        </dependency>
         <!-- ========================================== -->
 
         <!-- 3rd party dependencies                     -->
@@ -32,6 +36,10 @@
         <dependency>
             <groupId>org.jodd</groupId>
             <artifactId>jodd-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
         </dependency>
         <!-- ========================================== -->
 
@@ -69,11 +77,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
