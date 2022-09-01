@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.runsidekick.model.EventType;
 import com.runsidekick.model.PhoneHomeMetric;
+import com.runsidekick.model.PhoneHomeMetricUtil;
 import com.runsidekick.service.PhoneHomeMetricService;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -17,10 +18,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,22 +53,10 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
         phoneHomeMetric = PhoneHomeMetric.builder()
                 .javaVersion(System.getProperty("java.version"))
                 .appVersion(appVersion)
+                .macAddress(PhoneHomeMetricUtil.getMacAddress())
                 .build();
-        try {
-            OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
-            phoneHomeMetric.setOsName(osMxBean.getName());
-            phoneHomeMetric.setOsArch(osMxBean.getArch());
-            phoneHomeMetric.setOsVersion(osMxBean.getVersion());
-        } catch (SecurityException e) {
-            phoneHomeMetric.setOsName("N/A");
-            phoneHomeMetric.setOsArch("N/A");
-            phoneHomeMetric.setOsVersion("N/A");
-        }
-        try {
-            phoneHomeMetric.setHostName(InetAddress.getLocalHost().getHostName());
-        } catch (UnknownHostException e) {
-            phoneHomeMetric.setHostName("N/A");
-        }
+        PhoneHomeMetricUtil.setOsInfo(phoneHomeMetric);
+        PhoneHomeMetricUtil.setHostName(phoneHomeMetric);
     }
 
     @Override
