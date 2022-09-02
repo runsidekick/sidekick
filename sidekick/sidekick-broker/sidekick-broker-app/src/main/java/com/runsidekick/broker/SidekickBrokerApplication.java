@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableScheduling
 public class SidekickBrokerApplication implements CommandLineRunner {
 
-    @Value("${phoneHome.enabled:true}")
+    @Value("${phonehome.enabled:true}")
     private boolean phoneHomeEnabled;
 
     @Autowired

@@ -35,7 +35,7 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
     @Value("${app.version:}")
     private String appVersion;
 
-    @Value("${phone-home.url:}")
+    @Value("${phonehome.url:}")
     private String phoneHomeUrl;
 
     private static final long READ_TIMEOUT = 30;
