@@ -8,7 +8,7 @@
     </parent>
     <groupId>com.runsidekick</groupId>
     <artifactId>sidekick-oss</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Sidekick</name>
@@ -54,11 +54,11 @@
         <maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
         <java.version>1.8</java.version>
 
-        <thundra.swark.version>0.0.1</thundra.swark.version>
+        <thundra.swark.version>0.0.2</thundra.swark.version>
 
         <mysql.jdbc.version>8.0.28</mysql.jdbc.version>
         <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
-        <log4j.logging.version>2.17.1</log4j.logging.version>
+        <log4j.logging.version>2.18.0</log4j.logging.version>
         <lombok.version>1.18.16</lombok.version>
         <jackson.version>2.12.6</jackson.version>
         <jackson-databind.version>2.12.6.1</jackson-databind.version>
@@ -192,6 +192,26 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
+                <version>${log4j.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jul</artifactId>
+                <version>${log4j.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-to-slf4j</artifactId>
                 <version>${log4j.logging.version}</version>
             </dependency>
             <dependency>
