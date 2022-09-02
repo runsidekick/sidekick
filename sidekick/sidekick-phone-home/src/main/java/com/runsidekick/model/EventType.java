@@ -4,7 +4,7 @@ package com.runsidekick.model;
  * @author yasin.kalafat
  */
 public enum EventType {
-    SERVER_UP("SERVER_UP");
+    SERVER_UP("SERVER_UP"), SERVER_DOWN("SERVER_DOWN");
 
     private String text;
 
@@ -16,7 +16,4 @@ public enum EventType {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
 }

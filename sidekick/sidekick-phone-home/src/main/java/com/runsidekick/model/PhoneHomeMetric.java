@@ -19,6 +19,7 @@ public class PhoneHomeMetric implements Cloneable {
     private String hostName;
     private String appVersion;
     private String macAddress;
+    private EventType eventType;
     private Map<String, Object> eventDetails;
 
     public Object clone() throws CloneNotSupportedException {

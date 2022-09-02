@@ -33,5 +33,5 @@ amq:
 app:
   version: @project.version@
 
-phone-home:
+phoneHome:
     url: http://127.0.0.1:3000/phone-home

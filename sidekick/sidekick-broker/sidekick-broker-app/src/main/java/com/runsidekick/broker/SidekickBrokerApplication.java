@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableScheduling
 public class SidekickBrokerApplication implements CommandLineRunner {
 
-    @Value("${phone-home.enabled:true}")
+    @Value("${phoneHome.enabled:true}")
     private boolean phoneHomeEnabled;
 
     @Autowired
@@ -44,7 +44,12 @@ public class SidekickBrokerApplication implements CommandLineRunner {
     @Override
     public void run(String...args) throws Exception {
         if (phoneHomeEnabled) {
-            phoneHomeMetricService.sendServerUpEvent();
+            long startTime = System.currentTimeMillis();
+            phoneHomeMetricService.sendServerUpEvent(startTime);
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                long finishTime = System.currentTimeMillis();
+                phoneHomeMetricService.sendServerDownEvent(startTime, finishTime);
+            }));
         }
     }
 

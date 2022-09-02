@@ -11,6 +11,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,12 +61,13 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
     }
 
     @Override
-    public void sendServerUpEvent() {
+    public void sendServerUpEvent(long startTime) {
         try {
             PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();
+            metric.setEventType(EventType.SERVER_UP);
 
             Map<String, Object> eventDetails = new HashMap();
-            eventDetails.put("eventType", EventType.SERVER_UP);
+            eventDetails.put("startTime", startTime);
             metric.setEventDetails(eventDetails);
 
             MediaType mediaType = MediaType.parse("application/json");
@@ -76,8 +78,43 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
                     .addHeader("Content-Type", "application/json")
                     .build();
             try {
-                client.newCall(request).execute();
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    LOGGER.error(response);
+                }
             } catch (IOException e) {
+                LOGGER.error(e);
+            }
+        } catch (CloneNotSupportedException | JsonProcessingException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    @Override
+    public void sendServerDownEvent(long startTime, long finishTime) {
+        try {
+            PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();
+            metric.setEventType(EventType.SERVER_DOWN);
+
+            Map<String, Object> eventDetails = new HashMap();
+            eventDetails.put("startTime", startTime);
+            eventDetails.put("finishTime", finishTime);
+            metric.setEventDetails(eventDetails);
+
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, OBJECT_WRITER.writeValueAsString(metric));
+            Request request = new Request.Builder()
+                    .url(phoneHomeUrl)
+                    .method("POST", body)
+                    .addHeader("Content-Type", "application/json")
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    LOGGER.error(response);
+                }
+            } catch (IOException e) {
+                LOGGER.error(e);
             }
         } catch (CloneNotSupportedException | JsonProcessingException e) {
             LOGGER.error(e);

@@ -6,5 +6,7 @@ package com.runsidekick.service;
  */
 public interface PhoneHomeMetricService {
 
-    void sendServerUpEvent();
+    void sendServerUpEvent(long startTime);
+
+    void sendServerDownEvent(long startTime, long finishTime);
 }
