@@ -96,14 +96,14 @@ CREATE TABLE Webhook
     disabled                            TINYINT             NOT NULL DEFAULT 0
 );
 
-CREATE TABLE ReferenceEvent
-(
-    probe_id                            VARCHAR(255),
+CREATE TABLE ReferenceEvent (
+    probe_id                            VARCHAR(255)        NOT NULL,
+    workspace_id                    	VARCHAR(64),
+    application_filter                  JSON,
     probe_type                    	    ENUM(
         "TRACEPOINT",
         "LOGPOINT"
         )                     NOT NULL,
     event                    			JSON                NOT NULL,
-    CONSTRAINT unique_reference_event UNIQUE (probe_id, probe_type),
-    INDEX (probe_id, probe_type)
+    INDEX (probe_id, workspace_id, probe_type)
 );

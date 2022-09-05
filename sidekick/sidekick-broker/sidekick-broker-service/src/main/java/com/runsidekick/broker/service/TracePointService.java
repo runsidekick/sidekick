@@ -15,8 +15,6 @@ public interface TracePointService {
 
     TracePointConfig getTracePoint(String workspaceId, String tracePointId);
 
-    TracePoint getTracePointById(String tracePointId);
-
     void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
             throws Exception;
 
@@ -35,4 +33,6 @@ public interface TracePointService {
     CompletableFuture<Boolean> checkExpireAndDecrementTracePointExpireCount(String workspaceId, String tracePointId);
 
     List<TracePoint> listPredefinedTracePoints(String workspaceId, String userId);
+
+    TracePoint queryTracePoint(String workspaceId, String tracePointId, ApplicationFilter filter);
 }

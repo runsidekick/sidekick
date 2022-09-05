@@ -31,7 +31,8 @@ public class GetReferenceEventHandler
                                                    GetReferenceEventRequest request,
                                                    RequestContext requestContext) {
         ReferenceEvent referenceEvent = referenceEventService.getReferenceEvent(
-                request.getProbeId(), request.getProbeType());
+                channelInfo.getWorkspaceId(), request.getProbeId(),
+                request.getProbeType(), request.getApplicationFilter());
 
         GetReferenceEventResponse response = new GetReferenceEventResponse();
         response.setRequestId(request.getId());

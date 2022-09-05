@@ -31,5 +31,5 @@ public interface LogPointRepository {
 
     List<LogPoint> listPredefinedLogPoints(String workspaceId, String userId);
 
-    LogPoint getLogPointById(String id);
+    LogPoint queryLogPoint(String workspaceId, String logPointId, ApplicationFilter applicationFilter);
 }

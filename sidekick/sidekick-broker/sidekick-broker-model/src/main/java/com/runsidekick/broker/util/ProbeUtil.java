@@ -64,9 +64,25 @@ public final class ProbeUtil {
 
     public static ApplicationAwareProbeQueryFilter probeQueryFilter(
             String workspaceId, ApplicationFilter applicationFilter) {
-        StringBuilder filtersExpr = new StringBuilder();
         List<String> args = new ArrayList<>();
         args.add(workspaceId);
+        return probeQueryFilter(args, applicationFilter);
+    }
+
+    public static ApplicationAwareProbeQueryFilter probeQueryFilter(
+            String workspaceId, String probeId, ApplicationFilter applicationFilter) {
+        List<String> args = new ArrayList<>();
+        args.add(workspaceId);
+        args.add(probeId);
+        return probeQueryFilter(args, applicationFilter);
+    }
+
+    private static ApplicationAwareProbeQueryFilter probeQueryFilter(
+            List<String> args, ApplicationFilter applicationFilter) {
+        StringBuilder filtersExpr = new StringBuilder();
+        if (args == null) {
+            args = new ArrayList<>();
+        }
         if (StringUtils.hasText(applicationFilter.getName())) {
             filtersExpr.append(" AND ");
             filtersExpr.append("(");

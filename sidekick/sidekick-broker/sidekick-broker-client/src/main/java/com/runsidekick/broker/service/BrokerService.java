@@ -1,6 +1,7 @@
 package com.runsidekick.broker.service;
 
 import com.runsidekick.broker.model.Application;
+import com.runsidekick.broker.model.ApplicationFilter;
 import com.runsidekick.broker.model.LogPoint;
 import com.runsidekick.broker.model.ProbeType;
 import com.runsidekick.broker.model.ReferenceEvent;
@@ -73,9 +74,10 @@ public interface BrokerService {
 
     List<TracePoint> listPredefinedTracePoints(String workspaceId, String userId);
 
-    ReferenceEvent getReferenceEvent(String id, ProbeType probeType);
+    ReferenceEvent getReferenceEvent(String workspaceId, String id, ProbeType probeType,
+                                     ApplicationFilter applicationFilter);
 
-    void saveReferenceEvent(PutReferenceEventRequest request) throws Exception;
+    void saveReferenceEvent(String workspaceId, PutReferenceEventRequest request) throws Exception;
 
-    void removeReferenceEvent(RemoveReferenceEventRequest request);
+    void removeReferenceEvent(String workspaceId, RemoveReferenceEventRequest request);
 }

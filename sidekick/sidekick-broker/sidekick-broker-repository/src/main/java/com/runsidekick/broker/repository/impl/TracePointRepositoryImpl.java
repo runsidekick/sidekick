@@ -106,18 +106,6 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
     }
 
     @Override
-    public TracePoint getTracePointById(String id) {
-        try {
-            return jdbcTemplate.queryForObject(
-                    "SELECT * FROM TracePoint WHERE id = ?",
-                    tracePointRowMapper,
-                    id);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    @Override
     public void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
             throws Exception {
         try {
@@ -218,7 +206,22 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                 workspaceId, userId);
     }
 
-    private Collection<TracePoint> filterTracePoints(Collection<TracePointConfig> tracePointConfigs,
+    @Override
+    public TracePoint queryTracePoint(String workspaceId, String tracepointId, ApplicationFilter applicationFilter) {
+        ApplicationAwareProbeQueryFilter queryFilter =
+                ProbeUtil.probeQueryFilter(workspaceId, tracepointId, applicationFilter);
+
+        Collection<TracePointConfig> tracePointConfigs =
+                jdbcTemplate.query(
+                        "SELECT * FROM TracePoint WHERE workspace_id = ? AND id = ?" +
+                                queryFilter.getFiltersExpr().toString(),
+                        tracePointConfigRowMapper,
+                        queryFilter.getArgs().toArray());
+        List<TracePoint> tracePoints = filterTracePoints(tracePointConfigs, applicationFilter);
+        return tracePoints != null && tracePoints.size() > 0 ? tracePoints.get(0) : null;
+    }
+
+    private List<TracePoint> filterTracePoints(Collection<TracePointConfig> tracePointConfigs,
                                                  ApplicationFilter filter) {
         Collection<TracePointConfig> filteredTracePoints = ProbeUtil.filterProbes(tracePointConfigs, filter);
         return filteredTracePoints.stream().collect(Collectors.toList());

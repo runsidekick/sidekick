@@ -11,7 +11,6 @@ import com.runsidekick.broker.service.ReferenceEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -38,16 +37,7 @@ public class LogPointServiceImpl implements LogPointService {
     }
 
     @Override
-    @Cacheable(cacheNames = "LogPoint", key = "#logPointId")
-    public LogPoint getLogPointById(String logPointId) {
-        return logPointRepository.getLogPointById(logPointId);
-    }
-
-    @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id"),
-            @CacheEvict(cacheNames = "LogPoint", key = "#logPointConfig.id")
-    })
+    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id")
     public void putLogPoint(String workspaceId, String userId, LogPointConfig logPointConfig, boolean fromApi)
             throws Exception {
         logPointRepository.putLogPoint(workspaceId, userId, logPointConfig, fromApi);
@@ -58,38 +48,29 @@ public class LogPointServiceImpl implements LogPointService {
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointId"),
-            @CacheEvict(cacheNames = "LogPoint", key = "#logPointId")
-    })
+    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointId")
     public void removeLogPoint(String workspaceId, String userId, String logPointId) {
         logPointRepository.removeLogPoint(workspaceId, userId, logPointId);
         logPointExpireCountRepository.removeLogPointExpireCount(workspaceId, logPointId);
-        referenceEventService.removeReferenceEvent(logPointId, ProbeType.LOGPOINT);
+        referenceEventService.removeReferenceEvent(workspaceId, logPointId, ProbeType.LOGPOINT);
     }
 
     @Override
     public long removeLogPoints(String workspaceId, String userId, List<String> logPointIds) {
         long deletedCount = logPointRepository.removeLogPoints(workspaceId, userId, logPointIds);
         logPointExpireCountRepository.removeLogPointsExpireCount(workspaceId, logPointIds);
-        referenceEventService.removeReferenceEvents(logPointIds, ProbeType.LOGPOINT);
+        referenceEventService.removeReferenceEvents(workspaceId, logPointIds, ProbeType.LOGPOINT);
         return deletedCount;
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id"),
-            @CacheEvict(cacheNames = "LogPoint", key = "#logPointConfig.id")
-    })
+    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id")
     public void enableDisableLogPoint(String workspaceId, String userId, String logPointId, boolean disable) {
         logPointRepository.enableDisableLogPoint(workspaceId, userId, logPointId, disable);
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id"),
-            @CacheEvict(cacheNames = "LogPoint", key = "#logPointConfig.id")
-    })
+    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id")
     public void updateLogPoint(String workspaceId, String userId, String logPointId, LogPoint logPoint) {
         logPointRepository.updateLogPoint(workspaceId, userId, logPointId, logPoint);
         if (logPoint.isPredefined()) {
@@ -97,7 +78,7 @@ public class LogPointServiceImpl implements LogPointService {
         } else {
             logPointExpireCountRepository.putLogPointExpireCount(
                     workspaceId, logPointId, logPoint.getExpireCount(), logPoint.getExpireSecs());
-            referenceEventService.removeReferenceEvent(logPointId, ProbeType.LOGPOINT);
+            referenceEventService.removeReferenceEvent(workspaceId, logPointId, ProbeType.LOGPOINT);
         }
     }
 
@@ -120,6 +101,11 @@ public class LogPointServiceImpl implements LogPointService {
     @Override
     public List<LogPoint> listPredefinedLogPoints(String workspaceId, String userId) {
         return logPointRepository.listPredefinedLogPoints(workspaceId, userId);
+    }
+
+    @Override
+    public LogPoint queryLogPoint(String workspaceId, String logPointId, ApplicationFilter applicationFilter) {
+        return logPointRepository.queryLogPoint(workspaceId, logPointId, applicationFilter);
     }
 
 }

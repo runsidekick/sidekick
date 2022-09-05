@@ -41,12 +41,16 @@ public class RemoveReferenceEventHandler
         removeReferenceEventResponse.setErroneous(false);
 
         try {
-            referenceEventService.removeReferenceEvent(request.getProbeId(), request.getProbeType());
+            referenceEventService.removeReferenceEvent(channelInfo.getWorkspaceId(), request.getProbeId(),
+                    request.getProbeType(), request.getApplicationFilter());
+            
             auditLogService.getCurrentAuditLog().ifPresent(
                     auditLog -> {
                         setAuditLogUserInfo(auditLog, channelInfo, request.getClient());
+                        auditLog.addAuditLogField("workspaceId", channelInfo.getWorkspaceId());
                         auditLog.addAuditLogField("probeId", request.getProbeId());
                         auditLog.addAuditLogField("probeType", request.getProbeType().name());
+                        auditLog.addAuditLogField("applicationFilter", request.getApplicationFilter());
                     });
         } catch (Exception e) {
             removeReferenceEventResponse.setErroneous(true);
