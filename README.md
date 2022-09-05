@@ -227,13 +227,20 @@ To learn more see our [docs.](https://docs.runsidekick.com?utm_source=sidekick-r
 
 Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) to learn how you can use agents with Sidekick Open Source!
 
-Note: Agents are going open-source too! ETA: 30th of Aug
+- ##### Sidekick Java Agent:
+    - [Docs](https://docs.runsidekick.com/installation/installing-agents/java?utm_source=sidekick-readme)
 
-- [Sidekick Java Agent](https://docs.runsidekick.com/installation/installing-agents/java?utm_source=sidekick-readme)
+    - [Repository](https://github.com/runsidekick/sidekick-agent-java)
+    
+- ##### Sidekick Python Agent:
+    - [Docs](https://docs.runsidekick.com/installation/installing-agents/python?utm_source=sidekick-readme)
 
-- [Sidekick Python Agent](https://docs.runsidekick.com/installation/installing-agents/python?utm_source=sidekick-readme)
+    - [Repository](https://github.com/runsidekick/sidekick-agent-python)
 
-- [Sidekick Node.js Agent](https://docs.runsidekick.com/installation/installing-agents/node.js?utm_source=sidekick-readme)
+- ##### Sidekick Node.js Agent:
+    - [Docs](https://docs.runsidekick.com/installation/installing-agents/node.js?utm_source=sidekick-readme)
+
+    - [Repository](https://github.com/runsidekick/sidekick-agent-nodejs)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
