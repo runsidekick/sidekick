@@ -34,4 +34,4 @@ app:
   version: @project.version@
 
 phonehome:
-    url: https://ro7qhdzlyj.execute-api.us-west-2.amazonaws.com/prod/phone-home
+    url: https://phone-home.runsidekick.com/api
