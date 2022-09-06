@@ -34,4 +34,4 @@ app:
   version: @project.version@
 
 phonehome:
-    url: http://127.0.0.1:3000/phone-home
+    url: https://ro7qhdzlyj.execute-api.us-west-2.amazonaws.com/prod/phone-home
