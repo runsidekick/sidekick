@@ -81,6 +81,7 @@
         <module>sidekick-common</module>
         <module>sidekick-webhook</module>
         <module>sidekick-api</module>
+        <module>sidekick-phone-home</module>
     </modules>
 
     <dependencyManagement>
@@ -126,6 +127,12 @@
             <dependency>
                 <groupId>com.runsidekick</groupId>
                 <artifactId>sidekick-broker-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-phone-home</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
