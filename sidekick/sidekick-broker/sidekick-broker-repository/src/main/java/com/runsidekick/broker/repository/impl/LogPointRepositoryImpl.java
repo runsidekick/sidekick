@@ -107,18 +107,6 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
     }
 
     @Override
-    public LogPoint getLogPointById(String id) {
-        try {
-            return jdbcTemplate.queryForObject(
-                    "SELECT * FROM LogPoint WHERE id = ?",
-                    logPointRowMapper,
-                    id);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    @Override
     public void putLogPoint(String workspaceId, String userId, LogPointConfig logPointConfig, boolean fromApi)
             throws Exception {
         try {
@@ -222,7 +210,20 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                 workspaceId, userId);
     }
 
-    private Collection<LogPoint> filterLogPoints(Collection<LogPointConfig> logPointConfigs,
+    @Override
+    public LogPoint queryLogPoint(String workspaceId, String logPointId, ApplicationFilter applicationFilter) {
+        ApplicationAwareProbeQueryFilter queryFilter = ProbeUtil.probeQueryFilter(workspaceId, applicationFilter);
+
+        Collection<LogPointConfig> logPointConfigs =
+                jdbcTemplate.query(
+                        "SELECT * FROM LogPoint WHERE workspace_id = ?" + queryFilter.getFiltersExpr().toString(),
+                        logPointConfigRowMapper,
+                        queryFilter.getArgs().toArray());
+        List<LogPoint> logPoints = filterLogPoints(logPointConfigs, applicationFilter);
+        return logPoints != null && logPoints.size() > 0 ? logPoints.get(0) : null;
+    }
+
+    private List<LogPoint> filterLogPoints(Collection<LogPointConfig> logPointConfigs,
                                                      ApplicationFilter filter) {
         Collection<LogPointConfig> filteredLogPoints = ProbeUtil.filterProbes(logPointConfigs, filter);
         return filteredLogPoints.stream().collect(Collectors.toList());

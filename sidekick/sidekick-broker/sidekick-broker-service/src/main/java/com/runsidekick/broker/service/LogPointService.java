@@ -15,8 +15,6 @@ public interface LogPointService {
 
     LogPointConfig getLogPoint(String workspaceId, String logPointId);
 
-    LogPoint getLogPointById(String logPointId);
-
     void putLogPoint(String workspaceId, String userId, LogPointConfig logPointConfig, boolean fromApi)
             throws Exception;
 
@@ -35,4 +33,6 @@ public interface LogPointService {
     CompletableFuture<Boolean> checkExpireAndDecrementLogPointExpireCount(String workspaceId, String logPointId);
 
     List<LogPoint> listPredefinedLogPoints(String workspaceId, String userId);
+
+    LogPoint queryLogPoint(String workspaceId, String logPointId, ApplicationFilter applicationFilter);
 }

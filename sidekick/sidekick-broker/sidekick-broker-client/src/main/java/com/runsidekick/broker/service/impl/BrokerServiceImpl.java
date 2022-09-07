@@ -4,6 +4,7 @@ import com.runsidekick.broker.client.ClientCredentials;
 import com.runsidekick.broker.client.SidekickBrokerClient;
 import com.runsidekick.broker.exception.WSClientNotConnectedException;
 import com.runsidekick.broker.model.Application;
+import com.runsidekick.broker.model.ApplicationFilter;
 import com.runsidekick.broker.model.BaseProbe;
 import com.runsidekick.broker.model.LogPoint;
 import com.runsidekick.broker.model.ProbeType;
@@ -323,22 +324,25 @@ public class BrokerServiceImpl implements BrokerService {
     }
 
     @Override
-    public ReferenceEvent getReferenceEvent(String id, ProbeType probeType) {
-        return referenceEventService.getReferenceEvent(id, probeType);
+    public ReferenceEvent getReferenceEvent(String workspaceId, String id, ProbeType probeType,
+                                            ApplicationFilter applicationFilter) {
+        return referenceEventService.getReferenceEvent(workspaceId, id, probeType, applicationFilter);
     }
 
     @Override
-    public void saveReferenceEvent(PutReferenceEventRequest request) throws Exception {
+    public void saveReferenceEvent(String workspaceId, PutReferenceEventRequest request) throws Exception {
         BaseProbe probe = null;
         // Only Predefined Probes
         if (request.getProbeType().equals(ProbeType.TRACEPOINT)) {
-            probe = tracePointService.getTracePointById(request.getProbeId());
+            probe = tracePointService.queryTracePoint(workspaceId, request.getProbeId(),
+                    request.getApplicationFilter());
         } else if (request.getProbeType().equals(ProbeType.LOGPOINT)) {
-            probe = logPointService.getLogPointById(request.getProbeId());
+            probe = logPointService.queryLogPoint(workspaceId, request.getProbeId(), request.getApplicationFilter());
         }
 
         if (probe != null && probe.isPredefined()) {
             referenceEventService.putReferenceEvent(ReferenceEvent.builder()
+                    .workspaceId(workspaceId)
                     .probeId(request.getProbeId())
                     .probeType(request.getProbeType())
                     .event(request.getEvent())
@@ -349,7 +353,8 @@ public class BrokerServiceImpl implements BrokerService {
     }
 
     @Override
-    public void removeReferenceEvent(RemoveReferenceEventRequest request) {
-        referenceEventService.removeReferenceEvent(request.getProbeId(), request.getProbeType());
+    public void removeReferenceEvent(String workspaceId, RemoveReferenceEventRequest request) {
+        referenceEventService.removeReferenceEvent(workspaceId, request.getProbeId(), request.getProbeType(),
+                request.getApplicationFilter());
     }
 }

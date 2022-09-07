@@ -16,8 +16,10 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReferenceEvent {
 
+    private String workspaceId;
     private String probeId;
     private ProbeType probeType;
+    private ApplicationFilter applicationFilter;
     private String event;
 
 }

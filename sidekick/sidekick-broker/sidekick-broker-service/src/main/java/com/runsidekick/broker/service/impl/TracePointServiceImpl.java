@@ -11,7 +11,6 @@ import com.runsidekick.broker.service.TracePointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -38,16 +37,7 @@ public class TracePointServiceImpl implements TracePointService {
     }
 
     @Override
-    @Cacheable(cacheNames = "TracePoint", key = "#tracePointId")
-    public TracePoint getTracePointById(String tracePointId) {
-        return tracePointRepository.getTracePointById(tracePointId);
-    }
-
-    @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointConfig.id"),
-            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointConfig.id")
-    })
+    @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointConfig.id")
     public void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
             throws Exception {
         tracePointRepository.putTracePoint(workspaceId, userId, tracePointConfig, fromApi);
@@ -58,38 +48,29 @@ public class TracePointServiceImpl implements TracePointService {
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId"),
-            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointId")
-    })
+    @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId")
     public void removeTracePoint(String workspaceId, String userId, String tracePointId) {
         tracePointRepository.removeTracePoint(workspaceId, userId, tracePointId);
         tracePointExpireCountRepository.removeTracePointExpireCount(workspaceId, tracePointId);
-        referenceEventService.removeReferenceEvent(tracePointId, ProbeType.TRACEPOINT);
+        referenceEventService.removeReferenceEvent(workspaceId, tracePointId, ProbeType.TRACEPOINT);
     }
 
     @Override
     public long removeTracePoints(String workspaceId, String userId, List<String> tracePointIds) {
         long deletedCount = tracePointRepository.removeTracePoints(workspaceId, userId, tracePointIds);
         tracePointExpireCountRepository.removeTracePointsExpireCount(workspaceId, tracePointIds);
-        referenceEventService.removeReferenceEvents(tracePointIds, ProbeType.TRACEPOINT);
+        referenceEventService.removeReferenceEvents(workspaceId, tracePointIds, ProbeType.TRACEPOINT);
         return deletedCount;
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId"),
-            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointId")
-    })
+    @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId")
     public void enableDisableTracePoint(String workspaceId, String userId, String tracePointId, boolean disable) {
         tracePointRepository.enableDisableTracePoint(workspaceId, userId, tracePointId, disable);
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId"),
-            @CacheEvict(cacheNames = "TracePoint", key = "#tracePointId")
-    })
+    @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId")
     public void updateTracePoint(String workspaceId, String userId, String tracePointId, TracePoint tracePoint) {
         tracePointRepository.updateTracePoint(workspaceId, userId, tracePointId, tracePoint);
         if (tracePoint.isPredefined()) {
@@ -97,7 +78,7 @@ public class TracePointServiceImpl implements TracePointService {
         } else {
             tracePointExpireCountRepository.putTracePointExpireCount(
                     workspaceId, tracePointId, tracePoint.getExpireCount(), tracePoint.getExpireSecs());
-            referenceEventService.removeReferenceEvent(tracePointId, ProbeType.TRACEPOINT);
+            referenceEventService.removeReferenceEvent(workspaceId, tracePointId, ProbeType.TRACEPOINT);
         }
     }
 
@@ -120,6 +101,11 @@ public class TracePointServiceImpl implements TracePointService {
     @Override
     public List<TracePoint> listPredefinedTracePoints(String workspaceId, String userId) {
         return tracePointRepository.listPredefinedTracePoints(workspaceId, userId);
+    }
+
+    @Override
+    public TracePoint queryTracePoint(String workspaceId, String tracePointId, ApplicationFilter filter) {
+        return tracePointRepository.queryTracePoint(workspaceId, tracePointId, filter);
     }
 
 }

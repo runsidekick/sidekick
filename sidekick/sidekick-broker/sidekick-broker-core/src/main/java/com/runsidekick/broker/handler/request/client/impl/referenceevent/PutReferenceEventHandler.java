@@ -57,21 +57,26 @@ public class PutReferenceEventHandler
             BaseProbe probe = null;
             // Only Predefined Probes
             if (request.getProbeType().equals(ProbeType.TRACEPOINT)) {
-                probe = tracePointService.getTracePointById(request.getProbeId());
+                probe = tracePointService.queryTracePoint(
+                        channelInfo.getWorkspaceId(), request.getProbeId(), request.getApplicationFilter());
             } else if (request.getProbeType().equals(ProbeType.LOGPOINT)) {
-                probe = logPointService.getLogPointById(request.getProbeId());
+                probe = logPointService.queryLogPoint(
+                        channelInfo.getWorkspaceId(), request.getProbeId(), request.getApplicationFilter());
             }
 
             if (probe != null && probe.isPredefined()) {
                 referenceEventService.putReferenceEvent(ReferenceEvent.builder()
+                        .workspaceId(channelInfo.getWorkspaceId())
                         .probeId(request.getProbeId())
                         .probeType(request.getProbeType())
+                        .applicationFilter(request.getApplicationFilter())
                         .event(request.getEvent())
                         .build());
 
                 auditLogService.getCurrentAuditLog().ifPresent(
                         auditLog -> {
                             setAuditLogUserInfo(auditLog, channelInfo, request.getClient());
+                            auditLog.addAuditLogField("workspaceId", channelInfo.getWorkspaceId());
                             auditLog.addAuditLogField("probeId", request.getProbeId());
                             auditLog.addAuditLogField("probeType", request.getProbeType().name());
                             auditLog.addAuditLogField("event", request.getEvent());

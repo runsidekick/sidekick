@@ -14,8 +14,6 @@ public interface TracePointRepository {
 
     TracePointConfig getTracePoint(String workspaceId, String tracePointId);
 
-    TracePoint getTracePointById(String id);
-
     void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
             throws Exception;
 
@@ -32,4 +30,7 @@ public interface TracePointRepository {
     Collection<TracePoint> queryTracePoints(String workspaceId, ApplicationFilter applicationFilter);
 
     List<TracePoint> listPredefinedTracePoints(String workspaceId, String userId);
+
+    TracePoint queryTracePoint(
+            String workspaceId, String tracepointId, ApplicationFilter applicationFilter);
 }
