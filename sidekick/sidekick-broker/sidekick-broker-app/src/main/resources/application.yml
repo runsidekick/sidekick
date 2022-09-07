@@ -34,4 +34,4 @@ app:
   version: @project.version@
 
 phonehome:
-    url: https://phone-home.runsidekick.com/v1/api
+    url: https://phone-home.runsidekick.com/v1/event
