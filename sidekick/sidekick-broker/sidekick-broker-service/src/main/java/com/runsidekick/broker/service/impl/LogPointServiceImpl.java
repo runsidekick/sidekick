@@ -64,13 +64,13 @@ public class LogPointServiceImpl implements LogPointService {
     }
 
     @Override
-    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id")
+    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointId")
     public void enableDisableLogPoint(String workspaceId, String userId, String logPointId, boolean disable) {
         logPointRepository.enableDisableLogPoint(workspaceId, userId, logPointId, disable);
     }
 
     @Override
-    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointConfig.id")
+    @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointId")
     public void updateLogPoint(String workspaceId, String userId, String logPointId, LogPoint logPoint) {
         logPointRepository.updateLogPoint(workspaceId, userId, logPointId, logPoint);
         if (logPoint.isPredefined()) {
