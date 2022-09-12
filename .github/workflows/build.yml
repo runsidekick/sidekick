@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build with Maven
+      - name: Build with Maven Test
         run: mvn -f sidekick -q clean install
       - name: Analyze Test and/or Coverage Results
         if: always()
