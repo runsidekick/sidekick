@@ -55,6 +55,12 @@ public class ServerStatisticsRepositoryImpl extends BaseDBRepository implements 
         }
     }
 
+    @Override
+    public List<ServerStatistics> getAllServerStatistics() {
+        return jdbcTemplate.query("SELECT * FROM " + TABLE_NAME,
+                rowMapper);
+    }
+
     private void increaseMetricCount(String workspaceId, String metric) {
         jdbcTemplate.update(
                 "UPDATE " + TABLE_NAME +

@@ -18,4 +18,6 @@ public interface ServerStatisticsRepository {
     void increaseLogPointCount(String workspaceId);
 
     ServerStatistics getServerStatistics(String workspaceId);
+
+    List<ServerStatistics> getAllServerStatistics();
 }
