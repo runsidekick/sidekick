@@ -3,12 +3,16 @@ package com.runsidekick.service.impl;
 import com.runsidekick.model.ServerStatistics;
 import com.runsidekick.repository.ServerStatisticsRepository;
 import com.runsidekick.service.ServerStatisticsService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author yasin.kalafat
@@ -16,29 +20,64 @@ import java.util.List;
 @Service
 public class ServerStatisticsServiceImpl implements ServerStatisticsService {
 
+    private static final Logger LOGGER = LogManager.getLogger(ServerStatisticsServiceImpl.class);
+
+    @Value("${phonehome.statistics.enabled:true}")
+    private boolean phoneHomeStatisticsEnabled;
+
+    @Value("${phonehome.statistics.threadcount:5}")
+    private int phoneHomeStatisticsThreadCount;
+
     @Autowired
     private ServerStatisticsRepository serverStatisticsRepository;
 
+    private ExecutorService executorService;
+
+    @PostConstruct
+    void initExecutor() {
+        executorService = Executors.newFixedThreadPool(phoneHomeStatisticsThreadCount);
+    }
 
     @Override
-    @CacheEvict(cacheNames = "ServerStatistics", key = "#workspaceId")
     public void increaseApplicationInstanceCount(String workspaceId) {
-        serverStatisticsRepository.add(workspaceId);
-        serverStatisticsRepository.increaseApplicationInstanceCount(workspaceId);
+        if (phoneHomeStatisticsEnabled) {
+            executorService.submit(() -> {
+                try {
+                    serverStatisticsRepository.add(workspaceId);
+                    serverStatisticsRepository.increaseApplicationInstanceCount(workspaceId);
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+        }
     }
 
     @Override
-    @CacheEvict(cacheNames = "ServerStatistics", key = "#workspaceId")
     public void increaseTracePointCount(String workspaceId) {
-        serverStatisticsRepository.add(workspaceId);
-        serverStatisticsRepository.increaseTracePointCount(workspaceId);
+        if (phoneHomeStatisticsEnabled) {
+            executorService.submit(() -> {
+                try {
+                    serverStatisticsRepository.add(workspaceId);
+                    serverStatisticsRepository.increaseTracePointCount(workspaceId);
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+        }
     }
 
     @Override
-    @CacheEvict(cacheNames = "ServerStatistics", key = "#workspaceId")
     public void increaseLogPointCount(String workspaceId) {
-        serverStatisticsRepository.add(workspaceId);
-        serverStatisticsRepository.increaseLogPointCount(workspaceId);
+        if (phoneHomeStatisticsEnabled) {
+            executorService.submit(() -> {
+                try {
+                    serverStatisticsRepository.add(workspaceId);
+                    serverStatisticsRepository.increaseLogPointCount(workspaceId);
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+        }
     }
 
     @Override
@@ -47,7 +86,6 @@ public class ServerStatisticsServiceImpl implements ServerStatisticsService {
     }
 
     @Override
-    @Cacheable(cacheNames = "ServerStatistics", key = "#workspaceId")
     public ServerStatistics getServerStatistics(String workspaceId) {
         return serverStatisticsRepository.getServerStatistics(workspaceId);
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.runsidekick.model.EventType;
+import com.runsidekick.model.PhoneHomeConfig;
 import com.runsidekick.model.PhoneHomeMetric;
 import com.runsidekick.model.PhoneHomeMetricUtil;
 import com.runsidekick.model.ServerStatistics;
@@ -42,8 +43,8 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
     @Value("${app.version:}")
     private String appVersion;
 
-    @Value("${phonehome.url:}")
-    private String phoneHomeUrl;
+    @Autowired
+    private PhoneHomeConfig phoneHomeConfig;
 
     @Autowired
     private ServerStatisticsService serverStatisticsService;
@@ -106,23 +107,25 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
     @Override
     @Scheduled(cron = "0 18 * * * FRI")
     public void sendStatistics() {
-        List<ServerStatistics> serverStatistics = serverStatisticsService.getAllServerStatistics();
-        try {
-            PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();
-            metric.setEventType(EventType.STATISTICS);
-            serverStatistics.forEach(ps -> {
-                try {
-                    Map<String, Object> eventDetails = new HashMap();
-                    eventDetails.put("serverStatistics", OBJECT_WRITER.writeValueAsString(ps));
-                    metric.setEventDetails(eventDetails);
+        if (phoneHomeConfig.isPhoneHomeStatisticsEnabled()) {
+            List<ServerStatistics> serverStatistics = serverStatisticsService.getAllServerStatistics();
+            try {
+                PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();
+                metric.setEventType(EventType.STATISTICS);
+                serverStatistics.forEach(ps -> {
+                    try {
+                        Map<String, Object> eventDetails = new HashMap();
+                        eventDetails.put("serverStatistics", OBJECT_WRITER.writeValueAsString(ps));
+                        metric.setEventDetails(eventDetails);
 
-                    sendPhoneHomeRequest(metric);
-                } catch (JsonProcessingException e) {
-                    LOGGER.error(e);
-                }
-            });
-        } catch (CloneNotSupportedException e) {
-            LOGGER.error(e);
+                        sendPhoneHomeRequest(metric);
+                    } catch (JsonProcessingException e) {
+                        LOGGER.error(e);
+                    }
+                });
+            } catch (CloneNotSupportedException e) {
+                LOGGER.error(e);
+            }
         }
     }
 
@@ -130,7 +133,7 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, OBJECT_WRITER.writeValueAsString(metric));
         Request request = new Request.Builder()
-                .url(phoneHomeUrl)
+                .url(phoneHomeConfig.getPhoneHomeUrl())
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
                 .build();
