@@ -42,7 +42,8 @@ CREATE TABLE TracePoint
     webhook_ids                         JSON,
     from_api                            BOOLEAN             NOT NULL DEFAULT 0,
     predefined                          BOOLEAN             NOT NULL DEFAULT 0,
-    probe_name                          VARCHAR(255)
+    probe_name                          VARCHAR(255),
+    tags                                JSON
 );
 
 CREATE EVENT IF NOT EXISTS clean_expired_tracepoints
@@ -73,7 +74,8 @@ CREATE TABLE LogPoint
     webhook_ids                         JSON,
     from_api                            BOOLEAN             NOT NULL DEFAULT 0,
     predefined                          BOOLEAN             NOT NULL DEFAULT 0,
-    probe_name                          VARCHAR(255)
+    probe_name                          VARCHAR(255),
+    tags                                JSON
 );
 
 CREATE EVENT IF NOT EXISTS clean_expired_logpoints

@@ -27,6 +27,7 @@ public class PutTracePointRequest extends BaseApplicationAwareRequest {
     private List<String> webhookIds;
     private boolean predefined;
     private String probeName;
+    private List<String> tags;
 
     public static PutTracePointRequest of(TracePoint tracePoint, ApplicationFilter applicationFilter,
                                           Application application) {

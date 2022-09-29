@@ -67,6 +67,14 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                     return mapper.readValue(
                             webhookIds,
                             new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (StringUtils.isEmpty(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
+                            new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
                 }
@@ -86,6 +94,14 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                     }
                     return mapper.readValue(
                             webhookIds,
+                            new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (StringUtils.isEmpty(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
                             new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
@@ -118,8 +134,8 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                             "condition_expression, expire_secs, expire_count, " +
                             "file_hash, disabled, " +
                             "expire_timestamp, application_filters, log_expression, " +
-                            "stdout_enabled, log_level, webhook_ids, from_api, predefined, probe_name) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+                            "stdout_enabled, log_level, webhook_ids, from_api, predefined, probe_name, tags) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
                     logPointConfig.getId(), workspaceId, userId,
                     logPointConfig.getFileName(), logPointConfig.getLineNo(), logPointConfig.getClient(),
                     logPointConfig.getConditionExpression(),
@@ -133,7 +149,8 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                     logPointConfig.getLogLevel(),
                     mapper.writeValueAsString(logPointConfig.getWebhookIds()),
                     fromApi,
-                    logPointConfig.isPredefined(), logPointConfig.getProbeName());
+                    logPointConfig.isPredefined(), logPointConfig.getProbeName(),
+                    mapper.writeValueAsString(logPointConfig.getTags()));
         } catch (DuplicateKeyException e) {
             throw new CodedException(
                     LOGPOINT_ALREADY_EXIST,
@@ -172,13 +189,14 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                         "SET " +
                         "condition_expression = ?, expire_secs = ?, expire_count = ?, " +
                         "expire_timestamp = ?, disabled = ?, log_expression = ?, stdout_enabled = ?, " +
-                        "log_level = ?, webhook_ids = ?, predefined = ?, probe_name = ? " +
+                        "log_level = ?, webhook_ids = ?, predefined = ?, probe_name = ?, tags = ? " +
                         "WHERE workspace_id = ? AND user_id = ? AND id = ?",
                 logPoint.getConditionExpression(),
                 getExpireSecs(logPoint.getExpireSecs()), getExpireCount(logPoint.getExpireCount()),
                 getExpireTimestamp(logPoint.getExpireSecs()), logPoint.isDisabled(), logPoint.getLogExpression(),
                 logPoint.isStdoutEnabled(), logPoint.getLogLevel(), mapper.writeValueAsString(logPoint.getWebhookIds()),
                 logPoint.isPredefined(), logPoint.getProbeName(),
+                mapper.writeValueAsString(logPoint.getTags()),
                 workspaceId, userId, logPointId);
     }
 

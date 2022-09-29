@@ -55,6 +55,9 @@ public class UpdateLogPointRequestHandler
             logPoint.setWebhookIds(request.getWebhookIds());
             logPoint.setPredefined(request.isPredefined());
             logPoint.setProbeName(request.getProbeName());
+            if (logPoint.isPredefined()) {
+                logPoint.setTags(request.getTags());
+            }
 
             logPointService.updateLogPoint(
                     channelInfo.getWorkspaceId(),

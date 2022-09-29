@@ -79,6 +79,9 @@ public class PutTracePointRequestHandler
             tpc.setWebhookIds(request.getWebhookIds());
             tpc.setPredefined(request.isPredefined());
             tpc.setProbeName(request.getProbeName());
+            if (tpc.isPredefined()) {
+                tpc.setTags(request.getTags());
+            }
 
             try {
                 tracePointService.putTracePoint(channelInfo.getWorkspaceId(), channelInfo.getUserId(), tpc,

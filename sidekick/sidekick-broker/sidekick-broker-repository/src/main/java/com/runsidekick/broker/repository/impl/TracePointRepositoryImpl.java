@@ -66,6 +66,14 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                     return mapper.readValue(
                             webhookIds,
                             new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (StringUtils.isEmpty(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
+                            new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
                 }
@@ -85,6 +93,14 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                     }
                     return mapper.readValue(
                             webhookIds,
+                            new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (StringUtils.isEmpty(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
                             new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
@@ -117,8 +133,8 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                             "condition_expression, expire_secs, expire_count, " +
                             "tracing_enabled, file_hash, disabled, " +
                             "expire_timestamp, application_filters, webhook_ids, from_api, predefined, " +
-                            "probe_name) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+                            "probe_name, tags) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
                     tracePointConfig.getId(), workspaceId, userId,
                     tracePointConfig.getFileName(), tracePointConfig.getLineNo(), tracePointConfig.getClient(),
                     tracePointConfig.getConditionExpression(),
@@ -129,7 +145,8 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                     mapper.writeValueAsString(tracePointConfig.getApplicationFilters()),
                     mapper.writeValueAsString(tracePointConfig.getWebhookIds()),
                     fromApi,
-                    tracePointConfig.isPredefined(), tracePointConfig.getProbeName());
+                    tracePointConfig.isPredefined(), tracePointConfig.getProbeName(),
+                    mapper.writeValueAsString(tracePointConfig.getTags()));
         } catch (DuplicateKeyException e) {
             throw new CodedException(
                     TRACEPOINT_ALREADY_EXIST,
@@ -168,13 +185,14 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                         "SET " +
                             "condition_expression = ?, expire_secs = ?, expire_count = ?, " +
                             "expire_timestamp = ?, tracing_enabled = ?, disabled = ?, webhook_ids = ?, " +
-                            "predefined = ?, probe_name = ? " +
+                            "predefined = ?, probe_name = ?, tags = ?" +
                         "WHERE workspace_id = ? AND user_id = ? AND id = ?",
                 tracePoint.getConditionExpression(),
                 getExpireSecs(tracePoint.getExpireSecs()), getExpireCount(tracePoint.getExpireCount()),
                 getExpireTimestamp(tracePoint.getExpireSecs()), tracePoint.isTracingEnabled(), tracePoint.isDisabled(),
                 mapper.writeValueAsString(tracePoint.getWebhookIds()),
                 tracePoint.isPredefined(), tracePoint.getProbeName(),
+                mapper.writeValueAsString(tracePoint.getTags()),
                 workspaceId, userId, tracePointId);
     }
 

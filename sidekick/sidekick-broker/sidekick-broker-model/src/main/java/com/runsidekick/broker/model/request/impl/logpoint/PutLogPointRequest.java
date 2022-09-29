@@ -29,6 +29,7 @@ public class PutLogPointRequest extends BaseApplicationAwareRequest {
     private List<String> webhookIds;
     private boolean predefined;
     private String probeName;
+    private List<String> tags;
 
     public static PutLogPointRequest of(LogPoint logPoint, ApplicationFilter applicationFilter,
                                         Application application) {

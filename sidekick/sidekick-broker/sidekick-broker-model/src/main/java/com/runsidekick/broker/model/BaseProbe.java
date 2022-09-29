@@ -22,6 +22,7 @@ public abstract class BaseProbe {
     protected List<String> webhookIds;
     protected boolean predefined;
     protected String probeName; // for predefined probe
+    protected List<String> tags;
 
     @Override
     public boolean equals(Object o) {

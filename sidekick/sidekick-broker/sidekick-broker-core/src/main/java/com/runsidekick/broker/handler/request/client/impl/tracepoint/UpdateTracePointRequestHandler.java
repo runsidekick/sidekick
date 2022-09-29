@@ -53,6 +53,9 @@ public class UpdateTracePointRequestHandler
             tracePoint.setWebhookIds(request.getWebhookIds());
             tracePoint.setPredefined(request.isPredefined());
             tracePoint.setProbeName(request.getProbeName());
+            if (tracePoint.isPredefined()) {
+                tracePoint.setTags(request.getTags());
+            }
 
             tracePointService.updateTracePoint(
                     channelInfo.getWorkspaceId(),

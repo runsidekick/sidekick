@@ -81,6 +81,10 @@ public class PutLogPointRequestHandler
             lpc.setWebhookIds(request.getWebhookIds());
             lpc.setPredefined(request.isPredefined());
             lpc.setProbeName(request.getProbeName());
+            if (lpc.isPredefined()) {
+                lpc.setTags(request.getTags());
+            }
+
 
             try {
                 logPointService.putLogPoint(channelInfo.getWorkspaceId(), channelInfo.getUserId(), lpc,
