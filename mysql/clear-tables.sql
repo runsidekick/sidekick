@@ -5,6 +5,7 @@ DELETE FROM Application;
 DELETE FROM LogPoint;
 DELETE FROM ProbeTag;
 DELETE FROM ReferenceEvent;
+DELETE FROM ServerStatistics;
 DELETE FROM TracePoint;
 DELETE FROM Webhook;
 -- ## --

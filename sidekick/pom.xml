@@ -84,6 +84,7 @@
         <module>sidekick-api</module>
         <module>sidekick-phone-home</module>
         <module>sidekick-probetag</module>
+        <module>sidekick-statistics</module>
     </modules>
 
     <dependencyManagement>
@@ -134,7 +135,28 @@
 
             <dependency>
                 <groupId>com.runsidekick</groupId>
-                <artifactId>sidekick-phone-home</artifactId>
+                <artifactId>sidekick-phone-home-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-phone-home-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-statistics-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-statistics-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-statistics-repository</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

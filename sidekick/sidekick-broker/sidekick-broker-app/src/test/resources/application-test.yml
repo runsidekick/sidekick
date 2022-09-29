@@ -12,3 +12,5 @@ redis:
   useClusterMode: false
   profile: test
 
+phonehome:
+  enabled: false

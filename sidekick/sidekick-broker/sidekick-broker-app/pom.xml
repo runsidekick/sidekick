@@ -15,7 +15,7 @@
         </dependency>
         <dependency>
             <groupId>com.runsidekick</groupId>
-            <artifactId>sidekick-phone-home</artifactId>
+            <artifactId>sidekick-phone-home-service</artifactId>
         </dependency>
         <!-- ========================================== -->
 

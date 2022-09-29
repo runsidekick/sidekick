@@ -5,6 +5,7 @@ TRUNCATE TABLE Application;
 TRUNCATE TABLE LogPoint;
 TRUNCATE TABLE ProbeTag;
 TRUNCATE TABLE ReferenceEvent;
+TRUNCATE TABLE ServerStatistics;
 TRUNCATE TABLE TracePoint;
 TRUNCATE TABLE Webhook;
 -- ## --

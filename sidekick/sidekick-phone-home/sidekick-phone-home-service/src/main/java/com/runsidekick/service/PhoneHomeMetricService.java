@@ -9,4 +9,6 @@ public interface PhoneHomeMetricService {
     void sendServerUpEvent(long startTime);
 
     void sendServerDownEvent(long startTime, long finishTime);
+
+    void sendStatistics();
 }
