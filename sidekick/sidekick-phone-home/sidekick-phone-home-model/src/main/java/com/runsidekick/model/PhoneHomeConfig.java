@@ -18,6 +18,9 @@ public class PhoneHomeConfig {
     @Value("${phonehome.statistics.enabled:true}")
     private boolean phoneHomeStatisticsEnabled;
 
+    @Value("${phonehome.statistics.threadcount:5}")
+    private int phoneHomeStatisticsThreadCount;
+
     public String getPhoneHomeUrl() {
         return phoneHomeUrl;
     }
@@ -28,5 +31,9 @@ public class PhoneHomeConfig {
 
     public boolean isPhoneHomeStatisticsEnabled() {
         return phoneHomeStatisticsEnabled;
+    }
+
+    public int getPhoneHomeStatisticsThreadCount() {
+        return phoneHomeStatisticsThreadCount;
     }
 }

@@ -107,7 +107,7 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
     @Override
     @Scheduled(cron = "0 18 * * * FRI")
     public void sendStatistics() {
-        if (phoneHomeConfig.isPhoneHomeStatisticsEnabled()) {
+        if (phoneHomeConfig.isPhoneHomeEnabled() && phoneHomeConfig.isPhoneHomeStatisticsEnabled()) {
             List<ServerStatistics> serverStatistics = serverStatisticsService.getAllServerStatistics();
             try {
                 PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();

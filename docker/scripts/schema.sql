@@ -110,7 +110,7 @@ CREATE TABLE ReferenceEvent (
 
 CREATE TABLE ServerStatistics (
     workspace_id                        VARCHAR(64)         NOT NULL PRIMARY KEY,
-    application_instance_count          INT(10)             DEFAULT '0',
-    tracepoint_count                    INT(10)             DEFAULT '0',
-    logpoint_count                      INT(10)             DEFAULT '0'
+    application_instance_count          INT(10)             DEFAULT 0,
+    tracepoint_count                    INT(10)             DEFAULT 0,
+    logpoint_count                      INT(10)             DEFAULT 0
 );

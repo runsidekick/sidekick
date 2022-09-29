@@ -1,12 +1,12 @@
 package com.runsidekick.service.impl;
 
+import com.runsidekick.model.PhoneHomeConfig;
 import com.runsidekick.model.ServerStatistics;
 import com.runsidekick.repository.ServerStatisticsRepository;
 import com.runsidekick.service.ServerStatisticsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,11 +22,8 @@ public class ServerStatisticsServiceImpl implements ServerStatisticsService {
 
     private static final Logger LOGGER = LogManager.getLogger(ServerStatisticsServiceImpl.class);
 
-    @Value("${phonehome.statistics.enabled:true}")
-    private boolean phoneHomeStatisticsEnabled;
-
-    @Value("${phonehome.statistics.threadcount:5}")
-    private int phoneHomeStatisticsThreadCount;
+    @Autowired
+    private PhoneHomeConfig phoneHomeConfig;
 
     @Autowired
     private ServerStatisticsRepository serverStatisticsRepository;
@@ -35,12 +32,13 @@ public class ServerStatisticsServiceImpl implements ServerStatisticsService {
 
     @PostConstruct
     void initExecutor() {
-        executorService = Executors.newFixedThreadPool(phoneHomeStatisticsThreadCount);
+        executorService = Executors.newFixedThreadPool(phoneHomeConfig.getPhoneHomeStatisticsThreadCount());
     }
 
     @Override
     public void increaseApplicationInstanceCount(String workspaceId) {
-        if (phoneHomeStatisticsEnabled) {
+        if (phoneHomeConfig.isPhoneHomeEnabled()
+                && phoneHomeConfig.isPhoneHomeStatisticsEnabled()) {
             executorService.submit(() -> {
                 try {
                     serverStatisticsRepository.add(workspaceId);
@@ -54,7 +52,8 @@ public class ServerStatisticsServiceImpl implements ServerStatisticsService {
 
     @Override
     public void increaseTracePointCount(String workspaceId) {
-        if (phoneHomeStatisticsEnabled) {
+        if (phoneHomeConfig.isPhoneHomeEnabled()
+                && phoneHomeConfig.isPhoneHomeStatisticsEnabled()) {
             executorService.submit(() -> {
                 try {
                     serverStatisticsRepository.add(workspaceId);
@@ -68,7 +67,8 @@ public class ServerStatisticsServiceImpl implements ServerStatisticsService {
 
     @Override
     public void increaseLogPointCount(String workspaceId) {
-        if (phoneHomeStatisticsEnabled) {
+        if (phoneHomeConfig.isPhoneHomeEnabled()
+                && phoneHomeConfig.isPhoneHomeStatisticsEnabled()) {
             executorService.submit(() -> {
                 try {
                     serverStatisticsRepository.add(workspaceId);
