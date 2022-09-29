@@ -111,8 +111,8 @@ CREATE TABLE ReferenceEvent (
 );
 
 CREATE TABLE ProbeTag (
-    id                                    VARCHAR(64)         NOT NULL PRIMARY KEY,
-    workspace_id                    	    VARCHAR(64)         NOT NULL,
-    tag                    			    VARCHAR(64)         NOT NULL,
+    id                                  VARCHAR(64)         NOT NULL PRIMARY KEY,
+    workspace_id                        VARCHAR(64)         NOT NULL,
+    tag                    		        VARCHAR(64)         NOT NULL,
     CONSTRAINT probe_tag UNIQUE (workspace_id, tag)
 );
