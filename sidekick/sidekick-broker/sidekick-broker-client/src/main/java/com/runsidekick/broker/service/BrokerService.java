@@ -19,6 +19,8 @@ import com.runsidekick.broker.model.response.impl.logpoint.EnableLogPointRespons
 import com.runsidekick.broker.model.response.impl.logpoint.PutLogPointResponse;
 import com.runsidekick.broker.model.response.impl.logpoint.RemoveLogPointResponse;
 import com.runsidekick.broker.model.response.impl.logpoint.UpdateLogPointResponse;
+import com.runsidekick.broker.model.response.impl.tag.DisableTagResponse;
+import com.runsidekick.broker.model.response.impl.tag.EnableTagResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.DisableTracePointResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.EnableTracePointResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.PutTracePointResponse;
@@ -80,4 +82,10 @@ public interface BrokerService {
     void saveReferenceEvent(String workspaceId, PutReferenceEventRequest request) throws Exception;
 
     void removeReferenceEvent(String workspaceId, RemoveReferenceEventRequest request);
+
+    CompletableFuture<CompositeResponse<DisableTagResponse>> disableTag(
+            String tag, String email, String workspaceId) throws Exception;
+
+    CompletableFuture<CompositeResponse<EnableTagResponse>> enableTag(
+            String tag, String email, String workspaceId) throws Exception;
 }

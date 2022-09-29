@@ -109,3 +109,10 @@ CREATE TABLE ReferenceEvent (
     event                    			JSON                NOT NULL,
     INDEX (probe_id, workspace_id, probe_type)
 );
+
+CREATE TABLE ProbeTag (
+  id                                    VARCHAR(64)         NOT NULL PRIMARY KEY,
+  workspace_id                    	    VARCHAR(64)         NOT NULL,
+  tag                    			    VARCHAR(64)         NOT NULL,
+  CONSTRAINT probe_tag UNIQUE (workspace_id, tag)
+);

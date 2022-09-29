@@ -15,6 +15,10 @@
         </dependency>
         <dependency>
             <groupId>com.runsidekick</groupId>
+            <artifactId>sidekick-probetag-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.runsidekick</groupId>
             <artifactId>sidekick-webhook-service</artifactId>
         </dependency>
         <!-- ========================================== -->
@@ -128,6 +132,17 @@
                     <artifactId>transport</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.thundra.swark</groupId>
+            <artifactId>thundra-env-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.thundra.swark</groupId>
+            <artifactId>thundra-env-utils</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
         <!-- ========================================== -->
     </dependencies>
