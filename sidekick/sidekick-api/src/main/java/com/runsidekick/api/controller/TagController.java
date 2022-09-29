@@ -25,8 +25,8 @@ import java.util.concurrent.CompletableFuture;
  * @author yasin.kalafat
  */
 @RestController
-@RequestMapping("/api/v1/tag")
-@Api(value = "/tag", tags = "tag")
+@RequestMapping("/api/v1/tags")
+@Api(value = "/tags", tags = "tags")
 public class TagController extends ControllerBase {
 
     private final ProbeTagService probeTagService;
@@ -37,18 +37,18 @@ public class TagController extends ControllerBase {
     }
 
     @GetMapping
-    public List<ProbeTag> listProbeTags() {
+    public List<ProbeTag> listTags() {
         return probeTagService.listByWorkspaceId(getWorkspaceId());
     }
 
     @PostMapping
-    public ProbeTag addProbeTag(@Valid @RequestBody ProbeTag probeTag) {
+    public ProbeTag addTag(@Valid @RequestBody ProbeTag probeTag) {
         probeTag.setWorkspaceId(getWorkspaceId());
         return probeTagService.add(probeTag);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteProbeTag(@PathVariable String id) {
+    public void deleteTag(@PathVariable String id) {
         probeTagService.delete(id);
     }
 
