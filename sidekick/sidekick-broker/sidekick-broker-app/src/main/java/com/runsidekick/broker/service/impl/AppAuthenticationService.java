@@ -6,6 +6,7 @@ import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.service.SessionService;
 import com.runsidekick.broker.service.ApplicationService;
 import com.runsidekick.broker.service.AuthenticationService;
+import com.runsidekick.service.ServerStatisticsService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -36,12 +37,15 @@ public class AppAuthenticationService extends AuthenticationService {
     static final String CLOSE_REASON_INVALID_CREDENTIALS = "InvalidCredentials";
 
     private final ApplicationService applicationService;
+    private final ServerStatisticsService serverStatisticsService;
 
     @Value("${broker.token:}")
     private String brokerToken;
 
-    public AppAuthenticationService(ApplicationService applicationService) {
+    public AppAuthenticationService(ApplicationService applicationService,
+                                    ServerStatisticsService serverStatisticsService) {
         this.applicationService = applicationService;
+        this.serverStatisticsService = serverStatisticsService;
     }
 
     @Override
@@ -83,6 +87,8 @@ public class AppAuthenticationService extends AuthenticationService {
                 new ApplicationMetadata(
                         appInstanceId, appName, appStage, appVersion,
                         channelInfo.getIp(), appHostName, appRuntime, appCustomTags));
+
+        serverStatisticsService.increaseApplicationInstanceCount(WORKSPACE_ID);
 
         return true;
     }
