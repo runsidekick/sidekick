@@ -52,9 +52,6 @@ public class EnableProbeTagRequestHandler
             List<TracePointConfig> tracePoints = tracePointService.queryTracePoints(channelInfo.getWorkspaceId(),
                     request.getApplicationFilters(), request.getTag());
 
-            System.out.println(tracePoints.size());
-            System.out.println(logPoints.size());
-
             if (logPoints != null && !logPoints.isEmpty()) {
                 List<String> logPointIds = logPoints.stream()
                         .map(logPoint -> logPoint.getId())
