@@ -24,6 +24,8 @@ public interface TracePointService {
 
     void enableDisableTracePoint(String workspaceId, String userId, String tracePointId, boolean disable);
 
+    void enableDisableTracePoints(String workspaceId, List<String> tracePointIds, boolean disable);
+
     void updateTracePoint(String workspaceId, String userId, String tracePointId, TracePoint tp);
 
     List<TracePoint> listTracePoints(String workspaceId, String userId);
@@ -35,4 +37,6 @@ public interface TracePointService {
     List<TracePoint> listPredefinedTracePoints(String workspaceId, String userId);
 
     TracePoint queryTracePoint(String workspaceId, String tracePointId, ApplicationFilter filter);
+
+    List<TracePointConfig> queryTracePoints(String workspaceId, List<ApplicationFilter> applicationFilters, String tag);
 }

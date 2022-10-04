@@ -11,6 +11,8 @@ import com.runsidekick.broker.model.request.impl.logpoint.PutLogPointRequest;
 import com.runsidekick.broker.model.request.impl.logpoint.UpdateLogPointRequest;
 import com.runsidekick.broker.model.request.impl.refereceevent.PutReferenceEventRequest;
 import com.runsidekick.broker.model.request.impl.refereceevent.RemoveReferenceEventRequest;
+import com.runsidekick.broker.model.request.impl.probetag.DisableProbeTagRequest;
+import com.runsidekick.broker.model.request.impl.probetag.EnableProbeTagRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.PutTracePointRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.UpdateTracePointRequest;
 import com.runsidekick.broker.model.response.impl.CompositeResponse;
@@ -19,8 +21,8 @@ import com.runsidekick.broker.model.response.impl.logpoint.EnableLogPointRespons
 import com.runsidekick.broker.model.response.impl.logpoint.PutLogPointResponse;
 import com.runsidekick.broker.model.response.impl.logpoint.RemoveLogPointResponse;
 import com.runsidekick.broker.model.response.impl.logpoint.UpdateLogPointResponse;
-import com.runsidekick.broker.model.response.impl.tag.DisableTagResponse;
-import com.runsidekick.broker.model.response.impl.tag.EnableTagResponse;
+import com.runsidekick.broker.model.response.impl.probetag.DisableProbeTagResponse;
+import com.runsidekick.broker.model.response.impl.probetag.EnableProbeTagResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.DisableTracePointResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.EnableTracePointResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.PutTracePointResponse;
@@ -83,9 +85,9 @@ public interface BrokerService {
 
     void removeReferenceEvent(String workspaceId, RemoveReferenceEventRequest request);
 
-    CompletableFuture<CompositeResponse<DisableTagResponse>> disableTag(
-            String tag, String email, String workspaceId) throws Exception;
+    CompletableFuture<CompositeResponse<EnableProbeTagResponse>> enableProbeTag(
+            EnableProbeTagRequest request, String email, String workspaceId) throws Exception;
 
-    CompletableFuture<CompositeResponse<EnableTagResponse>> enableTag(
-            String tag, String email, String workspaceId) throws Exception;
+    CompletableFuture<CompositeResponse<DisableProbeTagResponse>> disableProbeTag(
+            DisableProbeTagRequest request, String email, String workspaceId) throws Exception;
 }

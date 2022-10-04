@@ -113,4 +113,19 @@ public final class ProbeUtil {
         return new ApplicationAwareProbeQueryFilter(filtersExpr, args);
     }
 
+    public static ApplicationAwareProbeQueryFilter probeTagQueryFilter(String workspaceId, String tag) {
+        StringBuilder filtersExpr = new StringBuilder();
+        List<String> args = new ArrayList<>();
+        args.add(workspaceId);
+        if (StringUtils.hasText(tag)) {
+//            filtersExpr.append(" AND ");
+//            filtersExpr.append(" ? ");
+//            filtersExpr.append("MEMBER OF(tags)");
+            filtersExpr.append(" AND ");
+            filtersExpr.append("JSON_SEARCH(tags , 'all', ? , NULL) IS NOT NULL");
+            args.add(tag);
+        }
+
+        return new ApplicationAwareProbeQueryFilter(filtersExpr, args);
+    }
 }

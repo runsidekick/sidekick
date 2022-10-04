@@ -173,6 +173,55 @@ public class TracePointExpireIntegrationTest extends BrokerBaseIntegrationTest {
         }
     }
 
+    @Test
+    public void brokerShouldNotBeAbleRemovePredefinedTracePoint_whenExpireCountLimitExceeded() {
+        WebSocketClient webSocketUserClient = new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+            String[] appClientProps = {"123", "app1a", "dev", "1.0.1-SNAPSHOT"};
+            WebSocketClient webSocketAppClient = getWebSocketAppClient(appClientProps);
+            try {
+                assertConnected(webSocketAppClient);
+                String requestId = UUID.randomUUID().toString();
+                PutTracePointRequest putTracePointRequest = getPutTracePointRequest(requestId);
+                putTracePointRequest.setPredefined(true);
+                webSocketUserClient.request(putTracePointRequest, PutTracePointResponse.class);
+                String tracePointId = getTracePointId(putTracePointRequest.getFileName(),
+                        putTracePointRequest.getLineNo(), putTracePointRequest.getClient());
+                String expireCountId = getExpireCountId(buildResourceKey(WORKSPACE_ID, tracePointId));
+
+                assertEventually(() -> {
+                    RAtomicLong value = client.getAtomicLong(expireCountId);
+                    assertThat(value.get()).isEqualTo(0);
+                });
+
+                TracePointSnapshotEvent event = new TracePointSnapshotEvent(tracePointId,
+                        putTracePointRequest.getFileName(), "Test",
+                        putTracePointRequest.getLineNo(), "testMethod", UUID.randomUUID().toString(),
+                        UUID.randomUUID().toString(), UUID.randomUUID().toString());
+                event.setId(UUID.randomUUID().toString());
+                event.setClient(CLIENT);
+                webSocketAppClient.send(event);
+
+                ListTracePointsRequest listTracePointRequest = new ListTracePointsRequest();
+                listTracePointRequest.setId(UUID.randomUUID().toString());
+
+                assertEventually(() -> {
+                    RAtomicLong value = client.getAtomicLong(expireCountId);
+                    assertThat(value.isExists()).isFalse();
+                    ListTracePointsResponse listTracePointResponse = webSocketUserClient.requestSync(listTracePointRequest,
+                            ListTracePointsResponse.class);
+                    assertThat(listTracePointResponse.getTracePoints().size()).isEqualTo(1);
+                });
+
+            } finally {
+                webSocketAppClient.close();
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+
     private PutTracePointRequest getPutTracePointRequest(String requestId) {
         List<ApplicationFilter> filters = new ArrayList<>();
         ApplicationFilter filter = new ApplicationFilter();

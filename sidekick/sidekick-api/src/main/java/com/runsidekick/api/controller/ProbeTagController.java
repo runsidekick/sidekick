@@ -1,9 +1,11 @@
 package com.runsidekick.api.controller;
 
 import com.runsidekick.api.service.ApiAuthService;
+import com.runsidekick.broker.model.request.impl.probetag.DisableProbeTagRequest;
+import com.runsidekick.broker.model.request.impl.probetag.EnableProbeTagRequest;
 import com.runsidekick.broker.model.response.impl.CompositeResponse;
-import com.runsidekick.broker.model.response.impl.tag.DisableTagResponse;
-import com.runsidekick.broker.model.response.impl.tag.EnableTagResponse;
+import com.runsidekick.broker.model.response.impl.probetag.DisableProbeTagResponse;
+import com.runsidekick.broker.model.response.impl.probetag.EnableProbeTagResponse;
 import com.runsidekick.broker.service.BrokerService;
 import com.runsidekick.model.ProbeTag;
 import com.runsidekick.service.ProbeTagService;
@@ -25,13 +27,14 @@ import java.util.concurrent.CompletableFuture;
  * @author yasin.kalafat
  */
 @RestController
-@RequestMapping("/api/v1/tags")
-@Api(value = "/tags", tags = "tags")
-public class TagController extends ControllerBase {
+@RequestMapping("/api/v1/probetags")
+@Api(value = "/probetags", tags = "probetags")
+public class ProbeTagController extends ControllerBase {
 
     private final ProbeTagService probeTagService;
 
-    public TagController(ApiAuthService apiAuthService, BrokerService brokerService, ProbeTagService probeTagService) {
+    public ProbeTagController(ApiAuthService apiAuthService, BrokerService brokerService,
+                              ProbeTagService probeTagService) {
         super(apiAuthService, brokerService);
         this.probeTagService = probeTagService;
     }
@@ -53,15 +56,15 @@ public class TagController extends ControllerBase {
     }
 
     @PutMapping("/enable")
-    public CompletableFuture<CompositeResponse<EnableTagResponse>> enableTag(
-            @Valid @RequestBody String tag) throws Exception {
-        return brokerService.enableTag(tag, getClient(), getWorkspaceId());
+    public CompletableFuture<CompositeResponse<EnableProbeTagResponse>> enableProbeTag(
+            @Valid @RequestBody EnableProbeTagRequest request) throws Exception {
+        return brokerService.enableProbeTag(request, getClient(), getWorkspaceId());
     }
 
     @PutMapping("/disable")
-    public CompletableFuture<CompositeResponse<DisableTagResponse>> disableTag(
-            @Valid @RequestBody String tag) throws Exception {
-        return brokerService.disableTag(tag, getClient(), getWorkspaceId());
+    public CompletableFuture<CompositeResponse<DisableProbeTagResponse>> disableProbeTag(
+            @Valid @RequestBody DisableProbeTagRequest request) throws Exception {
+        return brokerService.disableProbeTag(request, getClient(), getWorkspaceId());
     }
 
 }

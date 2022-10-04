@@ -15,6 +15,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -182,6 +183,20 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
     }
 
     @Override
+    public void enableDisableLogPoints(String workspaceId, List<String> logPointIds, boolean disable) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("workspaceId", workspaceId);
+        parameters.addValue("ids", logPointIds);
+        parameters.addValue("disabled", disable);
+
+        namedParameterJdbcTemplate.update(
+                "UPDATE LogPoint " +
+                        "SET disabled=:disabled " +
+                        "WHERE id IN (:ids) AND workspace_id = :workspaceId ",
+                parameters);
+    }
+
+    @Override
     @SneakyThrows
     public void updateLogPoint(String workspaceId, String userId, String logPointId, LogPoint logPoint) {
         jdbcTemplate.update(
@@ -241,8 +256,20 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
         return logPoints != null && logPoints.size() > 0 ? logPoints.get(0) : null;
     }
 
+    @Override
+    public List<LogPointConfig> queryLogPointsByTag(String workspaceId, String tag) {
+        ApplicationAwareProbeQueryFilter queryFilter = ProbeUtil.probeTagQueryFilter(workspaceId, tag);
+
+        Collection<LogPointConfig> logPointConfigs =
+                jdbcTemplate.query(
+                        "SELECT * FROM LogPoint WHERE workspace_id = ?" + queryFilter.getFiltersExpr().toString(),
+                        logPointConfigRowMapper,
+                        queryFilter.getArgs().toArray());
+        return logPointConfigs.stream().collect(Collectors.toList());
+    }
+
     private List<LogPoint> filterLogPoints(Collection<LogPointConfig> logPointConfigs,
-                                                     ApplicationFilter filter) {
+                                           ApplicationFilter filter) {
         Collection<LogPointConfig> filteredLogPoints = ProbeUtil.filterProbes(logPointConfigs, filter);
         return filteredLogPoints.stream().collect(Collectors.toList());
     }

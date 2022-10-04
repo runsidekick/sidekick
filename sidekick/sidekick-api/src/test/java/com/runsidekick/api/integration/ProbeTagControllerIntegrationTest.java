@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 /**
  * @author yasin
  */
-public class TagControllerIntegrationTest extends BaseIntegrationTest {
+public class ProbeTagControllerIntegrationTest extends BaseIntegrationTest {
 
-    private static final String API_BASE_PATH = "/api/v1/tags";
+    private static final String API_BASE_PATH = "/api/v1/probetags";
     private static final String[] MODEL_ATTRIBUTES = new String[]{
             "id", "tag"};
 

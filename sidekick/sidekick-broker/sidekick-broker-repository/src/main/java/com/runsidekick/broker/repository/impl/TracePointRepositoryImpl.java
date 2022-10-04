@@ -15,6 +15,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -178,6 +180,20 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
     }
 
     @Override
+    public void enableDisableTracePoints(String workspaceId, List<String> tracePointIds, boolean disable) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("disabled", disable);
+        parameters.addValue("ids", tracePointIds);
+        parameters.addValue("workspaceId", workspaceId);
+
+        namedParameterJdbcTemplate.update(
+                "UPDATE TracePoint " +
+                        "SET disabled=:disabled " +
+                        "WHERE id IN (:ids) AND workspace_id = :workspaceId ",
+                parameters);
+    }
+
+    @Override
     @SneakyThrows
     public void updateTracePoint(String workspaceId, String userId, String tracePointId, TracePoint tracePoint) {
         jdbcTemplate.update(
@@ -239,8 +255,20 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
         return tracePoints != null && tracePoints.size() > 0 ? tracePoints.get(0) : null;
     }
 
+    @Override
+    public List<TracePointConfig> queryTracePointsByTag(String workspaceId, String tag) {
+        ApplicationAwareProbeQueryFilter queryFilter = ProbeUtil.probeTagQueryFilter(workspaceId, tag);
+
+        Collection<TracePointConfig> tracePointConfigs =
+                jdbcTemplate.query(
+                        "SELECT * FROM TracePoint WHERE workspace_id = ?" + queryFilter.getFiltersExpr().toString(),
+                        tracePointConfigRowMapper,
+                        queryFilter.getArgs().toArray());
+        return tracePointConfigs.stream().collect(Collectors.toList());
+    }
+
     private List<TracePoint> filterTracePoints(Collection<TracePointConfig> tracePointConfigs,
-                                                 ApplicationFilter filter) {
+                                               ApplicationFilter filter) {
         Collection<TracePointConfig> filteredTracePoints = ProbeUtil.filterProbes(tracePointConfigs, filter);
         return filteredTracePoints.stream().collect(Collectors.toList());
     }

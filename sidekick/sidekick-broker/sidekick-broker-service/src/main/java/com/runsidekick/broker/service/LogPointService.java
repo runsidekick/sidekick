@@ -24,6 +24,8 @@ public interface LogPointService {
 
     void enableDisableLogPoint(String workspaceId, String userId, String logPointId, boolean disable);
 
+    void enableDisableLogPoints(String workspaceId, List<String> logPointIds, boolean disable);
+
     void updateLogPoint(String workspaceId, String userId, String logPointId, LogPoint tp);
 
     List<LogPoint> listLogPoints(String workspaceId, String userId);
@@ -35,4 +37,6 @@ public interface LogPointService {
     List<LogPoint> listPredefinedLogPoints(String workspaceId, String userId);
 
     LogPoint queryLogPoint(String workspaceId, String logPointId, ApplicationFilter applicationFilter);
+
+    List<LogPointConfig> queryLogPoints(String workspaceId, List<ApplicationFilter> applicationFilters, String tag);
 }
