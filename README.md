@@ -186,7 +186,7 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
       `ws://<your-server-hostname-or-ip>:7777`
     - You can see the API's swagger interface at
       
-        `http://<your-server-hostname-or-ip>:8084/swagger-ui.html`
+        `http://<your-server-hostname-or-ip>:8084/swagger-ui/index.html`
 
 ### Building Sidekick
 

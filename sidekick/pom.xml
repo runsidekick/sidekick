@@ -72,7 +72,7 @@
         <auth0.version>1.42.0</auth0.version>
         <auth0.spring.version>1.0.0</auth0.spring.version>
         <powermock.version>2.0.4</powermock.version>
-        <springfox-swagger.version>2.9.2</springfox-swagger.version>
+        <springfox-swagger.version>3.0.0</springfox-swagger.version>
         <jodd-core.version>5.0.13</jodd-core.version>
         <stripe.version>20.110.0</stripe.version>
     </properties>
@@ -289,7 +289,7 @@
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
+                <artifactId>springfox-boot-starter</artifactId>
                 <version>${springfox-swagger.version}</version>
             </dependency>
             <dependency>
