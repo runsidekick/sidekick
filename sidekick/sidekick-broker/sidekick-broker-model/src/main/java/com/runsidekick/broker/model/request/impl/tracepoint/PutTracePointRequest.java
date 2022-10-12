@@ -25,7 +25,6 @@ public class PutTracePointRequest extends BaseApplicationAwareRequest {
     private boolean disable;
     private List<ApplicationFilter> applicationFilters;
     private List<String> webhookIds;
-    private boolean predefined;
     private String probeName;
     private List<String> tags;
 
@@ -46,8 +45,8 @@ public class PutTracePointRequest extends BaseApplicationAwareRequest {
         request.setClient(tracePoint.getClient());
         request.setId(tracePoint.getId());
         request.setWebhookIds(tracePoint.getWebhookIds());
-        request.setPredefined(tracePoint.isPredefined());
         request.setProbeName(tracePoint.getProbeName());
+        request.setTags(tracePoint.getTags());
 
         return request;
     }

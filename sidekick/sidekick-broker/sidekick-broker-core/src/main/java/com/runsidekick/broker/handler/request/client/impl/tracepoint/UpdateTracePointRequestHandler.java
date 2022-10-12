@@ -11,6 +11,7 @@ import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.service.TracePointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,12 @@ public class UpdateTracePointRequestHandler
                                                   UpdateTracePointRequest request,
                                                   RequestContext requestContext) {
         UpdateTracePointResponse updateTracePointResponse = new UpdateTracePointResponse();
+
+        if (!CollectionUtils.isEmpty(request.getTags())) {
+            request.setExpireCount(-1);
+            request.setExpireSecs(-1);
+        }
+
         if (request.isPersist() && request.getTracePointId() != null) {
             TracePoint tracePoint = new TracePoint();
             tracePoint.setId(request.getTracePointId());
@@ -51,11 +58,8 @@ public class UpdateTracePointRequestHandler
             tracePoint.setDisabled(request.isDisable());
             tracePoint.setConditionExpression(request.getConditionExpression());
             tracePoint.setWebhookIds(request.getWebhookIds());
-            tracePoint.setPredefined(request.isPredefined());
             tracePoint.setProbeName(request.getProbeName());
-            if (tracePoint.isPredefined()) {
-                tracePoint.setTags(request.getTags());
-            }
+            tracePoint.setTags(request.getTags());
 
             tracePointService.updateTracePoint(
                     channelInfo.getWorkspaceId(),

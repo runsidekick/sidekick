@@ -16,6 +16,7 @@ import com.runsidekick.broker.service.TracePointService;
 import com.runsidekick.service.ServerStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,6 +67,12 @@ public class PutTracePointRequestHandler
         putTracePointResponse.setRequestId(request.getId());
         String tracePointId = generateId(request.getFileName(), request.getLineNo(), client);
         requestContext.putToRequest("tracePointId", tracePointId);
+
+        if (!CollectionUtils.isEmpty(request.getTags())) {
+            request.setExpireCount(-1);
+            request.setExpireSecs(-1);
+        }
+
         if (request.isPersist()) {
             TracePointConfig tpc = new TracePointConfig();
             tpc.setId(tracePointId);
@@ -80,11 +87,8 @@ public class PutTracePointRequestHandler
             tpc.setApplicationFilters(request.getApplicationFilters());
             tpc.setClient(client);
             tpc.setWebhookIds(request.getWebhookIds());
-            tpc.setPredefined(request.isPredefined());
             tpc.setProbeName(request.getProbeName());
-            if (tpc.isPredefined()) {
-                tpc.setTags(request.getTags());
-            }
+            tpc.setTags(request.getTags());
 
             try {
                 tracePointService.putTracePoint(channelInfo.getWorkspaceId(), channelInfo.getUserId(), tpc,

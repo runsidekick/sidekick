@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -185,7 +186,7 @@ public class LogPointExpireIntegrationTest extends BrokerBaseIntegrationTest {
                 assertConnected(webSocketAppClient);
                 String requestId = UUID.randomUUID().toString();
                 PutLogPointRequest putLogPointRequest = getPutLogPointRequest(requestId);
-                putLogPointRequest.setPredefined(true);
+                putLogPointRequest.setTags(Collections.singletonList("test"));
                 webSocketUserClient.request(putLogPointRequest, PutLogPointResponse.class);
                 String logPointId = getLogPointId(putLogPointRequest.getFileName(),
                         putLogPointRequest.getLineNo(), putLogPointRequest.getClient());

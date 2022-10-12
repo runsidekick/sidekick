@@ -20,7 +20,6 @@ public abstract class BaseProbe {
     protected String fileHash;
     protected boolean disabled;
     protected List<String> webhookIds;
-    protected boolean predefined;
     protected String probeName; // for predefined probe
     protected List<String> tags;
 
@@ -41,5 +40,9 @@ public abstract class BaseProbe {
     @Override
     public int hashCode() {
         return Objects.hash(fileName, lineNo, client);
+    }
+
+    public boolean hasTag() {
+        return tags != null && tags.size() > 0;
     }
 }

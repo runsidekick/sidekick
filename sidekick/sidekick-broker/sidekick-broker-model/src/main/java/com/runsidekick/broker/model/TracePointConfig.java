@@ -29,7 +29,6 @@ public class TracePointConfig extends TracePoint implements ProbeConfig {
                 ", webhookIds=" + webhookIds +
                 ", tracingEnabled=" + tracingEnabled +
                 ", applicationFilters=" + applicationFilters +
-                ", predefined=" + predefined +
                 ", probeName='" + probeName + '\'' +
                 '}';
     }

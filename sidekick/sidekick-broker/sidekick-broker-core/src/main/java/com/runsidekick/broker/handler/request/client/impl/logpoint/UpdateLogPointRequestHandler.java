@@ -11,6 +11,7 @@ import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.service.LogPointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,11 @@ public class UpdateLogPointRequestHandler
                                                   UpdateLogPointRequest request,
                                                   RequestContext requestContext) {
         UpdateLogPointResponse updateLogPointResponse = new UpdateLogPointResponse();
+        if (!CollectionUtils.isEmpty(request.getTags())) {
+            request.setExpireCount(-1);
+            request.setExpireSecs(-1);
+        }
+
         if (request.isPersist() && request.getLogPointId() != null) {
             LogPoint logPoint = new LogPoint();
             logPoint.setId(request.getLogPointId());
@@ -53,11 +59,8 @@ public class UpdateLogPointRequestHandler
             logPoint.setStdoutEnabled(request.isStdoutEnabled());
             logPoint.setLogLevel(request.getLogLevel());
             logPoint.setWebhookIds(request.getWebhookIds());
-            logPoint.setPredefined(request.isPredefined());
             logPoint.setProbeName(request.getProbeName());
-            if (logPoint.isPredefined()) {
-                logPoint.setTags(request.getTags());
-            }
+            logPoint.setTags(request.getTags());
 
             logPointService.updateLogPoint(
                     channelInfo.getWorkspaceId(),

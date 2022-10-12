@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -184,7 +185,7 @@ public class TracePointExpireIntegrationTest extends BrokerBaseIntegrationTest {
                 assertConnected(webSocketAppClient);
                 String requestId = UUID.randomUUID().toString();
                 PutTracePointRequest putTracePointRequest = getPutTracePointRequest(requestId);
-                putTracePointRequest.setPredefined(true);
+                putTracePointRequest.setTags(Collections.singletonList("test"));
                 webSocketUserClient.request(putTracePointRequest, PutTracePointResponse.class);
                 String tracePointId = getTracePointId(putTracePointRequest.getFileName(),
                         putTracePointRequest.getLineNo(), putTracePointRequest.getClient());

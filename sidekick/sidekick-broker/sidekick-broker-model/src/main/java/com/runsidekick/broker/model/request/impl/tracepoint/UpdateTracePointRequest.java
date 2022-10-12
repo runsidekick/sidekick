@@ -21,7 +21,6 @@ public class UpdateTracePointRequest extends BaseApplicationAwareRequest {
     private boolean enableTracing;
     private boolean disable;
     private List<String> webhookIds;
-    private boolean predefined;
     private String probeName;
     private List<String> tags;
 

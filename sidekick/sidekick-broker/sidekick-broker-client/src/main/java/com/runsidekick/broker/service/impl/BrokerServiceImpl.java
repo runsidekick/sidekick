@@ -17,10 +17,10 @@ import com.runsidekick.broker.model.request.impl.logpoint.EnableLogPointRequest;
 import com.runsidekick.broker.model.request.impl.logpoint.PutLogPointRequest;
 import com.runsidekick.broker.model.request.impl.logpoint.RemoveLogPointRequest;
 import com.runsidekick.broker.model.request.impl.logpoint.UpdateLogPointRequest;
-import com.runsidekick.broker.model.request.impl.refereceevent.PutReferenceEventRequest;
-import com.runsidekick.broker.model.request.impl.refereceevent.RemoveReferenceEventRequest;
 import com.runsidekick.broker.model.request.impl.probetag.DisableProbeTagRequest;
 import com.runsidekick.broker.model.request.impl.probetag.EnableProbeTagRequest;
+import com.runsidekick.broker.model.request.impl.refereceevent.PutReferenceEventRequest;
+import com.runsidekick.broker.model.request.impl.refereceevent.RemoveReferenceEventRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.DisableTracePointRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.EnableTracePointRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.PutTracePointRequest;
@@ -344,7 +344,7 @@ public class BrokerServiceImpl implements BrokerService {
             probe = logPointService.queryLogPoint(workspaceId, request.getProbeId(), request.getApplicationFilter());
         }
 
-        if (probe != null && probe.isPredefined()) {
+        if (probe.hasTag()) {
             referenceEventService.putReferenceEvent(ReferenceEvent.builder()
                     .workspaceId(workspaceId)
                     .probeId(request.getProbeId())

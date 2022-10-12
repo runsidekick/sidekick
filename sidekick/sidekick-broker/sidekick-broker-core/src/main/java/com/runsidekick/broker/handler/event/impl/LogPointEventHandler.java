@@ -46,15 +46,17 @@ public class LogPointEventHandler extends BaseProbeEventHandler<LogPoint, LogPoi
                 if (logPointConfig == null) {
                     return;
                 }
-                List<String> applications =
-                        new ArrayList<>(applicationService.filterApplications(channelInfo.getWorkspaceId(),
-                                logPointConfig.getApplicationFilters()));
-                RemoveLogPointRequest request = prepareRemoveLogPointRequest(event, logPointId, applications);
-                logPointService.removeLogPoint(
-                        channelInfo.getWorkspaceId(),
-                        channelInfo.getUserId(),
-                        logPointId);
-                communicator.sendRequestToApps(channelInfo, request, applications);
+                if (!logPointConfig.hasTag()) {
+                    List<String> applications =
+                            new ArrayList<>(applicationService.filterApplications(channelInfo.getWorkspaceId(),
+                                    logPointConfig.getApplicationFilters()));
+                    RemoveLogPointRequest request = prepareRemoveLogPointRequest(event, logPointId, applications);
+                    logPointService.removeLogPoint(
+                            channelInfo.getWorkspaceId(),
+                            channelInfo.getUserId(),
+                            logPointId);
+                    communicator.sendRequestToApps(channelInfo, request, applications);
+                }
             }
         });
         return null;

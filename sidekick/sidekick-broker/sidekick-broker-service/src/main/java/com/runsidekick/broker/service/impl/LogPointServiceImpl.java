@@ -42,7 +42,7 @@ public class LogPointServiceImpl implements LogPointService {
     public void putLogPoint(String workspaceId, String userId, LogPointConfig logPointConfig, boolean fromApi)
             throws Exception {
         logPointRepository.putLogPoint(workspaceId, userId, logPointConfig, fromApi);
-        if (!logPointConfig.isPredefined()) {
+        if (!logPointConfig.hasTag()) {
             logPointExpireCountRepository.putLogPointExpireCount(workspaceId, logPointConfig.getId(),
                     logPointConfig.getExpireCount(), logPointConfig.getExpireSecs());
         }
@@ -79,7 +79,7 @@ public class LogPointServiceImpl implements LogPointService {
     @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointId")
     public void updateLogPoint(String workspaceId, String userId, String logPointId, LogPoint logPoint) {
         logPointRepository.updateLogPoint(workspaceId, userId, logPointId, logPoint);
-        if (logPoint.isPredefined()) {
+        if (logPoint.hasTag()) {
             logPointExpireCountRepository.removeLogPointExpireCount(workspaceId, logPointId);
         } else {
             logPointExpireCountRepository.putLogPointExpireCount(

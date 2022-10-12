@@ -42,7 +42,7 @@ public class TracePointServiceImpl implements TracePointService {
     public void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
             throws Exception {
         tracePointRepository.putTracePoint(workspaceId, userId, tracePointConfig, fromApi);
-        if (!tracePointConfig.isPredefined()) {
+        if (!tracePointConfig.hasTag()) {
             tracePointExpireCountRepository.putTracePointExpireCount(workspaceId, tracePointConfig.getId(),
                     tracePointConfig.getExpireCount(), tracePointConfig.getExpireSecs());
         }
@@ -79,7 +79,7 @@ public class TracePointServiceImpl implements TracePointService {
     @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId")
     public void updateTracePoint(String workspaceId, String userId, String tracePointId, TracePoint tracePoint) {
         tracePointRepository.updateTracePoint(workspaceId, userId, tracePointId, tracePoint);
-        if (tracePoint.isPredefined()) {
+        if (tracePoint.hasTag()) {
             tracePointExpireCountRepository.removeTracePointExpireCount(workspaceId, tracePointId);
         } else {
             tracePointExpireCountRepository.putTracePointExpireCount(

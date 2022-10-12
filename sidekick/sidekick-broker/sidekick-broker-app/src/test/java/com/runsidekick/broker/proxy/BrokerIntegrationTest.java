@@ -51,6 +51,7 @@ import lombok.SneakyThrows;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,11 +68,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -1185,7 +1186,7 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putTracePointRequest.setExpireCount(1);
                 putTracePointRequest.setExpireSecs(-1);
                 putTracePointRequest.setEnableTracing(true);
-                putTracePointRequest.setPredefined(true);
+                putTracePointRequest.setTags(Collections.singletonList("test"));
 
                 CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
 
@@ -1241,10 +1242,11 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 assertEquals(tp.getClient(), CLIENT);
                 assertEquals(tp.getLineNo(), 10);
                 assertEquals(tp.getConditionExpression(), "test == 1");
-                assertEquals(tp.getExpireCount(), 1);
-                assertEquals(tp.getExpireSecs(), 1800);
+                // Permanent Probe
+                assertEquals(tp.getExpireCount(), -1);
+                assertEquals(tp.getExpireSecs(), -1);
                 assertTrue(tp.isTracingEnabled());
-                assertTrue(tp.isPredefined());
+                assertFalse(CollectionUtils.isEmpty(tp.getTags()));
 
                 ApplicationFilter applicationFilter = new ApplicationFilter();
                 applicationFilter.setName("app1a");
@@ -2071,7 +2073,7 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putTracePointRequest2.setExpireCount(1);
                 putTracePointRequest2.setExpireSecs(2);
                 putTracePointRequest2.setEnableTracing(true);
-                putTracePointRequest2.setPredefined(true);
+                putTracePointRequest2.setTags(Collections.singletonList("test"));
 
                 CompletableFuture completableFuture2 = registerForWaitingClientMessage(requestId2);
 
@@ -2445,7 +2447,7 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putLogPointRequest.setLogExpression("test");
                 putLogPointRequest.setStdoutEnabled(true);
                 putLogPointRequest.setLogLevel("INFO");
-                putLogPointRequest.setPredefined(true);
+                putLogPointRequest.setTags(Collections.singletonList("test"));
 
                 CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
 
@@ -2501,12 +2503,12 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 assertEquals(lp.getClient(), CLIENT);
                 assertEquals(lp.getLineNo(), 10);
                 assertEquals(lp.getConditionExpression(), "test == 1");
-                assertEquals(lp.getExpireCount(), 1);
-                assertEquals(lp.getExpireSecs(), 1800);
+                assertEquals(lp.getExpireCount(), -1);
+                assertEquals(lp.getExpireSecs(), -1);
                 assertEquals(lp.getLogExpression(), "test");
                 assertTrue(lp.isStdoutEnabled());
                 assertEquals(lp.getLogLevel(), "INFO");
-                assertTrue(lp.isPredefined());
+                assertFalse(CollectionUtils.isEmpty(lp.getTags()));
 
                 ApplicationFilter applicationFilter = new ApplicationFilter();
                 applicationFilter.setName("app1a");
@@ -3347,7 +3349,7 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putLogPointRequest2.setExpireCount(1);
                 putLogPointRequest2.setExpireSecs(3);
                 putLogPointRequest2.setLogExpression("test");
-                putLogPointRequest2.setPredefined(true);
+                putLogPointRequest2.setTags(Collections.singletonList("test"));
 
                 CompletableFuture completableFuture2 = registerForWaitingClientMessage(requestId2);
 
@@ -3571,7 +3573,6 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putTracePointRequest.setExpireSecs(-1);
                 putTracePointRequest.setEnableTracing(true);
                 putTracePointRequest.setDisable(true);
-                putTracePointRequest.setPredefined(true);
                 putTracePointRequest.setTags(probeTags);
 
                 CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
@@ -3599,7 +3600,6 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putLogPointRequest.setStdoutEnabled(true);
                 putLogPointRequest.setLogLevel("INFO");
                 putLogPointRequest.setDisable(true);
-                putLogPointRequest.setPredefined(true);
                 putLogPointRequest.setTags(probeTags);
 
                 completableFuture = registerForWaitingClientMessage(requestId2);
@@ -3640,8 +3640,8 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 assertEquals(tp.getClient(), CLIENT);
                 assertEquals(tp.getLineNo(), 10);
                 assertEquals(tp.getConditionExpression(), "test == 1");
-                assertEquals(tp.getExpireCount(), 1);
-                assertEquals(tp.getExpireSecs(), 1800);
+                assertEquals(tp.getExpireCount(), -1);
+                assertEquals(tp.getExpireSecs(), -1);
                 assertEquals(tp.getTags(), probeTags);
                 assertTrue(tp.isTracingEnabled());
                 assertFalse(tp.isDisabled());
@@ -3661,12 +3661,12 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 assertEquals(lp.getClient(), CLIENT);
                 assertEquals(lp.getLineNo(), 10);
                 assertEquals(lp.getConditionExpression(), "test == 1");
-                assertEquals(lp.getExpireCount(), 1);
-                assertEquals(lp.getExpireSecs(), 1800);
+                assertEquals(lp.getExpireCount(), -1);
+                assertEquals(lp.getExpireSecs(), -1);
                 assertEquals(lp.getLogExpression(), "test");
                 assertTrue(lp.isStdoutEnabled());
                 assertEquals(lp.getLogLevel(), "INFO");
-                assertTrue(lp.isPredefined());
+                assertFalse(CollectionUtils.isEmpty(lp.getTags()));
                 assertEquals(lp.getTags(), probeTags);
                 assertFalse(lp.isDisabled());
 
@@ -3769,7 +3769,6 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putTracePointRequest.setExpireSecs(-1);
                 putTracePointRequest.setEnableTracing(true);
                 putTracePointRequest.setDisable(false);
-                putTracePointRequest.setPredefined(true);
                 putTracePointRequest.setTags(probeTags);
 
                 CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
@@ -3797,7 +3796,6 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 putLogPointRequest.setStdoutEnabled(true);
                 putLogPointRequest.setLogLevel("INFO");
                 putLogPointRequest.setDisable(false);
-                putLogPointRequest.setPredefined(true);
                 putLogPointRequest.setTags(probeTags);
 
                 completableFuture = registerForWaitingClientMessage(requestId);
@@ -3839,8 +3837,8 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 assertEquals(tp.getClient(), CLIENT);
                 assertEquals(tp.getLineNo(), 10);
                 assertEquals(tp.getConditionExpression(), "test == 1");
-                assertEquals(tp.getExpireCount(), 1);
-                assertEquals(tp.getExpireSecs(), 1800);
+                assertEquals(tp.getExpireCount(), -1);
+                assertEquals(tp.getExpireSecs(), -1);
                 assertEquals(tp.getTags(), probeTags);
                 assertTrue(tp.isTracingEnabled());
                 assertTrue(tp.isDisabled());
@@ -3860,13 +3858,13 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 assertEquals(lp.getClient(), CLIENT);
                 assertEquals(lp.getLineNo(), 10);
                 assertEquals(lp.getConditionExpression(), "test == 1");
-                assertEquals(lp.getExpireCount(), 1);
-                assertEquals(lp.getExpireSecs(), 1800);
+                assertEquals(lp.getExpireCount(), -1);
+                assertEquals(lp.getExpireSecs(), -1);
                 assertEquals(lp.getLogExpression(), "test");
                 assertTrue(lp.isStdoutEnabled());
                 assertEquals(lp.getLogLevel(), "INFO");
                 assertEquals(lp.getTags(), probeTags);
-                assertTrue(lp.isPredefined());
+                assertFalse(CollectionUtils.isEmpty(lp.getTags()));
                 assertTrue(lp.isDisabled());
 
                 ApplicationFilter applicationFilter = new ApplicationFilter();
