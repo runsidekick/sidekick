@@ -24,7 +24,6 @@ import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +49,7 @@ public class SwaggerConfiguration {
                 .build()
                 .useDefaultResponseMessages(false)
                 .apiInfo(metaData())
-                .securitySchemes(getAuthHeaders())
+                .securitySchemes(Collections.singletonList(getApiKey()))
                 .securityContexts(Collections.singletonList(securityContext()));
         Set<String> protocols = new HashSet<>();
         protocols.add("http");
@@ -67,12 +66,6 @@ public class SwaggerConfiguration {
                 .build();
     }
 
-    private List<ApiKey> getAuthHeaders() {
-        ArrayList<ApiKey> apiKeys = new ArrayList<>();
-        apiKeys.add(getApiKey());
-        return apiKeys;
-    }
-
     private ApiKey getApiKey() {
         return new ApiKey("apiKey", "ApiKey", "Header");
     }
@@ -84,19 +77,12 @@ public class SwaggerConfiguration {
                 .build();
     }
 
-    private List<SecurityReference> getSecurityReferences(AuthorizationScope[] authorizationScopes) {
-        ArrayList<SecurityReference> securityReferences = new ArrayList<>();
-        securityReferences.add(new SecurityReference("apiKey", authorizationScopes));
-        securityReferences.add(new SecurityReference("token", authorizationScopes));
-        return securityReferences;
-    }
-
     private List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope(
                 "global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return getSecurityReferences(authorizationScopes);
+        return Collections.singletonList(new SecurityReference("ApiKey", authorizationScopes));
     }
 
     private ApiInfo metaData() {

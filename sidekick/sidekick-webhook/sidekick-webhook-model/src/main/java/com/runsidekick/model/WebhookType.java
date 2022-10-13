@@ -8,7 +8,8 @@ import java.util.Arrays;
 public enum WebhookType {
     SLACK,
     LOGZIO,
-    CUSTOM;
+    CUSTOM,
+    SUMOLOGIC;
 
     public static String[] getAllWebhookTypes() {
         return Arrays.stream(WebhookType.values()).map(Enum::name).toArray(String[]::new);
