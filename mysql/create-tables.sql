@@ -114,3 +114,11 @@ CREATE TABLE ServerStatistics (
     tracepoint_count                    INT(10)             DEFAULT 0,
     logpoint_count                      INT(10)             DEFAULT 0
 );
+
+CREATE TABLE ApplicationConfig (
+    id                                  VARCHAR(64)         NOT NULL PRIMARY KEY,
+    workspace_id                        VARCHAR(64),
+    application_filter                  JSON,
+    config                              JSON,
+    detached                            BOOLEAN             NOT NULL DEFAULT 0
+);

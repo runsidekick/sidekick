@@ -2,6 +2,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- ## --
 DROP TABLE IF EXISTS Application;
+DROP TABLE IF EXISTS ApplicationConfig;
 DROP TABLE IF EXISTS LogPoint;
 DROP TABLE IF EXISTS ReferenceEvent;
 DROP TABLE IF EXISTS ServerStatistics;

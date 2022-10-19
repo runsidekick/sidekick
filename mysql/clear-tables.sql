@@ -2,6 +2,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- ## --
 DELETE FROM Application;
+DELETE FROM ApplicationConfig;
 DELETE FROM LogPoint;
 DELETE FROM ReferenceEvent;
 DELETE FROM ServerStatistics;

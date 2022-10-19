@@ -24,42 +24,46 @@ public final class ProbeUtil {
         for (T probeConfig : probeConfigs) {
             List<ApplicationFilter> responseFilters = probeConfig.getApplicationFilters();
             for (ApplicationFilter responseFilter : responseFilters) {
-                boolean filtered = true;
-                if (responseFilter.getName() != null) {
-                    if (StringUtils.isEmpty(filter.getName())) {
-                        filtered = false;
-                    } else {
-                        filtered = responseFilter.getName().equals(filter.getName());
-                    }
-                }
-                if (filtered && responseFilter.getStage() != null) {
-                    filtered = responseFilter.getStage().equals(filter.getStage());
-                }
-                if (filtered && responseFilter.getVersion() != null) {
-                    filtered = responseFilter.getVersion().equals(filter.getVersion());
-                }
-                if (filtered && responseFilter.getCustomTags() != null && !responseFilter.getCustomTags().isEmpty()) {
-                    Map<String, String> customTagMap = filter.getCustomTags();
-                    for (Map.Entry<String, String> entry : responseFilter.getCustomTags().entrySet()) {
-                        if (customTagMap != null && customTagMap.containsKey(entry.getKey())) {
-                            String tagValue = customTagMap.get(entry.getKey());
-                            if (!(entry.getValue() != null && entry.getValue().equals(tagValue))) {
-                                filtered = false;
-                                break;
-                            }
-                        } else {
-                            filtered = false;
-                            break;
-                        }
-                    }
-                }
-                if (filtered) {
+                if (isFiltered(filter, responseFilter)) {
                     filteredProbes.add(probeConfig);
                     break;
                 }
             }
         }
         return filteredProbes;
+    }
+
+    public static boolean isFiltered(ApplicationFilter filter, ApplicationFilter responseFilter) {
+        boolean filtered = true;
+        if (responseFilter.getName() != null) {
+            if (StringUtils.isEmpty(filter.getName())) {
+                filtered = false;
+            } else {
+                filtered = responseFilter.getName().equals(filter.getName());
+            }
+        }
+        if (filtered && responseFilter.getStage() != null) {
+            filtered = responseFilter.getStage().equals(filter.getStage());
+        }
+        if (filtered && responseFilter.getVersion() != null) {
+            filtered = responseFilter.getVersion().equals(filter.getVersion());
+        }
+        if (filtered && responseFilter.getCustomTags() != null && !responseFilter.getCustomTags().isEmpty()) {
+            Map<String, String> customTagMap = filter.getCustomTags();
+            for (Map.Entry<String, String> entry : responseFilter.getCustomTags().entrySet()) {
+                if (customTagMap != null && customTagMap.containsKey(entry.getKey())) {
+                    String tagValue = customTagMap.get(entry.getKey());
+                    if (!(entry.getValue() != null && entry.getValue().equals(tagValue))) {
+                        filtered = false;
+                        break;
+                    }
+                } else {
+                    filtered = false;
+                    break;
+                }
+            }
+        }
+        return filtered;
     }
 
     public static ApplicationAwareProbeQueryFilter probeQueryFilter(
