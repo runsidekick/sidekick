@@ -511,6 +511,56 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>internal-release</id>
+            <distributionManagement>
+                <repository>
+                    <id>sidekick-oss-releases</id>
+                    <name>Sidekick OSS Releases</name>
+                    <url>https://repo.thundra.io/content/repositories/sidekick-oss-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>sidekick-oss-snapshots</id>
+                    <name>Sidekick OSS Snapshots</name>
+                    <url>https://repo.thundra.io/content/repositories/sidekick-oss-snapshots/</url>
+                    <uniqueVersion>true</uniqueVersion>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.scm</groupId>
+                                <artifactId>maven-scm-provider-gitexe</artifactId>
+                                <version>1.9.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-scm-plugin</artifactId>
+                                <version>1.9.1</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <tagNameFormat>v@{project.version}</tagNameFormat>
+                            <scmCommentPrefix>[ci skip] </scmCommentPrefix>
+                            <autoVersionSubmodules>false</autoVersionSubmodules>
+                            <releaseProfiles>release</releaseProfiles>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <checkModificationExcludes>
+                                <checkModificationExclude>pom.xml</checkModificationExclude>
+                            </checkModificationExcludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <distributionManagement>
