@@ -3616,7 +3616,6 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 EnableProbeTagRequest enableProbeTagRequest = new EnableProbeTagRequest();
                 enableProbeTagRequest.setId(UUID.randomUUID().toString());
                 enableProbeTagRequest.setTag(probeTags.get(0));
-                enableProbeTagRequest.setApplicationFilters(filters);
 
                 EnableProbeTagResponse enableProbeTagResponse = webSocketUserClient.requestSync(
                         enableProbeTagRequest, EnableProbeTagResponse.class, 30, TimeUnit.SECONDS);
@@ -3812,7 +3811,6 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 DisableProbeTagRequest disableProbeTagRequest = new DisableProbeTagRequest();
                 disableProbeTagRequest.setId(UUID.randomUUID().toString());
                 disableProbeTagRequest.setTag(probeTags.get(0));
-                disableProbeTagRequest.setApplicationFilters(filters);
 
                 DisableProbeTagResponse disableProbeTagResponse = webSocketUserClient.requestSync(
                         disableProbeTagRequest, DisableProbeTagResponse.class, 30, TimeUnit.SECONDS);

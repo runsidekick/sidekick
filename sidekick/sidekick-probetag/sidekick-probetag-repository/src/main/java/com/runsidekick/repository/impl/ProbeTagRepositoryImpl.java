@@ -3,6 +3,7 @@ package com.runsidekick.repository.impl;
 import com.runsidekick.model.ProbeTag;
 import com.runsidekick.repository.BaseDBRepository;
 import com.runsidekick.repository.ProbeTagRepository;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -42,13 +43,16 @@ public class ProbeTagRepositoryImpl extends BaseDBRepository implements ProbeTag
 
     @Override
     public void save(ProbeTag probeTag) {
-        String sql = "INSERT INTO " + TABLE_NAME
-                + "(id, workspace_id, tag) " +
-                "VALUES (:id, :workspaceId, :tag)";
+        try {
+            String sql = "INSERT INTO " + TABLE_NAME
+                    + "(id, workspace_id, tag) " +
+                    "VALUES (:id, :workspaceId, :tag)";
 
-        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(probeTag);
-        namedParameterJdbcTemplate.update(sql, parameterSource);
+            BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(probeTag);
+            namedParameterJdbcTemplate.update(sql, parameterSource);
+        } catch (DuplicateKeyException e) {
 
+        }
     }
 
     @Override
@@ -56,5 +60,25 @@ public class ProbeTagRepositoryImpl extends BaseDBRepository implements ProbeTag
         String sql = "DELETE FROM " + TABLE_NAME + " WHERE id=?";
         Object[] args = {id};
         jdbcTemplate.update(sql, args);
+    }
+
+    @Override
+    public void disable(String workspaceId, String tag) {
+        jdbcTemplate.update(
+                "UPDATE " + TABLE_NAME +
+                        " SET disabled = 1 " +
+                        "WHERE workspace_id = ? AND tag = ?",
+                 workspaceId, tag
+        );
+    }
+
+    @Override
+    public void enable(String workspaceId, String tag) {
+        jdbcTemplate.update(
+                "UPDATE " + TABLE_NAME +
+                        " SET disabled = 0 " +
+                        "WHERE workspace_id = ? AND tag = ?",
+                workspaceId, tag
+        );
     }
 }

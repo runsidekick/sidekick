@@ -9,6 +9,7 @@ import com.runsidekick.broker.model.request.impl.logpoint.UpdateLogPointRequest;
 import com.runsidekick.broker.model.response.impl.logpoint.UpdateLogPointResponse;
 import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.service.LogPointService;
+import com.runsidekick.service.ProbeTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +30,8 @@ public class UpdateLogPointRequestHandler
     private AuditLogService auditLogService;
     @Autowired
     private LogPointService logPointService;
+    @Autowired
+    private ProbeTagService probeTagService;
 
     public UpdateLogPointRequestHandler() {
         super(REQUEST_NAME, UpdateLogPointRequest.class, UpdateLogPointResponse.class);
@@ -67,6 +70,8 @@ public class UpdateLogPointRequestHandler
                     channelInfo.getUserId(),
                     request.getLogPointId(),
                     logPoint);
+
+            probeTagService.add(channelInfo.getWorkspaceId(), logPoint.getTags());
 
             LogPointConfig logPointConfig =
                     logPointService.getLogPoint(channelInfo.getWorkspaceId(), request.getLogPointId());

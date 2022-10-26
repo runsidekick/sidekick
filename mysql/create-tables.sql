@@ -119,5 +119,6 @@ CREATE TABLE ProbeTag (
   id                                    VARCHAR(64)         NOT NULL PRIMARY KEY,
   workspace_id                    	    VARCHAR(64)         NOT NULL,
   tag                    			    VARCHAR(64)         NOT NULL,
+  disabled                              BOOLEAN             NOT NULL DEFAULT 0,
   CONSTRAINT probe_tag UNIQUE (workspace_id, tag)
 );

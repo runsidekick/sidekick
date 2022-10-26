@@ -13,6 +13,7 @@ import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.proxy.ChannelType;
 import com.runsidekick.broker.proxy.ClientMetadata;
 import com.runsidekick.broker.service.TracePointService;
+import com.runsidekick.service.ProbeTagService;
 import com.runsidekick.service.ServerStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,9 +38,11 @@ public class PutTracePointRequestHandler
     @Autowired
     private AuditLogService auditLogService;
     @Autowired
-    private TracePointService tracePointService;
+    private ProbeTagService probeTagService;
     @Autowired
     private ServerStatisticsService serverStatisticsService;
+    @Autowired
+    private TracePointService tracePointService;
 
     public PutTracePointRequestHandler() {
         super(REQUEST_NAME, PutTracePointRequest.class, PutTracePointResponse.class);
@@ -93,6 +96,9 @@ public class PutTracePointRequestHandler
             try {
                 tracePointService.putTracePoint(channelInfo.getWorkspaceId(), channelInfo.getUserId(), tpc,
                         channelInfo.getChannelType().equals(ChannelType.API));
+
+                probeTagService.add(channelInfo.getWorkspaceId(), tpc.getTags());
+
                 serverStatisticsService.increaseTracePointCount(channelInfo.getWorkspaceId());
             } catch (Exception e) {
                 putTracePointResponse.setErroneous(true);

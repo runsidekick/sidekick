@@ -13,7 +13,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -115,18 +114,8 @@ public class TracePointServiceImpl implements TracePointService {
     }
 
     @Override
-    public List<TracePointConfig> queryTracePoints(
-            String workspaceId, List<ApplicationFilter> applicationFilters, String tag) {
-        List<TracePointConfig> filteredTracePoints = new ArrayList<>();
-        List<TracePointConfig> tracePoints = tracePointRepository.queryTracePointsByTag(workspaceId, tag);
-        applicationFilters.forEach(applicationFilter -> {
-            for (TracePointConfig tracePoint : tracePoints) {
-                if (tracePoint.getApplicationFilters().contains(applicationFilter)) {
-                    filteredTracePoints.add(tracePoint);
-                    break;
-                }
-            }
-        });
-        return filteredTracePoints;
+    public List<TracePointConfig> queryTracePointsByTag(
+            String workspaceId, String tag) {
+        return tracePointRepository.queryTracePointsByTag(workspaceId, tag);
     }
 }

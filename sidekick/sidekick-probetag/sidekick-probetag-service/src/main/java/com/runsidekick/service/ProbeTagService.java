@@ -13,7 +13,13 @@ public interface ProbeTagService {
 
     ProbeTag add(ProbeTag probeTag);
 
+    void add(String workspaceId, List<String> tags);
+
     ProbeTag get(String id);
 
     void delete(String id);
+
+    void disableTag(String workspaceId, String tag);
+
+    void enableTag(String workspaceId, String tag);
 }

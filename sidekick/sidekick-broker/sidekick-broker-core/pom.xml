@@ -16,6 +16,10 @@
         </dependency>
         <dependency>
             <groupId>com.runsidekick</groupId>
+            <artifactId>sidekick-probetag-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.runsidekick</groupId>
             <artifactId>sidekick-webhook-service</artifactId>
         </dependency>
         <dependency>

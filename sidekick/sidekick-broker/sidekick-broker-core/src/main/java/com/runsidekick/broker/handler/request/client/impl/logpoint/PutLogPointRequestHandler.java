@@ -13,6 +13,7 @@ import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.proxy.ChannelType;
 import com.runsidekick.broker.proxy.ClientMetadata;
 import com.runsidekick.broker.service.LogPointService;
+import com.runsidekick.service.ProbeTagService;
 import com.runsidekick.service.ServerStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,6 +39,8 @@ public class PutLogPointRequestHandler
     private AuditLogService auditLogService;
     @Autowired
     private LogPointService logPointService;
+    @Autowired
+    private ProbeTagService probeTagService;
     @Autowired
     private ServerStatisticsService serverStatisticsService;
 
@@ -95,6 +98,9 @@ public class PutLogPointRequestHandler
             try {
                 logPointService.putLogPoint(channelInfo.getWorkspaceId(), channelInfo.getUserId(), lpc,
                         channelInfo.getChannelType().equals(ChannelType.API));
+
+                probeTagService.add(channelInfo.getWorkspaceId(), lpc.getTags());
+
                 serverStatisticsService.increaseLogPointCount(channelInfo.getWorkspaceId());
             } catch (Exception e) {
                 putLogPointResponse.setErroneous(true);

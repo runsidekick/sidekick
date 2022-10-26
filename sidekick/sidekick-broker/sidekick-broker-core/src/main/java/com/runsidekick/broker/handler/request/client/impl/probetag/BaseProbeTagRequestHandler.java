@@ -1,12 +1,12 @@
 package com.runsidekick.broker.handler.request.client.impl.probetag;
 
 import com.runsidekick.broker.handler.request.client.impl.BaseClientRequestHandler;
-import com.runsidekick.broker.model.ApplicationFilter;
+import com.runsidekick.broker.model.Application;
 import com.runsidekick.broker.model.request.Request;
 import com.runsidekick.broker.model.response.Response;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,9 +19,10 @@ public abstract class BaseProbeTagRequestHandler<Req extends Request, Res extend
         super(requestName, requestClass, responseClass);
     }
 
-    protected Set<String> filterApplications(String workspaceId, List<ApplicationFilter> applicationFilters) {
+    protected Set<String> filterApplications(String workspaceId) {
         Set<String> apps = new HashSet<>();
-        apps.addAll(applicationService.filterApplications(workspaceId, applicationFilters));
+        Collection<Application> applications = applicationService.listApplications(workspaceId);
+        applications.forEach(application -> apps.add(application.getInstanceId()));
         return apps;
     }
 

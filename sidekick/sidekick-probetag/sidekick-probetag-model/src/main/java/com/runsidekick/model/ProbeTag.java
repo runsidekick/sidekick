@@ -17,5 +17,6 @@ public class ProbeTag {
     private String id;
     private String workspaceId;
     private String tag;
+    private boolean disabled;
 
 }

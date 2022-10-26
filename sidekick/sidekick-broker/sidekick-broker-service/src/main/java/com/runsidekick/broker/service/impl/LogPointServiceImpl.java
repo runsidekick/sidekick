@@ -13,7 +13,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -115,18 +114,8 @@ public class LogPointServiceImpl implements LogPointService {
     }
 
     @Override
-    public List<LogPointConfig> queryLogPoints(
-            String workspaceId, List<ApplicationFilter> applicationFilters, String tag) {
-        List<LogPointConfig> filteredLogPoints = new ArrayList<>();
-        List<LogPointConfig> logPoints = logPointRepository.queryLogPointsByTag(workspaceId, tag);
-        applicationFilters.forEach(applicationFilter -> {
-            for (LogPointConfig logPoint : logPoints) {
-                if (logPoint.getApplicationFilters().contains(applicationFilter)) {
-                    filteredLogPoints.add(logPoint);
-                    break;
-                }
-            }
-        });
-        return filteredLogPoints;
+    public List<LogPointConfig> queryLogPointsByTag(
+            String workspaceId, String tag) {
+        return logPointRepository.queryLogPointsByTag(workspaceId, tag);
     }
 }

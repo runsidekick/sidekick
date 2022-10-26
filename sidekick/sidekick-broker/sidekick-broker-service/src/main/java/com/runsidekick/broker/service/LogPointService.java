@@ -38,5 +38,5 @@ public interface LogPointService {
 
     LogPoint queryLogPoint(String workspaceId, String logPointId, ApplicationFilter applicationFilter);
 
-    List<LogPointConfig> queryLogPoints(String workspaceId, List<ApplicationFilter> applicationFilters, String tag);
+    List<LogPointConfig> queryLogPointsByTag(String workspaceId, String tag);
 }

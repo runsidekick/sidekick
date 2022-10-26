@@ -9,6 +9,7 @@ import com.runsidekick.broker.model.request.impl.tracepoint.UpdateTracePointRequ
 import com.runsidekick.broker.model.response.impl.tracepoint.UpdateTracePointResponse;
 import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.service.TracePointService;
+import com.runsidekick.service.ProbeTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -27,6 +28,8 @@ public class UpdateTracePointRequestHandler
 
     @Autowired
     private AuditLogService auditLogService;
+    @Autowired
+    private ProbeTagService probeTagService;
     @Autowired
     private TracePointService tracePointService;
 
@@ -66,6 +69,8 @@ public class UpdateTracePointRequestHandler
                     channelInfo.getUserId(),
                     request.getTracePointId(),
                     tracePoint);
+
+            probeTagService.add(channelInfo.getWorkspaceId(), tracePoint.getTags());
 
             TracePointConfig tracePointConfig =
                     tracePointService.getTracePoint(channelInfo.getWorkspaceId(), request.getTracePointId());

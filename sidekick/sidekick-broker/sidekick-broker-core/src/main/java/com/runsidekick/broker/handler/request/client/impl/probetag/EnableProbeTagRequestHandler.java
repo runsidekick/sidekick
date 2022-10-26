@@ -10,6 +10,7 @@ import com.runsidekick.broker.model.response.impl.probetag.EnableProbeTagRespons
 import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.service.LogPointService;
 import com.runsidekick.broker.service.TracePointService;
+import com.runsidekick.service.ProbeTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,8 +28,13 @@ public class EnableProbeTagRequestHandler
 
     @Autowired
     private AuditLogService auditLogService;
+
     @Autowired
     private LogPointService logPointService;
+
+    @Autowired
+    private ProbeTagService probeTagService;
+
     @Autowired
     private TracePointService tracePointService;
 
@@ -46,11 +52,13 @@ public class EnableProbeTagRequestHandler
         EnableProbeTagResponse enableProbeTagResponse = new EnableProbeTagResponse();
 
         if (StringUtils.hasText(request.getTag())) {
-            List<LogPointConfig> logPoints = logPointService.queryLogPoints(channelInfo.getWorkspaceId(),
-                    request.getApplicationFilters(), request.getTag());
+            List<LogPointConfig> logPoints = logPointService.queryLogPointsByTag(
+                    channelInfo.getWorkspaceId(), request.getTag());
 
-            List<TracePointConfig> tracePoints = tracePointService.queryTracePoints(channelInfo.getWorkspaceId(),
-                    request.getApplicationFilters(), request.getTag());
+            List<TracePointConfig> tracePoints = tracePointService.queryTracePointsByTag(
+                    channelInfo.getWorkspaceId(), request.getTag());
+
+            probeTagService.enableTag(channelInfo.getWorkspaceId(), request.getTag());
 
             if (logPoints != null && !logPoints.isEmpty()) {
                 List<String> logPointIds = logPoints.stream()
@@ -68,8 +76,7 @@ public class EnableProbeTagRequestHandler
             }
         }
 
-        List<String> applicationInstanceIds = new ArrayList<>(filterApplications(channelInfo.getWorkspaceId(),
-                request.getApplicationFilters()));
+        List<String> applicationInstanceIds = new ArrayList<>(filterApplications(channelInfo.getWorkspaceId()));
         enableProbeTagResponse.setApplicationInstanceIds(applicationInstanceIds);
         enableProbeTagResponse.setRequestId(request.getId());
         enableProbeTagResponse.setErroneous(false);

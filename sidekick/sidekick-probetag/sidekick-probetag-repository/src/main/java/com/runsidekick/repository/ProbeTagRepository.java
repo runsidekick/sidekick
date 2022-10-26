@@ -16,5 +16,8 @@ public interface ProbeTagRepository {
     void save(ProbeTag probeTag);
 
     void delete(String id);
-    
+
+    void disable(String workspaceId, String tag);
+
+    void enable(String workspaceId, String tag);
 }
