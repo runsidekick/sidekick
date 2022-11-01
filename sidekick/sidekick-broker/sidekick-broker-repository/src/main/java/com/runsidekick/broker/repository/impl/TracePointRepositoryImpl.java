@@ -15,6 +15,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -52,7 +53,7 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
             protected Object getColumnValue(ResultSet rs, int index, PropertyDescriptor pd) {
                 if (pd.getName().equals("applicationFilters")) {
                     String applicationFiltersJson = rs.getString("application_filters");
-                    if (StringUtils.isEmpty(applicationFiltersJson)) {
+                    if (!StringUtils.hasText(applicationFiltersJson)) {
                         return null;
                     }
                     return mapper.readValue(
@@ -60,11 +61,19 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                             new TypeReference<List<ApplicationFilter>>() { });
                 } else if (pd.getName().equals("webhookIds")) {
                     String webhookIds = rs.getString("webhook_ids");
-                    if (StringUtils.isEmpty(webhookIds)) {
+                    if (!StringUtils.hasText(webhookIds)) {
                         return null;
                     }
                     return mapper.readValue(
                             webhookIds,
+                            new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (!StringUtils.hasText(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
                             new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
@@ -80,11 +89,19 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
             protected Object getColumnValue(ResultSet rs, int index, PropertyDescriptor pd) {
                 if (pd.getName().equals("webhookIds")) {
                     String webhookIds = rs.getString("webhook_ids");
-                    if (StringUtils.isEmpty(webhookIds)) {
+                    if (!StringUtils.hasText(webhookIds)) {
                         return null;
                     }
                     return mapper.readValue(
                             webhookIds,
+                            new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (!StringUtils.hasText(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
                             new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
@@ -109,6 +126,7 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
     public void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
             throws Exception {
         try {
+            boolean hasTag = tracePointConfig.hasTag();
             jdbcTemplate.update(
                     "INSERT INTO " +
                             "TracePoint(" +
@@ -116,20 +134,19 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
                             "file_name, line_no, client, " +
                             "condition_expression, expire_secs, expire_count, " +
                             "tracing_enabled, file_hash, disabled, " +
-                            "expire_timestamp, application_filters, webhook_ids, from_api, predefined, " +
-                            "probe_name) " +
+                            "expire_timestamp, application_filters, webhook_ids, from_api, " +
+                            "probe_name, tags) " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
                     tracePointConfig.getId(), workspaceId, userId,
                     tracePointConfig.getFileName(), tracePointConfig.getLineNo(), tracePointConfig.getClient(),
                     tracePointConfig.getConditionExpression(),
-                    getExpireSecs(tracePointConfig.getExpireSecs()),
-                    getExpireCount(tracePointConfig.getExpireCount()),
+                    getExpireSecs(tracePointConfig.getExpireSecs(), hasTag),
+                    getExpireCount(tracePointConfig.getExpireCount(), hasTag),
                     tracePointConfig.isTracingEnabled(), tracePointConfig.getFileHash(), tracePointConfig.isDisabled(),
-                    getExpireTimestamp(tracePointConfig.getExpireSecs()),
+                    getExpireTimestamp(tracePointConfig.getExpireSecs(), hasTag),
                     mapper.writeValueAsString(tracePointConfig.getApplicationFilters()),
                     mapper.writeValueAsString(tracePointConfig.getWebhookIds()),
-                    fromApi,
-                    tracePointConfig.isPredefined(), tracePointConfig.getProbeName());
+                    fromApi, tracePointConfig.getProbeName(), mapper.writeValueAsString(tracePointConfig.getTags()));
         } catch (DuplicateKeyException e) {
             throw new CodedException(
                     TRACEPOINT_ALREADY_EXIST,
@@ -161,20 +178,37 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
     }
 
     @Override
+    public void enableDisableTracePoints(String workspaceId, List<String> tracePointIds, boolean disable) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("disabled", disable);
+        parameters.addValue("ids", tracePointIds);
+        parameters.addValue("workspaceId", workspaceId);
+
+        namedParameterJdbcTemplate.update(
+                "UPDATE TracePoint " +
+                        "SET disabled=:disabled " +
+                        "WHERE id IN (:ids) AND workspace_id = :workspaceId ",
+                parameters);
+    }
+
+    @Override
     @SneakyThrows
     public void updateTracePoint(String workspaceId, String userId, String tracePointId, TracePoint tracePoint) {
+        boolean hasTag = tracePoint.hasTag();
         jdbcTemplate.update(
                 "UPDATE TracePoint " +
                         "SET " +
                             "condition_expression = ?, expire_secs = ?, expire_count = ?, " +
                             "expire_timestamp = ?, tracing_enabled = ?, disabled = ?, webhook_ids = ?, " +
-                            "predefined = ?, probe_name = ? " +
+                            "probe_name = ?, tags = ?" +
                         "WHERE workspace_id = ? AND user_id = ? AND id = ?",
                 tracePoint.getConditionExpression(),
-                getExpireSecs(tracePoint.getExpireSecs()), getExpireCount(tracePoint.getExpireCount()),
-                getExpireTimestamp(tracePoint.getExpireSecs()), tracePoint.isTracingEnabled(), tracePoint.isDisabled(),
+                getExpireSecs(tracePoint.getExpireSecs(), hasTag),
+                getExpireCount(tracePoint.getExpireCount(), hasTag),
+                getExpireTimestamp(tracePoint.getExpireSecs(), hasTag),
+                tracePoint.isTracingEnabled(), tracePoint.isDisabled(),
                 mapper.writeValueAsString(tracePoint.getWebhookIds()),
-                tracePoint.isPredefined(), tracePoint.getProbeName(),
+                tracePoint.getProbeName(), mapper.writeValueAsString(tracePoint.getTags()),
                 workspaceId, userId, tracePointId);
     }
 
@@ -201,7 +235,7 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
     @Override
     public List<TracePoint> listPredefinedTracePoints(String workspaceId, String userId) {
         return jdbcTemplate.query(
-                "SELECT * FROM TracePoint WHERE workspace_id = ? AND user_id = ? AND predefined = 1",
+                "SELECT * FROM TracePoint WHERE workspace_id = ? AND user_id = ? AND JSON_LENGTH(tags) > 0",
                 tracePointRowMapper,
                 workspaceId, userId);
     }
@@ -221,8 +255,20 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
         return tracePoints != null && tracePoints.size() > 0 ? tracePoints.get(0) : null;
     }
 
+    @Override
+    public List<TracePointConfig> queryTracePointsByTag(String workspaceId, String tag) {
+        ApplicationAwareProbeQueryFilter queryFilter = ProbeUtil.probeTagQueryFilter(workspaceId, tag);
+
+        Collection<TracePointConfig> tracePointConfigs =
+                jdbcTemplate.query(
+                        "SELECT * FROM TracePoint WHERE workspace_id = ?" + queryFilter.getFiltersExpr().toString(),
+                        tracePointConfigRowMapper,
+                        queryFilter.getArgs().toArray());
+        return tracePointConfigs.stream().collect(Collectors.toList());
+    }
+
     private List<TracePoint> filterTracePoints(Collection<TracePointConfig> tracePointConfigs,
-                                                 ApplicationFilter filter) {
+                                               ApplicationFilter filter) {
         Collection<TracePointConfig> filteredTracePoints = ProbeUtil.filterProbes(tracePointConfigs, filter);
         return filteredTracePoints.stream().collect(Collectors.toList());
     }

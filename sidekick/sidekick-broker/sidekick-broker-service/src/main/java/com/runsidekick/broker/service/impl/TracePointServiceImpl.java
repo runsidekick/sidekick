@@ -41,7 +41,7 @@ public class TracePointServiceImpl implements TracePointService {
     public void putTracePoint(String workspaceId, String userId, TracePointConfig tracePointConfig, boolean fromApi)
             throws Exception {
         tracePointRepository.putTracePoint(workspaceId, userId, tracePointConfig, fromApi);
-        if (!tracePointConfig.isPredefined()) {
+        if (!tracePointConfig.hasTag()) {
             tracePointExpireCountRepository.putTracePointExpireCount(workspaceId, tracePointConfig.getId(),
                     tracePointConfig.getExpireCount(), tracePointConfig.getExpireSecs());
         }
@@ -70,10 +70,15 @@ public class TracePointServiceImpl implements TracePointService {
     }
 
     @Override
+    public void enableDisableTracePoints(String workspaceId, List<String> tracePointIds, boolean disable) {
+        tracePointRepository.enableDisableTracePoints(workspaceId, tracePointIds, disable);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "TracePoint", key = "#workspaceId + '_' + #tracePointId")
     public void updateTracePoint(String workspaceId, String userId, String tracePointId, TracePoint tracePoint) {
         tracePointRepository.updateTracePoint(workspaceId, userId, tracePointId, tracePoint);
-        if (tracePoint.isPredefined()) {
+        if (tracePoint.hasTag()) {
             tracePointExpireCountRepository.removeTracePointExpireCount(workspaceId, tracePointId);
         } else {
             tracePointExpireCountRepository.putTracePointExpireCount(
@@ -108,4 +113,9 @@ public class TracePointServiceImpl implements TracePointService {
         return tracePointRepository.queryTracePoint(workspaceId, tracePointId, filter);
     }
 
+    @Override
+    public List<TracePointConfig> queryTracePointsByTag(
+            String workspaceId, String tag) {
+        return tracePointRepository.queryTracePointsByTag(workspaceId, tag);
+    }
 }

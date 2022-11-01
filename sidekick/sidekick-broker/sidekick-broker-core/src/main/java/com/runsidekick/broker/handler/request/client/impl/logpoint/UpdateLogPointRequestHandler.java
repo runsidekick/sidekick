@@ -9,8 +9,10 @@ import com.runsidekick.broker.model.request.impl.logpoint.UpdateLogPointRequest;
 import com.runsidekick.broker.model.response.impl.logpoint.UpdateLogPointResponse;
 import com.runsidekick.broker.proxy.ChannelInfo;
 import com.runsidekick.broker.service.LogPointService;
+import com.runsidekick.service.ProbeTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,8 @@ public class UpdateLogPointRequestHandler
     private AuditLogService auditLogService;
     @Autowired
     private LogPointService logPointService;
+    @Autowired
+    private ProbeTagService probeTagService;
 
     public UpdateLogPointRequestHandler() {
         super(REQUEST_NAME, UpdateLogPointRequest.class, UpdateLogPointResponse.class);
@@ -39,6 +43,11 @@ public class UpdateLogPointRequestHandler
                                                   UpdateLogPointRequest request,
                                                   RequestContext requestContext) {
         UpdateLogPointResponse updateLogPointResponse = new UpdateLogPointResponse();
+        if (!CollectionUtils.isEmpty(request.getTags())) {
+            request.setExpireCount(-1);
+            request.setExpireSecs(-1);
+        }
+
         if (request.isPersist() && request.getLogPointId() != null) {
             LogPoint logPoint = new LogPoint();
             logPoint.setId(request.getLogPointId());
@@ -53,14 +62,16 @@ public class UpdateLogPointRequestHandler
             logPoint.setStdoutEnabled(request.isStdoutEnabled());
             logPoint.setLogLevel(request.getLogLevel());
             logPoint.setWebhookIds(request.getWebhookIds());
-            logPoint.setPredefined(request.isPredefined());
             logPoint.setProbeName(request.getProbeName());
+            logPoint.setTags(request.getTags());
 
             logPointService.updateLogPoint(
                     channelInfo.getWorkspaceId(),
                     channelInfo.getUserId(),
                     request.getLogPointId(),
                     logPoint);
+
+            probeTagService.add(channelInfo.getWorkspaceId(), logPoint.getTags());
 
             LogPointConfig logPointConfig =
                     logPointService.getLogPoint(channelInfo.getWorkspaceId(), request.getLogPointId());

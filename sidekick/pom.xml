@@ -83,6 +83,7 @@
         <module>sidekick-webhook</module>
         <module>sidekick-api</module>
         <module>sidekick-phone-home</module>
+        <module>sidekick-probetag</module>
         <module>sidekick-statistics</module>
     </modules>
 
@@ -156,6 +157,22 @@
             <dependency>
                 <groupId>com.runsidekick</groupId>
                 <artifactId>sidekick-statistics-repository</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-probetag-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-probetag-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-probetag-repository</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -490,6 +507,34 @@
                                 <checkModificationExclude>pom.xml</checkModificationExclude>
                             </checkModificationExcludes>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>internal-release</id>
+            <distributionManagement>
+                <repository>
+                    <id>sidekick-oss-releases</id>
+                    <name>Sidekick OSS Releases</name>
+                    <url>https://repo.thundra.io/content/repositories/sidekick-oss-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>sidekick-oss-snapshots</id>
+                    <name>Sidekick OSS Snapshots</name>
+                    <url>https://repo.thundra.io/content/repositories/sidekick-oss-snapshots/</url>
+                    <uniqueVersion>true</uniqueVersion>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>

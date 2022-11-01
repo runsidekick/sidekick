@@ -41,8 +41,8 @@ CREATE TABLE TracePoint
     application_filters                 JSON,
     webhook_ids                         JSON,
     from_api                            BOOLEAN             NOT NULL DEFAULT 0,
-    predefined                          BOOLEAN             NOT NULL DEFAULT 0,
-    probe_name                          VARCHAR(255)
+    probe_name                          VARCHAR(255),
+    tags                                JSON
 );
 
 CREATE EVENT IF NOT EXISTS clean_expired_tracepoints
@@ -50,7 +50,7 @@ CREATE EVENT IF NOT EXISTS clean_expired_tracepoints
 DO
 DELETE
 FROM TracePoint
-WHERE expire_timestamp < UNIX_TIMESTAMP() * 1000 AND predefined = 0;
+WHERE expire_timestamp < UNIX_TIMESTAMP() * 1000 AND (JSON_TYPE(tags) = 'NULL' OR JSON_LENGTH(tags) = 0);
 
 CREATE TABLE LogPoint
 (
@@ -72,8 +72,8 @@ CREATE TABLE LogPoint
     log_level                           VARCHAR(1024),
     webhook_ids                         JSON,
     from_api                            BOOLEAN             NOT NULL DEFAULT 0,
-    predefined                          BOOLEAN             NOT NULL DEFAULT 0,
-    probe_name                          VARCHAR(255)
+    probe_name                          VARCHAR(255),
+    tags                                JSON
 );
 
 CREATE EVENT IF NOT EXISTS clean_expired_logpoints
@@ -81,7 +81,7 @@ CREATE EVENT IF NOT EXISTS clean_expired_logpoints
 DO
 DELETE
 FROM LogPoint
-WHERE expire_timestamp < UNIX_TIMESTAMP() * 1000 AND predefined = 0;
+WHERE expire_timestamp < UNIX_TIMESTAMP() * 1000 AND (JSON_TYPE(tags) = 'NULL' OR JSON_LENGTH(tags) = 0);
 
 CREATE TABLE Webhook
 (
@@ -113,4 +113,12 @@ CREATE TABLE ServerStatistics (
     application_instance_count          INT(10)             DEFAULT 0,
     tracepoint_count                    INT(10)             DEFAULT 0,
     logpoint_count                      INT(10)             DEFAULT 0
+);
+
+CREATE TABLE ProbeTag (
+  id                                    VARCHAR(64)         NOT NULL PRIMARY KEY,
+  workspace_id                    	    VARCHAR(64)         NOT NULL,
+  tag                    			    VARCHAR(64)         NOT NULL,
+  disabled                              BOOLEAN             NOT NULL DEFAULT 0,
+  CONSTRAINT probe_tag UNIQUE (workspace_id, tag)
 );

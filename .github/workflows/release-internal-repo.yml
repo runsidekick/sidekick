@@ -61,8 +61,12 @@ jobs:
                 "password": "${{ secrets.SIDEKICK_INTERNAL_REPO_PASSWORD  }}"
               }
             ]
-
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.SIDEKICK_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SIDEKICK_GPG_PASSPHRASE}}
       - name: Build and Release Snapshot with Maven
         env:
           GITHUB_TOKEN: ${{ secrets.SIDEKICK_DEVOPS_GITHUB_ACCESS_TOKEN }}
-        run: mvn -q clean install deploy --batch-mode -P release
+        run: mvn -f sidekick -DskipTests=true -q clean package release:clean release:prepare release:perform release:clean --batch-mode -P internal-release

@@ -27,8 +27,8 @@ public class PutLogPointRequest extends BaseApplicationAwareRequest {
     private boolean disable;
     private List<ApplicationFilter> applicationFilters;
     private List<String> webhookIds;
-    private boolean predefined;
     private String probeName;
+    private List<String> tags;
 
     public static PutLogPointRequest of(LogPoint logPoint, ApplicationFilter applicationFilter,
                                         Application application) {
@@ -49,8 +49,8 @@ public class PutLogPointRequest extends BaseApplicationAwareRequest {
         request.setStdoutEnabled(logPoint.isStdoutEnabled());
         request.setLogLevel(logPoint.getLogLevel());
         request.setWebhookIds(logPoint.getWebhookIds());
-        request.setPredefined(logPoint.isPredefined());
         request.setProbeName(logPoint.getProbeName());
+        request.setTags(logPoint.getTags());
 
         return request;
     }
