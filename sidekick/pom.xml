@@ -8,7 +8,7 @@
     </parent>
     <groupId>com.runsidekick</groupId>
     <artifactId>sidekick-oss</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.6</version>
     <packaging>pom</packaging>
 
     <name>Sidekick</name>
@@ -25,7 +25,7 @@
         <connection>scm:git:https://${GITHUB_TOKEN}@github.com/runsidekick/sidekick.git</connection>
         <developerConnection>scm:git:https://${GITHUB_TOKEN}@github.com/runsidekick/sidekick.git</developerConnection>
         <url>https://github.com/runsidekick/sidekick</url>
-        <tag>HEAD</tag>
+        <tag>sidekick-oss-0.0.6</tag>
     </scm>
     <developers>
         <developer>
@@ -398,7 +398,7 @@
                     <configuration>
                         <createDependencyReducedPom>false</createDependencyReducedPom>
                         <transformers>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                         </transformers>
                     </configuration>
                     <executions>
