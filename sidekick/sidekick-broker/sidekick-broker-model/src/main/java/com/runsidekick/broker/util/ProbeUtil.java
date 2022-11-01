@@ -118,9 +118,6 @@ public final class ProbeUtil {
         List<String> args = new ArrayList<>();
         args.add(workspaceId);
         if (StringUtils.hasText(tag)) {
-//            filtersExpr.append(" AND ");
-//            filtersExpr.append(" ? ");
-//            filtersExpr.append("MEMBER OF(tags)");
             filtersExpr.append(" AND ");
             filtersExpr.append("JSON_SEARCH(tags , 'all', ? , NULL) IS NOT NULL");
             args.add(tag);
