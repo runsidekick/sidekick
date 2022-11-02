@@ -3,7 +3,7 @@
     <parent>
         <artifactId>sidekick-oss</artifactId>
         <groupId>com.runsidekick</groupId>
-        <version>0.0.6-SNAPSHOT</version>
+        <version>0.0.8-SNAPSHOT</version>
     </parent>
     <artifactId>sidekick-api</artifactId>
     <modelVersion>4.0.0</modelVersion>
@@ -12,6 +12,10 @@
         <dependency>
             <groupId>com.runsidekick</groupId>
             <artifactId>sidekick-broker-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.runsidekick</groupId>
+            <artifactId>sidekick-probetag-service</artifactId>
         </dependency>
         <dependency>
             <groupId>com.runsidekick</groupId>
@@ -128,6 +132,17 @@
                     <artifactId>transport</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.thundra.swark</groupId>
+            <artifactId>thundra-env-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.thundra.swark</groupId>
+            <artifactId>thundra-env-utils</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
         <!-- ========================================== -->
     </dependencies>

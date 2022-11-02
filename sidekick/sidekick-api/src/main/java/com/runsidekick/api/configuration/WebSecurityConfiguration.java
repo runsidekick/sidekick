@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,6 +22,7 @@ import javax.servlet.Filter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Profile({"!test"})
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final ApiAuthService apiAuthService;

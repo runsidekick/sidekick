@@ -41,7 +41,7 @@ public class LogPointServiceImpl implements LogPointService {
     public void putLogPoint(String workspaceId, String userId, LogPointConfig logPointConfig, boolean fromApi)
             throws Exception {
         logPointRepository.putLogPoint(workspaceId, userId, logPointConfig, fromApi);
-        if (!logPointConfig.isPredefined()) {
+        if (!logPointConfig.hasTag()) {
             logPointExpireCountRepository.putLogPointExpireCount(workspaceId, logPointConfig.getId(),
                     logPointConfig.getExpireCount(), logPointConfig.getExpireSecs());
         }
@@ -70,10 +70,15 @@ public class LogPointServiceImpl implements LogPointService {
     }
 
     @Override
+    public void enableDisableLogPoints(String workspaceId, List<String> logPointIds, boolean disable) {
+        logPointRepository.enableDisableLogPoints(workspaceId, logPointIds, disable);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "LogPoint", key = "#workspaceId + '_' + #logPointId")
     public void updateLogPoint(String workspaceId, String userId, String logPointId, LogPoint logPoint) {
         logPointRepository.updateLogPoint(workspaceId, userId, logPointId, logPoint);
-        if (logPoint.isPredefined()) {
+        if (logPoint.hasTag()) {
             logPointExpireCountRepository.removeLogPointExpireCount(workspaceId, logPointId);
         } else {
             logPointExpireCountRepository.putLogPointExpireCount(
@@ -108,4 +113,9 @@ public class LogPointServiceImpl implements LogPointService {
         return logPointRepository.queryLogPoint(workspaceId, logPointId, applicationFilter);
     }
 
+    @Override
+    public List<LogPointConfig> queryLogPointsByTag(
+            String workspaceId, String tag) {
+        return logPointRepository.queryLogPointsByTag(workspaceId, tag);
+    }
 }

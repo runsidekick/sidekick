@@ -23,6 +23,6 @@ public class UpdateLogPointRequest extends BaseApplicationAwareRequest {
     private boolean stdoutEnabled;
     private String logLevel;
     private List<String> webhookIds;
-    private boolean predefined;
     private String probeName;
+    private List<String> tags;
 }

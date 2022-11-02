@@ -18,6 +18,8 @@ import com.runsidekick.broker.model.request.impl.logpoint.ListLogPointsRequest;
 import com.runsidekick.broker.model.request.impl.logpoint.PutLogPointRequest;
 import com.runsidekick.broker.model.request.impl.logpoint.RemoveLogPointRequest;
 import com.runsidekick.broker.model.request.impl.logpoint.UpdateLogPointRequest;
+import com.runsidekick.broker.model.request.impl.probetag.DisableProbeTagRequest;
+import com.runsidekick.broker.model.request.impl.probetag.EnableProbeTagRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.DisableTracePointRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.EnableTracePointRequest;
 import com.runsidekick.broker.model.request.impl.tracepoint.ListTracePointsRequest;
@@ -33,6 +35,8 @@ import com.runsidekick.broker.model.response.impl.logpoint.ListLogPointsResponse
 import com.runsidekick.broker.model.response.impl.logpoint.PutLogPointResponse;
 import com.runsidekick.broker.model.response.impl.logpoint.RemoveLogPointResponse;
 import com.runsidekick.broker.model.response.impl.logpoint.UpdateLogPointResponse;
+import com.runsidekick.broker.model.response.impl.probetag.DisableProbeTagResponse;
+import com.runsidekick.broker.model.response.impl.probetag.EnableProbeTagResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.DisableTracePointResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.EnableTracePointResponse;
 import com.runsidekick.broker.model.response.impl.tracepoint.ListTracePointsResponse;
@@ -47,6 +51,7 @@ import lombok.SneakyThrows;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,11 +68,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -1116,6 +1121,158 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
     }
 
     @Test
+    public void clientShouldBeAbleToPutPredefinedTracePoint() throws InterruptedException, ExecutionException, TimeoutException {
+        WebSocketClient webSocketUserClient =
+                new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+
+            WebSocketClient webSocketAppClient1a = null;
+            WebSocketClient webSocketAppClient2a = null;
+            try {
+                webSocketAppClient1a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "123",
+                                        "app1a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue1");
+                                            put("tag2", "tagValue3");
+                                        }}));
+                assertConnected(webSocketAppClient1a);
+
+                webSocketAppClient2a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "456",
+                                        "app2a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue2");
+                                            put("tag2", "tagValue4");
+                                        }}));
+                assertConnected(webSocketAppClient2a);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                String requestId = UUID.randomUUID().toString();
+                List<ApplicationFilter> filters = new ArrayList<>();
+
+                Map<String, String> customTags = new HashMap<>();
+                customTags.put("tag1", "tagValue2");
+                customTags.put("tag2", "tagValue3");
+
+                ApplicationFilter filter = new ApplicationFilter();
+                filter.setCustomTags(customTags);
+                filter.setName("app1a");
+                filter.setStage("prod");
+
+                ApplicationFilter filter2 = new ApplicationFilter();
+                customTags.put("tag1", "tagValue1");
+                filter2.setCustomTags(customTags);
+                filter2.setName("app1a");
+
+                filters.add(filter2);
+
+                PutTracePointRequest putTracePointRequest = new PutTracePointRequest();
+                putTracePointRequest.setId(requestId);
+                putTracePointRequest.setFileName("Test.java");
+                putTracePointRequest.setClient(CLIENT);
+                putTracePointRequest.setLineNo(10);
+                putTracePointRequest.setPersist(true);
+                putTracePointRequest.setConditionExpression("test == 1");
+                putTracePointRequest.setApplicationFilters(filters);
+                putTracePointRequest.setExpireCount(1);
+                putTracePointRequest.setExpireSecs(-1);
+                putTracePointRequest.setEnableTracing(true);
+                putTracePointRequest.setTags(Collections.singletonList("test"));
+
+                CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
+
+                webSocketAppClient1a.clearReadMessages();
+                webSocketAppClient2a.clearReadMessages();
+
+                webSocketUserClient.request(putTracePointRequest, PutTracePointResponse.class);
+
+                completableFuture.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                // Put tracepoint request should be received by app1
+                PutTracePointRequest receivedPutTracePointRequest =
+                        webSocketAppClient1a.read(PutTracePointRequest.class, 30, TimeUnit.SECONDS);
+                assertNotNull(receivedPutTracePointRequest);
+                assertEquals(requestId, receivedPutTracePointRequest.getId());
+
+                // Put tracepoint request should not be received by app2
+                PutTracePointRequest receivedPutTracePointRequest2 =
+                        webSocketAppClient2a.read(PutTracePointRequest.class, 3, TimeUnit.SECONDS);
+                assertNull(receivedPutTracePointRequest2);
+
+                PutTracePointResponse putTracePointResponse = new PutTracePointResponse();
+                putTracePointResponse.setRequestId(requestId);
+                putTracePointResponse.setErroneous(false);
+                putTracePointResponse.setClient(CLIENT);
+
+                webSocketUserClient.clearReadMessages();
+
+                webSocketAppClient1a.send(putTracePointResponse);
+
+                // Put tracepoint response should not be received by client
+                PutTracePointResponse receivedPutTracePointResponse =
+                        webSocketUserClient.read(PutTracePointResponse.class, 30, TimeUnit.SECONDS);
+                assertNotNull(receivedPutTracePointResponse);
+                assertEquals(requestId, receivedPutTracePointResponse.getRequestId());
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ListTracePointsRequest listTracePointRequest = new ListTracePointsRequest();
+                listTracePointRequest.setId(UUID.randomUUID().toString());
+
+                ListTracePointsResponse listTracePointResponse = webSocketUserClient.requestSync(
+                        listTracePointRequest, ListTracePointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listTracePointResponse);
+                assertNotNull(listTracePointResponse.getTracePoints());
+
+                TracePoint tp = listTracePointResponse.getTracePoints().get(0);
+
+                assertEquals(tp.getFileName(), "Test.java");
+                assertEquals(tp.getClient(), CLIENT);
+                assertEquals(tp.getLineNo(), 10);
+                assertEquals(tp.getConditionExpression(), "test == 1");
+                // Permanent Probe
+                assertEquals(tp.getExpireCount(), -1);
+                assertEquals(tp.getExpireSecs(), -1);
+                assertTrue(tp.isTracingEnabled());
+                assertFalse(CollectionUtils.isEmpty(tp.getTags()));
+
+                ApplicationFilter applicationFilter = new ApplicationFilter();
+                applicationFilter.setName("app1a");
+                applicationFilter.setStage("dev");
+                applicationFilter.setCustomTags(new HashMap<String, String>() {{
+                    put("tag1", "tagValue1");
+                    put("tag2", "tagValue3");
+                }});
+
+                Collection<TracePoint> tracePoints =
+                        tracePointService.queryTracePoints(WORKSPACE_ID, applicationFilter);
+                assertEquals(1, tracePoints.size());
+            } finally {
+                if (webSocketAppClient1a != null) {
+                    webSocketAppClient1a.close();
+                }
+                if (webSocketAppClient2a != null) {
+                    webSocketAppClient2a.close();
+                }
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+
+    @Test
     public void clientShouldNotBeAbleToPutTracePointWithSameId() throws InterruptedException, ExecutionException, TimeoutException {
         WebSocketClient webSocketUserClient =
                 new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
@@ -1854,6 +2011,106 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
     }
 
     @Test
+    public void cleanExpiredTracePointKeepPredefined() throws InterruptedException, ExecutionException, TimeoutException {
+        WebSocketClient webSocketUserClient =
+                new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+
+            WebSocketClient webSocketAppClient = null;
+            try {
+                webSocketAppClient =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "123",
+                                        "app1a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue1");
+                                            put("tag2", "tagValue3");
+                                        }}));
+                assertConnected(webSocketAppClient);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                List<ApplicationFilter> filters = new ArrayList<>();
+                ApplicationFilter filter = new ApplicationFilter();
+                filter.setName("app1a");
+                filters.add(filter);
+
+                String requestId1 = UUID.randomUUID().toString();
+
+                PutTracePointRequest putTracePointRequest = new PutTracePointRequest();
+                putTracePointRequest.setId(requestId1);
+                putTracePointRequest.setFileName("Test.java");
+                putTracePointRequest.setClient(CLIENT);
+                putTracePointRequest.setLineNo(10);
+                putTracePointRequest.setPersist(true);
+                putTracePointRequest.setConditionExpression("test == 1");
+                putTracePointRequest.setApplicationFilters(filters);
+                putTracePointRequest.setExpireCount(1);
+                putTracePointRequest.setExpireSecs(1);
+                putTracePointRequest.setEnableTracing(true);
+
+                CompletableFuture completableFuture1 = registerForWaitingClientMessage(requestId1);
+
+                webSocketUserClient.request(putTracePointRequest, PutTracePointResponse.class);
+
+                completableFuture1.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                String requestId2 = UUID.randomUUID().toString();
+
+                PutTracePointRequest putTracePointRequest2 = new PutTracePointRequest();
+                putTracePointRequest2.setId(requestId2);
+                putTracePointRequest2.setFileName("Test.java");
+                putTracePointRequest2.setClient(CLIENT);
+                putTracePointRequest2.setLineNo(15);
+                putTracePointRequest2.setPersist(true);
+                putTracePointRequest2.setConditionExpression("test == 1");
+                putTracePointRequest2.setApplicationFilters(filters);
+                putTracePointRequest2.setExpireCount(1);
+                putTracePointRequest2.setExpireSecs(2);
+                putTracePointRequest2.setEnableTracing(true);
+                putTracePointRequest2.setTags(Collections.singletonList("test"));
+
+                CompletableFuture completableFuture2 = registerForWaitingClientMessage(requestId2);
+
+                webSocketUserClient.request(putTracePointRequest2, PutTracePointResponse.class);
+
+                completableFuture2.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ListTracePointsRequest listTracePointRequest = new ListTracePointsRequest();
+                listTracePointRequest.setId(UUID.randomUUID().toString());
+
+                ListTracePointsResponse listTracePointResponse = webSocketUserClient.requestSync(
+                        listTracePointRequest, ListTracePointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listTracePointResponse);
+                assertNotNull(listTracePointResponse.getTracePoints());
+                assertEquals(2, listTracePointResponse.getTracePoints().size());
+
+                assertEventually(() -> {
+                    ListTracePointsResponse listTracePointResponse3 = webSocketUserClient.requestSync(
+                            listTracePointRequest, ListTracePointsResponse.class, 30, TimeUnit.SECONDS);
+                    assertNotNull(listTracePointResponse3);
+                    assertNotNull(listTracePointResponse3.getTracePoints());
+                    assertEquals(1, listTracePointResponse3.getTracePoints().size());
+                });
+            } finally {
+                if (webSocketAppClient != null) {
+                    webSocketAppClient.close();
+                }
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+
+    @Test
     public void cleanExpiredTracePointKeepOther() throws InterruptedException, ExecutionException, TimeoutException {
         WebSocketClient webSocketUserClient =
                 new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
@@ -2097,6 +2354,161 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
                 assertEquals(lp.getLogExpression(), "test");
                 assertTrue(lp.isStdoutEnabled());
                 assertEquals(lp.getLogLevel(), "INFO");
+
+                ApplicationFilter applicationFilter = new ApplicationFilter();
+                applicationFilter.setName("app1a");
+                applicationFilter.setStage("dev");
+                applicationFilter.setCustomTags(new HashMap<String, String>() {{
+                    put("tag1", "tagValue1");
+                    put("tag2", "tagValue3");
+                }});
+
+                Collection<LogPoint> logPoints =
+                        logPointService.queryLogPoints(WORKSPACE_ID, applicationFilter);
+                assertEquals(1, logPoints.size());
+            } finally {
+                if (webSocketAppClient1a != null) {
+                    webSocketAppClient1a.close();
+                }
+                if (webSocketAppClient2a != null) {
+                    webSocketAppClient2a.close();
+                }
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+
+    @Test
+    public void clientShouldBeAbleToPutPredefinedLogPoint() throws InterruptedException, ExecutionException, TimeoutException {
+        WebSocketClient webSocketUserClient =
+                new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+
+            WebSocketClient webSocketAppClient1a = null;
+            WebSocketClient webSocketAppClient2a = null;
+            try {
+                webSocketAppClient1a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "123",
+                                        "app1a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue1");
+                                            put("tag2", "tagValue3");
+                                        }}));
+                assertConnected(webSocketAppClient1a);
+
+                webSocketAppClient2a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "456",
+                                        "app2a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue2");
+                                            put("tag2", "tagValue4");
+                                        }}));
+                assertConnected(webSocketAppClient2a);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                String requestId = UUID.randomUUID().toString();
+                List<ApplicationFilter> filters = new ArrayList<>();
+
+                Map<String, String> customTags = new HashMap<>();
+                customTags.put("tag1", "tagValue2");
+                customTags.put("tag2", "tagValue3");
+
+                ApplicationFilter filter = new ApplicationFilter();
+                filter.setCustomTags(customTags);
+                filter.setName("app1a");
+                filter.setStage("prod");
+
+                ApplicationFilter filter2 = new ApplicationFilter();
+                customTags.put("tag1", "tagValue1");
+                filter2.setCustomTags(customTags);
+                filter2.setName("app1a");
+
+                filters.add(filter2);
+
+                PutLogPointRequest putLogPointRequest = new PutLogPointRequest();
+                putLogPointRequest.setId(requestId);
+                putLogPointRequest.setFileName("Test.java");
+                putLogPointRequest.setClient(CLIENT);
+                putLogPointRequest.setLineNo(10);
+                putLogPointRequest.setPersist(true);
+                putLogPointRequest.setConditionExpression("test == 1");
+                putLogPointRequest.setApplicationFilters(filters);
+                putLogPointRequest.setExpireCount(1);
+                putLogPointRequest.setExpireSecs(-1);
+                putLogPointRequest.setLogExpression("test");
+                putLogPointRequest.setStdoutEnabled(true);
+                putLogPointRequest.setLogLevel("INFO");
+                putLogPointRequest.setTags(Collections.singletonList("test"));
+
+                CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
+
+                webSocketAppClient1a.clearReadMessages();
+                webSocketAppClient2a.clearReadMessages();
+
+                webSocketUserClient.request(putLogPointRequest, PutLogPointResponse.class);
+
+                completableFuture.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                // Put logpoint request should be received by app1
+                PutLogPointRequest receivedPutLogPointRequest =
+                        webSocketAppClient1a.read(PutLogPointRequest.class, 30, TimeUnit.SECONDS);
+                assertNotNull(receivedPutLogPointRequest);
+                assertEquals(requestId, receivedPutLogPointRequest.getId());
+
+                // Put logpoint request should not be received by app2
+                PutLogPointRequest receivedPutLogPointRequest2 =
+                        webSocketAppClient2a.read(PutLogPointRequest.class, 3, TimeUnit.SECONDS);
+                assertNull(receivedPutLogPointRequest2);
+
+                PutLogPointResponse putLogPointResponse = new PutLogPointResponse();
+                putLogPointResponse.setRequestId(requestId);
+                putLogPointResponse.setErroneous(false);
+                putLogPointResponse.setClient(CLIENT);
+
+                webSocketUserClient.clearReadMessages();
+
+                webSocketAppClient1a.send(putLogPointResponse);
+
+                // Put logpoint response should not be received by client
+                PutLogPointResponse receivedPutLogPointResponse =
+                        webSocketUserClient.read(PutLogPointResponse.class, 30, TimeUnit.SECONDS);
+                assertNotNull(receivedPutLogPointResponse);
+                assertEquals(requestId, receivedPutLogPointResponse.getRequestId());
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ListLogPointsRequest listLogPointRequest = new ListLogPointsRequest();
+                listLogPointRequest.setId(UUID.randomUUID().toString());
+
+                ListLogPointsResponse listLogPointResponse = webSocketUserClient.requestSync(
+                        listLogPointRequest, ListLogPointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listLogPointResponse);
+                assertNotNull(listLogPointResponse.getLogPoints());
+
+                LogPoint lp = listLogPointResponse.getLogPoints().get(0);
+
+                assertEquals(lp.getFileName(), "Test.java");
+                assertEquals(lp.getClient(), CLIENT);
+                assertEquals(lp.getLineNo(), 10);
+                assertEquals(lp.getConditionExpression(), "test == 1");
+                assertEquals(lp.getExpireCount(), -1);
+                assertEquals(lp.getExpireSecs(), -1);
+                assertEquals(lp.getLogExpression(), "test");
+                assertTrue(lp.isStdoutEnabled());
+                assertEquals(lp.getLogLevel(), "INFO");
+                assertFalse(CollectionUtils.isEmpty(lp.getTags()));
 
                 ApplicationFilter applicationFilter = new ApplicationFilter();
                 applicationFilter.setName("app1a");
@@ -2875,6 +3287,106 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
     }
 
     @Test
+    public void cleanExpiredLogPointKeepPredefined() throws InterruptedException, ExecutionException, TimeoutException {
+        WebSocketClient webSocketUserClient =
+                new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+
+            WebSocketClient webSocketAppClient = null;
+            try {
+                webSocketAppClient =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "123",
+                                        "app1a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue1");
+                                            put("tag2", "tagValue3");
+                                        }}));
+                assertConnected(webSocketAppClient);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                List<ApplicationFilter> filters = new ArrayList<>();
+                ApplicationFilter filter = new ApplicationFilter();
+                filter.setName("app1a");
+                filters.add(filter);
+
+                String requestId1 = UUID.randomUUID().toString();
+
+                PutLogPointRequest putLogPointRequest = new PutLogPointRequest();
+                putLogPointRequest.setId(requestId1);
+                putLogPointRequest.setFileName("Test.java");
+                putLogPointRequest.setClient(CLIENT);
+                putLogPointRequest.setLineNo(10);
+                putLogPointRequest.setPersist(true);
+                putLogPointRequest.setConditionExpression("test == 1");
+                putLogPointRequest.setApplicationFilters(filters);
+                putLogPointRequest.setExpireCount(1);
+                putLogPointRequest.setExpireSecs(1);
+                putLogPointRequest.setLogExpression("test");
+
+                CompletableFuture completableFuture1 = registerForWaitingClientMessage(requestId1);
+
+                webSocketUserClient.request(putLogPointRequest, PutLogPointResponse.class);
+
+                completableFuture1.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                String requestId2 = UUID.randomUUID().toString();
+
+                PutLogPointRequest putLogPointRequest2 = new PutLogPointRequest();
+                putLogPointRequest2.setId(requestId2);
+                putLogPointRequest2.setFileName("Test.java");
+                putLogPointRequest2.setClient(CLIENT);
+                putLogPointRequest2.setLineNo(15);
+                putLogPointRequest2.setPersist(true);
+                putLogPointRequest2.setConditionExpression("test == 1");
+                putLogPointRequest2.setApplicationFilters(filters);
+                putLogPointRequest2.setExpireCount(1);
+                putLogPointRequest2.setExpireSecs(3);
+                putLogPointRequest2.setLogExpression("test");
+                putLogPointRequest2.setTags(Collections.singletonList("test"));
+
+                CompletableFuture completableFuture2 = registerForWaitingClientMessage(requestId2);
+
+                webSocketUserClient.request(putLogPointRequest2, PutLogPointResponse.class);
+
+                completableFuture2.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ListLogPointsRequest listLogPointRequest = new ListLogPointsRequest();
+                listLogPointRequest.setId(UUID.randomUUID().toString());
+
+                ListLogPointsResponse listLogPointResponse = webSocketUserClient.requestSync(
+                        listLogPointRequest, ListLogPointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listLogPointResponse);
+                assertNotNull(listLogPointResponse.getLogPoints());
+                assertEquals(2, listLogPointResponse.getLogPoints().size());
+
+                assertEventually(() -> {
+                    ListLogPointsResponse listLogPointResponse3 = webSocketUserClient.requestSync(
+                            listLogPointRequest, ListLogPointsResponse.class, 30, TimeUnit.SECONDS);
+                    assertNotNull(listLogPointResponse3);
+                    assertNotNull(listLogPointResponse3.getLogPoints());
+                    assertEquals(1, listLogPointResponse3.getLogPoints().size());
+                });
+            } finally {
+                if (webSocketAppClient != null) {
+                    webSocketAppClient.close();
+                }
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+
+    @Test
     public void cleanExpiredLogPointKeepOther() throws InterruptedException, ExecutionException, TimeoutException {
         WebSocketClient webSocketUserClient =
                 new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
@@ -2982,6 +3494,398 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
             } finally {
                 if (webSocketAppClient != null) {
                     webSocketAppClient.close();
+                }
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @Test
+    public void clientShouldBeAbleToEnableProbeTag() throws InterruptedException, ExecutionException, TimeoutException {
+        WebSocketClient webSocketUserClient =
+                new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+
+            WebSocketClient webSocketAppClient1a = null;
+            WebSocketClient webSocketAppClient2a = null;
+            try {
+                webSocketAppClient1a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "123",
+                                        "app1a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue1");
+                                            put("tag2", "tagValue3");
+                                        }}));
+                assertConnected(webSocketAppClient1a);
+
+                webSocketAppClient2a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "456",
+                                        "app2a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue2");
+                                            put("tag2", "tagValue4");
+                                        }}));
+                assertConnected(webSocketAppClient2a);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                String requestId = UUID.randomUUID().toString();
+                String requestId2 = UUID.randomUUID().toString();
+                List<String> probeTags = new ArrayList<String>() {{
+                    add("tag1");
+                    add("tag2");
+                }};
+                List<ApplicationFilter> filters = new ArrayList<>();
+
+                Map<String, String> customTags = new HashMap<>();
+                customTags.put("tag1", "tagValue2");
+                customTags.put("tag2", "tagValue3");
+
+                ApplicationFilter filter = new ApplicationFilter();
+                filter.setCustomTags(customTags);
+                filter.setName("app1a");
+                filter.setStage("prod");
+
+                ApplicationFilter filter2 = new ApplicationFilter();
+                customTags.put("tag1", "tagValue1");
+                filter2.setCustomTags(customTags);
+                filter2.setName("app1a");
+
+                filters.add(filter2);
+
+                PutTracePointRequest putTracePointRequest = new PutTracePointRequest();
+                putTracePointRequest.setId(requestId);
+                putTracePointRequest.setFileName("Test.java");
+                putTracePointRequest.setClient(CLIENT);
+                putTracePointRequest.setLineNo(10);
+                putTracePointRequest.setPersist(true);
+                putTracePointRequest.setConditionExpression("test == 1");
+                putTracePointRequest.setApplicationFilters(filters);
+                putTracePointRequest.setExpireCount(1);
+                putTracePointRequest.setExpireSecs(-1);
+                putTracePointRequest.setEnableTracing(true);
+                putTracePointRequest.setDisable(true);
+                putTracePointRequest.setTags(probeTags);
+
+                CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
+
+                webSocketAppClient1a.clearReadMessages();
+                webSocketAppClient2a.clearReadMessages();
+
+                webSocketUserClient.request(putTracePointRequest, PutTracePointResponse.class);
+
+                completableFuture.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                PutLogPointRequest putLogPointRequest = new PutLogPointRequest();
+                putLogPointRequest.setId(requestId2);
+                putLogPointRequest.setFileName("Test.java");
+                putLogPointRequest.setClient(CLIENT);
+                putLogPointRequest.setLineNo(10);
+                putLogPointRequest.setPersist(true);
+                putLogPointRequest.setConditionExpression("test == 1");
+                putLogPointRequest.setApplicationFilters(filters);
+                putLogPointRequest.setExpireCount(1);
+                putLogPointRequest.setExpireSecs(-1);
+                putLogPointRequest.setLogExpression("test");
+                putLogPointRequest.setStdoutEnabled(true);
+                putLogPointRequest.setLogLevel("INFO");
+                putLogPointRequest.setDisable(true);
+                putLogPointRequest.setTags(probeTags);
+
+                completableFuture = registerForWaitingClientMessage(requestId2);
+
+                webSocketAppClient1a.clearReadMessages();
+                webSocketAppClient2a.clearReadMessages();
+
+                webSocketUserClient.request(putLogPointRequest, PutLogPointResponse.class);
+
+                completableFuture.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                EnableProbeTagRequest enableProbeTagRequest = new EnableProbeTagRequest();
+                enableProbeTagRequest.setId(UUID.randomUUID().toString());
+                enableProbeTagRequest.setTag(probeTags.get(0));
+
+                EnableProbeTagResponse enableProbeTagResponse = webSocketUserClient.requestSync(
+                        enableProbeTagRequest, EnableProbeTagResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(enableProbeTagResponse);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ListTracePointsRequest listTracePointRequest = new ListTracePointsRequest();
+                listTracePointRequest.setId(UUID.randomUUID().toString());
+
+                ListTracePointsResponse listTracePointResponse = webSocketUserClient.requestSync(
+                        listTracePointRequest, ListTracePointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listTracePointResponse);
+                assertNotNull(listTracePointResponse.getTracePoints());
+
+                TracePoint tp = listTracePointResponse.getTracePoints().get(0);
+
+                assertEquals(tp.getFileName(), "Test.java");
+                assertEquals(tp.getClient(), CLIENT);
+                assertEquals(tp.getLineNo(), 10);
+                assertEquals(tp.getConditionExpression(), "test == 1");
+                assertEquals(tp.getExpireCount(), -1);
+                assertEquals(tp.getExpireSecs(), -1);
+                assertEquals(tp.getTags(), probeTags);
+                assertTrue(tp.isTracingEnabled());
+                assertFalse(tp.isDisabled());
+
+                ListLogPointsRequest listLogPointRequest = new ListLogPointsRequest();
+                listLogPointRequest.setId(UUID.randomUUID().toString());
+
+                ListLogPointsResponse listLogPointResponse = webSocketUserClient.requestSync(
+                        listLogPointRequest, ListLogPointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listLogPointResponse);
+                assertNotNull(listLogPointResponse.getLogPoints());
+
+                LogPoint lp = listLogPointResponse.getLogPoints().get(0);
+
+                assertEquals(lp.getFileName(), "Test.java");
+                assertEquals(lp.getClient(), CLIENT);
+                assertEquals(lp.getLineNo(), 10);
+                assertEquals(lp.getConditionExpression(), "test == 1");
+                assertEquals(lp.getExpireCount(), -1);
+                assertEquals(lp.getExpireSecs(), -1);
+                assertEquals(lp.getLogExpression(), "test");
+                assertTrue(lp.isStdoutEnabled());
+                assertEquals(lp.getLogLevel(), "INFO");
+                assertFalse(CollectionUtils.isEmpty(lp.getTags()));
+                assertEquals(lp.getTags(), probeTags);
+                assertFalse(lp.isDisabled());
+
+                ApplicationFilter applicationFilter = new ApplicationFilter();
+                applicationFilter.setName("app1a");
+                applicationFilter.setStage("dev");
+                applicationFilter.setCustomTags(new HashMap<String, String>() {{
+                    put("tag1", "tagValue1");
+                    put("tag2", "tagValue3");
+                }});
+
+                Collection<TracePoint> tracePoints =
+                        tracePointService.queryTracePoints(WORKSPACE_ID, applicationFilter);
+                assertEquals(1, tracePoints.size());
+
+                Collection<LogPoint> logPoints =
+                        logPointService.queryLogPoints(WORKSPACE_ID, applicationFilter);
+                assertEquals(1, logPoints.size());
+            } finally {
+                if (webSocketAppClient1a != null) {
+                    webSocketAppClient1a.close();
+                }
+                if (webSocketAppClient2a != null) {
+                    webSocketAppClient2a.close();
+                }
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+
+    @Test
+    public void clientShouldBeAbleToDisableProbeTag() throws InterruptedException, ExecutionException, TimeoutException {
+        WebSocketClient webSocketUserClient =
+                new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+
+            WebSocketClient webSocketAppClient1a = null;
+            WebSocketClient webSocketAppClient2a = null;
+            try {
+                webSocketAppClient1a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "123",
+                                        "app1a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue1");
+                                            put("tag2", "tagValue3");
+                                        }}));
+                assertConnected(webSocketAppClient1a);
+
+                webSocketAppClient2a =
+                        new WebSocketClient(
+                                port,
+                                createAppCredentials(
+                                        API_KEY, "456",
+                                        "app2a", "dev", "1.0.1-SNAPSHOT",
+                                        new HashMap<String, String>() {{
+                                            put("tag1", "tagValue2");
+                                            put("tag2", "tagValue4");
+                                        }}));
+                assertConnected(webSocketAppClient2a);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                String requestId = UUID.randomUUID().toString();
+                List<String> probeTags = new ArrayList<String>() {{
+                    add("tag1");
+                    add("tag2");
+                }};
+                List<ApplicationFilter> filters = new ArrayList<>();
+
+                Map<String, String> customTags = new HashMap<>();
+                customTags.put("tag1", "tagValue2");
+                customTags.put("tag2", "tagValue3");
+
+                ApplicationFilter filter = new ApplicationFilter();
+                filter.setCustomTags(customTags);
+                filter.setName("app1a");
+                filter.setStage("prod");
+
+                ApplicationFilter filter2 = new ApplicationFilter();
+                customTags.put("tag1", "tagValue1");
+                filter2.setCustomTags(customTags);
+                filter2.setName("app1a");
+
+                filters.add(filter2);
+
+                PutTracePointRequest putTracePointRequest = new PutTracePointRequest();
+                putTracePointRequest.setId(requestId);
+                putTracePointRequest.setFileName("Test.java");
+                putTracePointRequest.setClient(CLIENT);
+                putTracePointRequest.setLineNo(10);
+                putTracePointRequest.setPersist(true);
+                putTracePointRequest.setConditionExpression("test == 1");
+                putTracePointRequest.setApplicationFilters(filters);
+                putTracePointRequest.setExpireCount(1);
+                putTracePointRequest.setExpireSecs(-1);
+                putTracePointRequest.setEnableTracing(true);
+                putTracePointRequest.setDisable(false);
+                putTracePointRequest.setTags(probeTags);
+
+                CompletableFuture completableFuture = registerForWaitingClientMessage(requestId);
+
+                webSocketAppClient1a.clearReadMessages();
+                webSocketAppClient2a.clearReadMessages();
+
+                webSocketUserClient.request(putTracePointRequest, PutTracePointResponse.class);
+
+                completableFuture.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                PutLogPointRequest putLogPointRequest = new PutLogPointRequest();
+                putLogPointRequest.setId(requestId);
+                putLogPointRequest.setFileName("Test.java");
+                putLogPointRequest.setClient(CLIENT);
+                putLogPointRequest.setLineNo(10);
+                putLogPointRequest.setPersist(true);
+                putLogPointRequest.setConditionExpression("test == 1");
+                putLogPointRequest.setApplicationFilters(filters);
+                putLogPointRequest.setExpireCount(1);
+                putLogPointRequest.setExpireSecs(-1);
+                putLogPointRequest.setLogExpression("test");
+                putLogPointRequest.setStdoutEnabled(true);
+                putLogPointRequest.setLogLevel("INFO");
+                putLogPointRequest.setDisable(false);
+                putLogPointRequest.setTags(probeTags);
+
+                completableFuture = registerForWaitingClientMessage(requestId);
+
+                webSocketAppClient1a.clearReadMessages();
+                webSocketAppClient2a.clearReadMessages();
+
+                webSocketUserClient.request(putLogPointRequest, PutTracePointResponse.class);
+
+                completableFuture.get(30, TimeUnit.SECONDS);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                DisableProbeTagRequest disableProbeTagRequest = new DisableProbeTagRequest();
+                disableProbeTagRequest.setId(UUID.randomUUID().toString());
+                disableProbeTagRequest.setTag(probeTags.get(0));
+
+                DisableProbeTagResponse disableProbeTagResponse = webSocketUserClient.requestSync(
+                        disableProbeTagRequest, DisableProbeTagResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(disableProbeTagResponse);
+
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                ListTracePointsRequest listTracePointRequest = new ListTracePointsRequest();
+                listTracePointRequest.setId(UUID.randomUUID().toString());
+
+                ListTracePointsResponse listTracePointResponse = webSocketUserClient.requestSync(
+                        listTracePointRequest, ListTracePointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listTracePointResponse);
+                assertNotNull(listTracePointResponse.getTracePoints());
+
+                TracePoint tp = listTracePointResponse.getTracePoints().get(0);
+
+                assertEquals(tp.getFileName(), "Test.java");
+                assertEquals(tp.getClient(), CLIENT);
+                assertEquals(tp.getLineNo(), 10);
+                assertEquals(tp.getConditionExpression(), "test == 1");
+                assertEquals(tp.getExpireCount(), -1);
+                assertEquals(tp.getExpireSecs(), -1);
+                assertEquals(tp.getTags(), probeTags);
+                assertTrue(tp.isTracingEnabled());
+                assertTrue(tp.isDisabled());
+
+                ListLogPointsRequest listLogPointRequest = new ListLogPointsRequest();
+                listLogPointRequest.setId(UUID.randomUUID().toString());
+
+                ListLogPointsResponse listLogPointResponse = webSocketUserClient.requestSync(
+                        listLogPointRequest, ListLogPointsResponse.class, 30, TimeUnit.SECONDS);
+
+                assertNotNull(listLogPointResponse);
+                assertNotNull(listLogPointResponse.getLogPoints());
+
+                LogPoint lp = listLogPointResponse.getLogPoints().get(0);
+
+                assertEquals(lp.getFileName(), "Test.java");
+                assertEquals(lp.getClient(), CLIENT);
+                assertEquals(lp.getLineNo(), 10);
+                assertEquals(lp.getConditionExpression(), "test == 1");
+                assertEquals(lp.getExpireCount(), -1);
+                assertEquals(lp.getExpireSecs(), -1);
+                assertEquals(lp.getLogExpression(), "test");
+                assertTrue(lp.isStdoutEnabled());
+                assertEquals(lp.getLogLevel(), "INFO");
+                assertEquals(lp.getTags(), probeTags);
+                assertFalse(CollectionUtils.isEmpty(lp.getTags()));
+                assertTrue(lp.isDisabled());
+
+                ApplicationFilter applicationFilter = new ApplicationFilter();
+                applicationFilter.setName("app1a");
+                applicationFilter.setStage("dev");
+                applicationFilter.setCustomTags(new HashMap<String, String>() {{
+                    put("tag1", "tagValue1");
+                    put("tag2", "tagValue3");
+                }});
+
+                Collection<TracePoint> tracePoints =
+                        tracePointService.queryTracePoints(WORKSPACE_ID, applicationFilter);
+                assertEquals(1, tracePoints.size());
+
+                Collection<LogPoint> logPoints =
+                        logPointService.queryLogPoints(WORKSPACE_ID, applicationFilter);
+                assertEquals(1, logPoints.size());
+            } finally {
+                if (webSocketAppClient1a != null) {
+                    webSocketAppClient1a.close();
+                }
+                if (webSocketAppClient2a != null) {
+                    webSocketAppClient2a.close();
                 }
             }
         } finally {

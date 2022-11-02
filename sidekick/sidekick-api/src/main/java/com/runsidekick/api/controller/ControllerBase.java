@@ -2,6 +2,7 @@ package com.runsidekick.api.controller;
 
 import com.runsidekick.api.service.ApiAuthService;
 import com.runsidekick.broker.service.BrokerService;
+import com.runsidekick.broker.util.Constants;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -18,10 +19,10 @@ abstract class ControllerBase {
     }
 
     protected String getUserId() {
-        return apiAuthService.getCurrentUser().getApiKey();
+        return Constants.USER_ID;
     }
 
     protected String getWorkspaceId() {
-        return apiAuthService.getCurrentUser().getApiKey();
+        return Constants.WORKSPACE_ID;
     }
 }

@@ -64,7 +64,7 @@ public class PutReferenceEventHandler
                         channelInfo.getWorkspaceId(), request.getProbeId(), request.getApplicationFilter());
             }
 
-            if (probe != null && probe.isPredefined()) {
+            if (probe.hasTag()) {
                 referenceEventService.putReferenceEvent(ReferenceEvent.builder()
                         .workspaceId(channelInfo.getWorkspaceId())
                         .probeId(request.getProbeId())

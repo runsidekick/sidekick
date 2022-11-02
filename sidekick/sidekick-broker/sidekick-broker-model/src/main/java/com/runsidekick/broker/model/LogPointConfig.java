@@ -31,7 +31,6 @@ public class LogPointConfig extends LogPoint implements ProbeConfig {
                 ", stdoutEnabled=" + stdoutEnabled +
                 ", logLevel='" + logLevel + '\'' +
                 ", applicationFilters=" + applicationFilters +
-                ", predefined=" + predefined +
                 ", probeName='" + probeName + '\'' +
                 '}';
     }

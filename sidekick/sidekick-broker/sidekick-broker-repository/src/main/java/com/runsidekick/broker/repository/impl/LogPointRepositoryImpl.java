@@ -15,6 +15,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -67,6 +68,14 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                     return mapper.readValue(
                             webhookIds,
                             new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (StringUtils.isEmpty(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
+                            new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
                 }
@@ -86,6 +95,14 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                     }
                     return mapper.readValue(
                             webhookIds,
+                            new TypeReference<List<String>>() { });
+                } else if (pd.getName().equals("tags")) {
+                    String tags = rs.getString("tags");
+                    if (StringUtils.isEmpty(tags)) {
+                        return null;
+                    }
+                    return mapper.readValue(
+                            tags,
                             new TypeReference<List<String>>() { });
                 } else {
                     return super.getColumnValue(rs, index, pd);
@@ -110,6 +127,7 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
     public void putLogPoint(String workspaceId, String userId, LogPointConfig logPointConfig, boolean fromApi)
             throws Exception {
         try {
+            boolean hasTag = logPointConfig.hasTag();
             jdbcTemplate.update(
                     "INSERT INTO " +
                             "LogPoint(" +
@@ -118,22 +136,21 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
                             "condition_expression, expire_secs, expire_count, " +
                             "file_hash, disabled, " +
                             "expire_timestamp, application_filters, log_expression, " +
-                            "stdout_enabled, log_level, webhook_ids, from_api, predefined, probe_name) " +
+                            "stdout_enabled, log_level, webhook_ids, from_api, probe_name, tags) " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
                     logPointConfig.getId(), workspaceId, userId,
                     logPointConfig.getFileName(), logPointConfig.getLineNo(), logPointConfig.getClient(),
                     logPointConfig.getConditionExpression(),
-                    getExpireSecs(logPointConfig.getExpireSecs()),
-                    getExpireCount(logPointConfig.getExpireCount()),
+                    getExpireSecs(logPointConfig.getExpireSecs(), hasTag),
+                    getExpireCount(logPointConfig.getExpireCount(), hasTag),
                     logPointConfig.getFileHash(), logPointConfig.isDisabled(),
-                    getExpireTimestamp(logPointConfig.getExpireSecs()),
+                    getExpireTimestamp(logPointConfig.getExpireSecs(), hasTag),
                     mapper.writeValueAsString(logPointConfig.getApplicationFilters()),
                     logPointConfig.getLogExpression(),
                     logPointConfig.isStdoutEnabled(),
                     logPointConfig.getLogLevel(),
                     mapper.writeValueAsString(logPointConfig.getWebhookIds()),
-                    fromApi,
-                    logPointConfig.isPredefined(), logPointConfig.getProbeName());
+                    fromApi, logPointConfig.getProbeName(), mapper.writeValueAsString(logPointConfig.getTags()));
         } catch (DuplicateKeyException e) {
             throw new CodedException(
                     LOGPOINT_ALREADY_EXIST,
@@ -165,29 +182,46 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
     }
 
     @Override
+    public void enableDisableLogPoints(String workspaceId, List<String> logPointIds, boolean disable) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("workspaceId", workspaceId);
+        parameters.addValue("ids", logPointIds);
+        parameters.addValue("disabled", disable);
+
+        namedParameterJdbcTemplate.update(
+                "UPDATE LogPoint " +
+                        "SET disabled=:disabled " +
+                        "WHERE id IN (:ids) AND workspace_id = :workspaceId ",
+                parameters);
+    }
+
+    @Override
     @SneakyThrows
     public void updateLogPoint(String workspaceId, String userId, String logPointId, LogPoint logPoint) {
+        boolean hasTag = logPoint.hasTag();
         jdbcTemplate.update(
                 "UPDATE LogPoint " +
                         "SET " +
                         "condition_expression = ?, expire_secs = ?, expire_count = ?, " +
                         "expire_timestamp = ?, disabled = ?, log_expression = ?, stdout_enabled = ?, " +
-                        "log_level = ?, webhook_ids = ?, predefined = ?, probe_name = ? " +
+                        "log_level = ?, webhook_ids = ?, probe_name = ?, tags = ? " +
                         "WHERE workspace_id = ? AND user_id = ? AND id = ?",
                 logPoint.getConditionExpression(),
-                getExpireSecs(logPoint.getExpireSecs()), getExpireCount(logPoint.getExpireCount()),
-                getExpireTimestamp(logPoint.getExpireSecs()), logPoint.isDisabled(), logPoint.getLogExpression(),
+                getExpireSecs(logPoint.getExpireSecs(), hasTag), getExpireCount(logPoint.getExpireCount(), hasTag),
+                getExpireTimestamp(logPoint.getExpireSecs(), hasTag),
+                logPoint.isDisabled(), logPoint.getLogExpression(),
                 logPoint.isStdoutEnabled(), logPoint.getLogLevel(), mapper.writeValueAsString(logPoint.getWebhookIds()),
-                logPoint.isPredefined(), logPoint.getProbeName(),
+                logPoint.getProbeName(), mapper.writeValueAsString(logPoint.getTags()),
                 workspaceId, userId, logPointId);
     }
 
     @Override
     public List<LogPoint> listLogPoints(String workspaceId, String userId) {
-        return jdbcTemplate.query(
+        List<LogPoint> query = jdbcTemplate.query(
                 "SELECT * FROM LogPoint WHERE workspace_id = ? AND user_id = ?",
                 logPointRowMapper,
                 workspaceId, userId);
+        return query;
     }
 
     @Override
@@ -205,7 +239,7 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
     @Override
     public List<LogPoint> listPredefinedLogPoints(String workspaceId, String userId) {
         return jdbcTemplate.query(
-                "SELECT * FROM LogPoint WHERE workspace_id = ? AND user_id = ? AND predefined = 1",
+                "SELECT * FROM LogPoint WHERE workspace_id = ? AND user_id = ? AND JSON_LENGTH(tags) > 0",
                 logPointRowMapper,
                 workspaceId, userId);
     }
@@ -223,8 +257,20 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
         return logPoints != null && logPoints.size() > 0 ? logPoints.get(0) : null;
     }
 
+    @Override
+    public List<LogPointConfig> queryLogPointsByTag(String workspaceId, String tag) {
+        ApplicationAwareProbeQueryFilter queryFilter = ProbeUtil.probeTagQueryFilter(workspaceId, tag);
+
+        Collection<LogPointConfig> logPointConfigs =
+                jdbcTemplate.query(
+                        "SELECT * FROM LogPoint WHERE workspace_id = ?" + queryFilter.getFiltersExpr().toString(),
+                        logPointConfigRowMapper,
+                        queryFilter.getArgs().toArray());
+        return logPointConfigs.stream().collect(Collectors.toList());
+    }
+
     private List<LogPoint> filterLogPoints(Collection<LogPointConfig> logPointConfigs,
-                                                     ApplicationFilter filter) {
+                                           ApplicationFilter filter) {
         Collection<LogPointConfig> filteredLogPoints = ProbeUtil.filterProbes(logPointConfigs, filter);
         return filteredLogPoints.stream().collect(Collectors.toList());
     }

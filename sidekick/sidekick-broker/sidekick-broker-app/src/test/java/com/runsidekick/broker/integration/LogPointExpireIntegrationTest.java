@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -164,6 +165,54 @@ public class LogPointExpireIntegrationTest extends BrokerBaseIntegrationTest {
                     ListLogPointsResponse listLogPointResponse = webSocketUserClient.requestSync(listLogPointRequest,
                             ListLogPointsResponse.class);
                     assertThat(listLogPointResponse.getLogPoints()).isEmpty();
+                });
+
+            } finally {
+                webSocketAppClient.close();
+            }
+        } finally {
+            webSocketUserClient.close();
+        }
+    }
+
+    @Test
+    public void brokerShouldNotBeAbleRemovePredefinedLogPoint_whenExpireCountLimitExceeded() {
+        WebSocketClient webSocketUserClient = new WebSocketClient(port, createClientTokenCredentials(USER_TOKEN));
+        try {
+            assertConnected(webSocketUserClient);
+            String[] appClientProps = {"123", "app1a", "dev", "1.0.1-SNAPSHOT"};
+            WebSocketClient webSocketAppClient = getWebSocketAppClient(appClientProps);
+            try {
+                assertConnected(webSocketAppClient);
+                String requestId = UUID.randomUUID().toString();
+                PutLogPointRequest putLogPointRequest = getPutLogPointRequest(requestId);
+                putLogPointRequest.setTags(Collections.singletonList("test"));
+                webSocketUserClient.request(putLogPointRequest, PutLogPointResponse.class);
+                String logPointId = getLogPointId(putLogPointRequest.getFileName(),
+                        putLogPointRequest.getLineNo(), putLogPointRequest.getClient());
+                String expireCountId = getExpireCountId(buildResourceKey(WORKSPACE_ID, logPointId));
+
+                assertEventually(() -> {
+                    RAtomicLong value = client.getAtomicLong(expireCountId);
+                    assertThat(value.get()).isEqualTo(0);
+                });
+
+                LogPointEvent event = new LogPointEvent(logPointId,
+                        putLogPointRequest.getFileName(), "Test",
+                        putLogPointRequest.getLineNo(), "testMethod", UUID.randomUUID().toString());
+                event.setId(UUID.randomUUID().toString());
+                event.setClient(CLIENT);
+                webSocketAppClient.send(event);
+
+                ListLogPointsRequest listLogPointRequest = new ListLogPointsRequest();
+                listLogPointRequest.setId(UUID.randomUUID().toString());
+
+                assertEventually(() -> {
+                    RAtomicLong value = client.getAtomicLong(expireCountId);
+                    assertThat(value.isExists()).isFalse();
+                    ListLogPointsResponse listLogPointResponse = webSocketUserClient.requestSync(listLogPointRequest,
+                            ListLogPointsResponse.class);
+                    assertThat(listLogPointResponse.getLogPoints().size()).isEqualTo(1);
                 });
 
             } finally {

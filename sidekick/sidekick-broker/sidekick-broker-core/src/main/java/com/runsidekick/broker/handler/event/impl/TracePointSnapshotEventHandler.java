@@ -46,15 +46,17 @@ public class TracePointSnapshotEventHandler extends BaseProbeEventHandler<TraceP
                 if (tracePointConfig == null) {
                     return;
                 }
-                List<String> applications =
-                        new ArrayList<>(applicationService.filterApplications(channelInfo.getWorkspaceId(),
-                                tracePointConfig.getApplicationFilters()));
-                RemoveTracePointRequest request = prepareRemoveTracePointRequest(event, tracePointId, applications);
-                tracePointService.removeTracePoint(
-                        channelInfo.getWorkspaceId(),
-                        channelInfo.getUserId(),
-                        tracePointId);
-                communicator.sendRequestToApps(channelInfo, request, applications);
+                if (!tracePointConfig.hasTag()) {
+                    List<String> applications =
+                            new ArrayList<>(applicationService.filterApplications(channelInfo.getWorkspaceId(),
+                                    tracePointConfig.getApplicationFilters()));
+                    RemoveTracePointRequest request = prepareRemoveTracePointRequest(event, tracePointId, applications);
+                    tracePointService.removeTracePoint(
+                            channelInfo.getWorkspaceId(),
+                            channelInfo.getUserId(),
+                            tracePointId);
+                    communicator.sendRequestToApps(channelInfo, request, applications);
+                }
             }
         });
         return null;

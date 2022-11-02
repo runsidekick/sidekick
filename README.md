@@ -120,9 +120,9 @@ All these with almost no overhead. PS: Check out [our benchmark blogs](https://m
 - Mustache powered expression system for logpoints -> easily add variable data to your logs context
 - Customizable agents -> configure how your agents work, define depth and frame numbers
 - Aggregate your collected data with Thundra APM and Open-telemetry traces
-- Collect errors automatically and send them to your target of choice (will be available at 30th Aug)
-- Define custom data redaction functions to control what is being collected (Node.js only)
-- Control your logpoints and tracepoints using programmatically
+- Collect errors automatically and send them to your target of choice
+- Define custom data redaction functions to control what is being collected
+- Control your logpoints and tracepoints using client libraries & REST API
 - Work with your collected data in your way using Sidekick clients
 
 <p align="center">
@@ -167,6 +167,9 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
 
 ### Running Sidekick using our Docker image
 
+  > **Note**  
+  > Docker images are not supported on ARM64 machines. Follow building instructions to run Sidekick on your machine or visit http://www.runsidekick.com for the cloud hosted version
+
 1. #### Configure Environment Variables
    1. Go to the docker folder under the project
    2. Open `.env` file via any text editor
@@ -187,17 +190,32 @@ The simplest way to use Sidekick is to create an account on Sidekick Cloud. For 
     - You can see the API's swagger interface at
       
         `http://<your-server-hostname-or-ip>:8084/swagger-ui/index.html`
-
+        
+    
 ### Building Sidekick
 
- 1. #### Build Service Images
+  > **Note**  
+  > Follow Build Service Images (Advanced) for arm64 builds
+  
+
+ 1. #### Build Service Images (Basic)
     1. ##### Build Sidekick Broker Image
         1. Go to `sidekick/sidekick-broker-app` folder under project
         2. Execute `release.sh`
     
-    2. ##### Build Sidekick Api Image
+    2. ##### Build Sidekick API Image
         1. Go to `sidekick/sidekick-api` folder under project
         2. Execute `release.sh`
+
+ 2. #### Build Service Images (Advanced)
+      1. Go to main project folder
+      2. Run command `mvn clean install -DskipTests=true`
+      3. Go to sidekick-api folder `cd sidekick-api`
+      4. Build API image `docker build --build-arg JAR_FILE=target/sidekick-api.jar -t runsidekick/sidekick-api:latest .`
+      5. Go to sidekick-broker-app folder `cd ../sidekick-broker/sidekick-broker-app`
+      6. Build Broker image `docker build --build-arg JAR_FILE=target/sidekick-broker-app.jar -t runsidekick/sidekick-broker:latest .`
+      5. Run `docker-compose up -d` under `docker` folder
+    
 
 ### 
 
@@ -214,6 +232,8 @@ To learn more see our [docs.](https://docs.runsidekick.com?utm_source=sidekick-r
 - [Sidekick Docs](https://docs.runsidekick.com?utm_source=sidekick-readme)
 
 - [Thundra APM & Open-telemetry Integration](https://docs.runsidekick.com/integrations/tracing-integrations?utm_source=sidekick-readme)
+
+- [Node.js Data redaction](https://docs.runsidekick.com/installation/agents/node.js/data-redaction?utm_source=sidekick-readme)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -260,6 +280,18 @@ Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) to le
 
     - [Docs Page](https://docs.runsidekick.com/plugins/intellij-idea-plugin?utm_source=sidekick-readme)
 
+
+- ##### PyCharm (Python):
+    - [Plugin Page](https://plugins.jetbrains.com/plugin/20031-sidekick)
+
+    - [Docs Page](https://docs.runsidekick.com/plugins/pycharm-plugin-python?utm_source=sidekick-readme)
+
+
+- ##### WebStorm (Node.js):
+    - [Plugin Page](https://plugins.jetbrains.com/plugin/20142-sidekick-webstorm)
+
+    - [Docs Page](https://docs.runsidekick.com/plugins/webstorm-plugin-node.js?utm_source=sidekick-readme)
+
 - ##### Sidekick Node.js Client:
     [Sidekick Node Client](https://www.npmjs.com/package/@runsidekick/sidekick-client) opens up a new & headless way to use Sidekick. It allows you to both use custom ingest functions for the **tracepoint** or **logpoint** events and put/edit/delete your tracepoints/logpoints easily using code.
       
@@ -276,6 +308,13 @@ Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) to le
 ### Usage Examples
 - [Collect Realtime Stack Traces from NodeJS Applications](https://medium.com/runsidekick/collect-realtime-stack-traces-from-nodejs-applications-a300d1e91c1a)
 - [How to add missing logpoints to your running applicatons without stopping and send them to Loki ](https://dev.to/boroskoyo/how-to-add-missing-logpoints-to-your-running-applicatons-without-stopping-and-send-them-to-loki-8l3)
+- [Capturing Exception Call Stacks from Node.js Applications](https://medium.com/runsidekick/capturing-exception-call-stacks-from-running-node-js-applications-d9cd81407593)
+
+- [Achieving Rule-based observability using Sidekick and Camunda](https://medium.com/runsidekick/achieving-rule-based-observability-using-sidekick-and-camunda-8bb6483c7730)
+
+- [Embed Sidekick features to your applications](https://medium.com/runsidekick/sidekick-open-source-live-debugger-embed-sidekick-features-to-your-applications-1bacf083da5c)
+
+
 
 Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) for more!
 
@@ -298,6 +337,7 @@ Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) for m
 - [Sidekick Open Source Live Debugger : Get started in 5 mins](https://medium.com/runsidekick/sidekick-open-source-live-debugger-get-started-in-5-mins-efc0845a2288)
 - [Past, Present, and Future of Sidekick](https://medium.com/runsidekick/past-present-and-future-of-sidekick-d75649395be2)
 - [Production Debuggers — 2022 Benchmark Results](https://medium.com/runsidekick/sidekick-blog-production-debuggers-2022-benchmark-results-part-1-ec173d0f8ccd)
+- [Bringing the simplicity of print() to production debugging using PyCharm](https://medium.com/runsidekick/the-way-we-develop-software-evolves-way-we-debug-cant-stay-the-same-98125b685195)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
