@@ -85,6 +85,7 @@
         <module>sidekick-phone-home</module>
         <module>sidekick-probetag</module>
         <module>sidekick-statistics</module>
+        <module>sidekick-event-history</module>
     </modules>
 
     <dependencyManagement>
@@ -130,6 +131,22 @@
             <dependency>
                 <groupId>com.runsidekick</groupId>
                 <artifactId>sidekick-broker-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-event-history-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-event-history-repository</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runsidekick</groupId>
+                <artifactId>sidekick-event-history-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

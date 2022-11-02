@@ -3,12 +3,12 @@ package com.runsidekick.model;
 /**
  * @author yasin.kalafat
  */
-public enum EventType {
+public enum PhoneHomeEventType {
     SERVER_UP("SERVER_UP"), SERVER_DOWN("SERVER_DOWN"), STATISTICS("STATISTICS");
 
     private String text;
 
-    EventType(String text) {
+    PhoneHomeEventType(String text) {
         this.text = text;
     }
 

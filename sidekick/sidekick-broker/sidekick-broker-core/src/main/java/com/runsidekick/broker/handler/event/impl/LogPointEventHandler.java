@@ -5,6 +5,7 @@ import com.runsidekick.broker.model.LogPoint;
 import com.runsidekick.broker.model.LogPointConfig;
 import com.runsidekick.broker.model.NotificationType;
 import com.runsidekick.broker.model.event.EventAck;
+import com.runsidekick.broker.model.event.impl.BaseEvent;
 import com.runsidekick.broker.model.event.impl.LogPointEvent;
 import com.runsidekick.broker.model.request.impl.logpoint.RemoveLogPointRequest;
 import com.runsidekick.broker.proxy.ChannelInfo;
@@ -37,6 +38,8 @@ public class LogPointEventHandler extends BaseProbeEventHandler<LogPoint, LogPoi
         String logPointId = event.getLogPointId();
         LogPointConfig logPointConfig =
                 logPointService.getLogPoint(channelInfo.getWorkspaceId(), logPointId);
+
+        saveEventHistory(channelInfo, event, context.getRawMessage(), logPointConfig);
         sendWebhookMessage(context.getRawMessage(), logPointConfig);
 
         CompletableFuture<Boolean> completableFuture = logPointService.
@@ -79,6 +82,18 @@ public class LogPointEventHandler extends BaseProbeEventHandler<LogPoint, LogPoi
             if (!CollectionUtils.isEmpty(logPoint.getWebhookIds())) {
                 webhookMessageService.publishLogPointWebhookMessage(messageRaw, logPoint);
             }
+        } catch (Throwable t) {
+            logger.error(t);
+        }
+    }
+
+    @Override
+    protected void saveEventHistory(ChannelInfo channelInfo, BaseEvent event, String messageRaw, LogPoint logPoint) {
+        try {
+            eventHistoryService.addLogPointEventHistory(channelInfo.getWorkspaceId(),
+                    (LogPointEvent) event,
+                    logPoint,
+                    messageRaw);
         } catch (Throwable t) {
             logger.error(t);
         }

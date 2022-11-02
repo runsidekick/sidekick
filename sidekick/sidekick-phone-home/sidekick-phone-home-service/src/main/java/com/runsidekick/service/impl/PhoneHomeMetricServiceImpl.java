@@ -3,7 +3,7 @@ package com.runsidekick.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.runsidekick.model.EventType;
+import com.runsidekick.model.PhoneHomeEventType;
 import com.runsidekick.model.PhoneHomeConfig;
 import com.runsidekick.model.PhoneHomeMetric;
 import com.runsidekick.model.PhoneHomeMetricUtil;
@@ -75,7 +75,7 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
     public void sendServerUpEvent(long startTime) {
         try {
             PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();
-            metric.setEventType(EventType.SERVER_UP);
+            metric.setEventType(PhoneHomeEventType.SERVER_UP);
 
             Map<String, Object> eventDetails = new HashMap();
             eventDetails.put("startTime", startTime);
@@ -91,7 +91,7 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
     public void sendServerDownEvent(long startTime, long finishTime) {
         try {
             PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();
-            metric.setEventType(EventType.SERVER_DOWN);
+            metric.setEventType(PhoneHomeEventType.SERVER_DOWN);
 
             Map<String, Object> eventDetails = new HashMap();
             eventDetails.put("startTime", startTime);
@@ -111,7 +111,7 @@ public class PhoneHomeMetricServiceImpl implements PhoneHomeMetricService {
             List<ServerStatistics> serverStatistics = serverStatisticsService.getAllServerStatistics();
             try {
                 PhoneHomeMetric metric = (PhoneHomeMetric) phoneHomeMetric.clone();
-                metric.setEventType(EventType.STATISTICS);
+                metric.setEventType(PhoneHomeEventType.STATISTICS);
                 serverStatistics.forEach(ps -> {
                     try {
                         Map<String, Object> eventDetails = new HashMap();

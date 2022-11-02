@@ -122,3 +122,22 @@ CREATE TABLE ProbeTag (
   disabled                              BOOLEAN             NOT NULL DEFAULT 0,
   CONSTRAINT probe_tag UNIQUE (workspace_id, tag)
 );
+
+CREATE TABLE EventHistory (
+    id                                  VARCHAR(255)        NOT NULL PRIMARY KEY,
+    workspace_id                        VARCHAR(64),
+    type                                ENUM(
+        "TRACEPOINT",
+        "LOGPOINT",
+        "ERRORSNAPSHOT"
+    )                     NOT NULL,
+    file_name                           VARCHAR(255)        NOT NULL,
+    line_no                             INT                 NOT NULL,
+    client                              VARCHAR(64),
+    application_filter                  JSON,
+    event_data                          JSON,
+    probe_name                          VARCHAR(255),
+    probe_tags                          JSON
+);
+
+
