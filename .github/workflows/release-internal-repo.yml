@@ -69,4 +69,4 @@ jobs:
       - name: Build and Release Snapshot with Maven
         env:
           GITHUB_TOKEN: ${{ secrets.SIDEKICK_DEVOPS_GITHUB_ACCESS_TOKEN }}
-        run: mvn -f sidekick -DskipTests=true -q clean package release:clean release:prepare release:perform release:clean --batch-mode -P internal-release
+        run: mvn -f sidekick -DskipTests=true -q clean package release:clean release:prepare release:stage release:clean --batch-mode -P internal-release
