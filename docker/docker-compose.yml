@@ -31,7 +31,30 @@ services:
       - rabbitmq-data:/var/lib/rabbitmq/
       - rabbitmq-log:/var/log/rabbitmq
     restart: always
-
+  sidekick-broker:
+    image: runsidekick/sidekick-broker:latest
+    restart: always
+    container_name: sidekick-broker
+    depends_on:
+      - sidekick-cache
+      - sidekick-db
+      - sidekick-mq
+    ports:
+      - 7777:7777
+      - 8080:8080
+    env_file: .env
+  sidekick-api:
+    image: runsidekick/sidekick-api:latest
+    restart: always
+    container_name: sidekick-api
+    depends_on:
+      - sidekick-cache
+      - sidekick-db
+      - sidekick-mq
+      - sidekick-broker
+    ports:
+      - 8084:8084
+    env_file: .env
 volumes:
   sidekick-db:
   sidekick-cache:
