@@ -1,6 +1,5 @@
 package com.runsidekick.repository.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.runsidekick.broker.model.ApplicationFilter;
@@ -9,7 +8,6 @@ import com.runsidekick.model.EventType;
 import com.runsidekick.repository.BaseDBRepository;
 import com.runsidekick.repository.EventHistoryRepository;
 import lombok.SneakyThrows;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -87,7 +85,6 @@ public class EventHistoryRepositoryImpl extends BaseDBRepository implements Even
                     mapper.writeValueAsString(eventHistory.getApplicationFilter()),
                     mapper.writeValueAsString(eventHistory.getProbeTags()));
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

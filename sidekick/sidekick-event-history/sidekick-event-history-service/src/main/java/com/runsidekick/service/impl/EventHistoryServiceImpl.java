@@ -11,6 +11,7 @@ import com.runsidekick.broker.model.event.impl.TracePointSnapshotEvent;
 import com.runsidekick.broker.service.ApplicationService;
 import com.runsidekick.model.EventHistory;
 import com.runsidekick.repository.EventHistoryRepository;
+import com.runsidekick.listener.EventHistoryListener;
 import com.runsidekick.service.EventHistoryService;
 import io.thundra.swark.utils.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class EventHistoryServiceImpl implements EventHistoryService {
 
     @Autowired
     private EventHistoryRepository eventHistoryRepository;
+
+    @Autowired
+    private EventHistoryListener eventHistoryListener;
 
     private ExecutorService executorService;
 
@@ -97,7 +101,9 @@ public class EventHistoryServiceImpl implements EventHistoryService {
     }
 
     private void saveEventHistory(EventHistory eventHistory) {
-        eventHistoryRepository.save(eventHistory);
+        if (eventHistoryListener.isEventHistoryEnabled(eventHistory)) {
+            eventHistoryRepository.save(eventHistory);
+        }
     }
 
     private ApplicationFilter getApplicationFilter(String workspaceId, BaseEvent event) {

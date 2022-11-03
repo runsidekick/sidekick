@@ -17,4 +17,5 @@ public interface EventHistoryService {
     void addLogPointEventHistory(String workspaceId, LogPointEvent event, LogPoint logPoint, String rawMessage);
 
     void addErrorSnapshotEventHistory(String workspaceId, ErrorStackSnapshotEvent event, String rawMessage);
+
 }

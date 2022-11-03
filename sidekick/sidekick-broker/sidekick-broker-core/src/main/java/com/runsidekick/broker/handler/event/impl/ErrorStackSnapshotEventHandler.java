@@ -22,6 +22,7 @@ public class ErrorStackSnapshotEventHandler extends BaseProbeEventHandler<BasePr
 
     @Override
     public EventAck handleEvent(ChannelInfo channelInfo, ErrorStackSnapshotEvent event, EventContext context) {
+        probeEventListener.onProbeEvent(channelInfo, event, context);
         context.setBroadcast(true);
         saveEventHistory(channelInfo, event, context.getRawMessage(), null);
         return null;

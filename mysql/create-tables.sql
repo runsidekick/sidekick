@@ -137,7 +137,8 @@ CREATE TABLE EventHistory (
     application_filter                  JSON,
     event_data                          JSON,
     probe_name                          VARCHAR(255),
-    probe_tags                          JSON
+    probe_tags                          JSON,
+    created_at                          TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
