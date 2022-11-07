@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.runsidekick.broker.model.ApplicationFilter;
 import com.runsidekick.model.EventHistory;
 import com.runsidekick.model.EventType;
+import com.runsidekick.model.request.EventHistoryRequest;
+import com.runsidekick.model.util.EventHistoryQueryFilter;
 import com.runsidekick.repository.BaseDBRepository;
 import com.runsidekick.repository.EventHistoryRepository;
 import lombok.SneakyThrows;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -85,6 +88,18 @@ public class EventHistoryRepositoryImpl extends BaseDBRepository implements Even
                     mapper.writeValueAsString(eventHistory.getApplicationFilter()),
                     mapper.writeValueAsString(eventHistory.getProbeTags()));
         } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public List<EventHistory> queryEventHistory(EventHistoryRequest request, int pageNo, int pageSize) {
+        EventHistoryQueryFilter eventHistoryQueryFilter = new EventHistoryQueryFilter().prepareFilter(request);
+        String sql = "SELECT * FROM " + TABLE_NAME + eventHistoryQueryFilter.getFiltersExpr().toString() +
+                " ORDER BY created_at desc " + pagination(pageNo, pageSize);
+        try {
+            return jdbcTemplate.query(sql, eventHistoryRowMapper, eventHistoryQueryFilter.getArgs().toArray());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
 
