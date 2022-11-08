@@ -10,6 +10,7 @@ import com.runsidekick.broker.model.event.impl.LogPointEvent;
 import com.runsidekick.broker.model.event.impl.TracePointSnapshotEvent;
 import com.runsidekick.broker.service.ApplicationService;
 import com.runsidekick.model.EventHistory;
+import com.runsidekick.model.request.EventHistoryRequest;
 import com.runsidekick.repository.EventHistoryRepository;
 import com.runsidekick.listener.EventHistoryListener;
 import com.runsidekick.service.EventHistoryService;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -98,6 +100,11 @@ public class EventHistoryServiceImpl implements EventHistoryService {
                 .eventData(rawMessage)
                 .type(ERRORSNAPSHOT)
                 .build()));
+    }
+
+    @Override
+    public List<EventHistory> queryEventHistory(EventHistoryRequest request, int page, int size) {
+        return eventHistoryRepository.queryEventHistory(request, page, size);
     }
 
     private void saveEventHistory(EventHistory eventHistory) {

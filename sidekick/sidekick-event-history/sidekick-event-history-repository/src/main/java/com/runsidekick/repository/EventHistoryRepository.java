@@ -11,5 +11,5 @@ import java.util.List;
 public interface EventHistoryRepository {
     void save(EventHistory eventHistory);
 
-    List<EventHistory> queryEventHistory(EventHistoryRequest request, int skip, int take);
+    List<EventHistory> queryEventHistory(EventHistoryRequest request, int page, int size);
 }

@@ -92,10 +92,10 @@ public class EventHistoryRepositoryImpl extends BaseDBRepository implements Even
     }
 
     @Override
-    public List<EventHistory> queryEventHistory(EventHistoryRequest request, int pageNo, int pageSize) {
+    public List<EventHistory> queryEventHistory(EventHistoryRequest request, int page, int size) {
         EventHistoryQueryFilter eventHistoryQueryFilter = new EventHistoryQueryFilter().prepareFilter(request);
         String sql = "SELECT * FROM " + TABLE_NAME + eventHistoryQueryFilter.getFiltersExpr().toString() +
-                " ORDER BY created_at desc " + pagination(pageNo, pageSize);
+                " ORDER BY created_at desc " + pagination(page, size);
         try {
             return jdbcTemplate.query(sql, eventHistoryRowMapper, eventHistoryQueryFilter.getArgs().toArray());
         } catch (EmptyResultDataAccessException e) {
