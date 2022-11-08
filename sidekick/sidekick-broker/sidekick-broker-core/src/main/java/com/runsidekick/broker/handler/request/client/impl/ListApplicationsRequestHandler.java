@@ -21,7 +21,7 @@ public class ListApplicationsRequestHandler
 
     public static final String REQUEST_NAME = "ListApplicationsRequest";
 
-    public final ApplicationConfigService applicationConfigService;
+    private final ApplicationConfigService applicationConfigService;
 
     public ListApplicationsRequestHandler(ApplicationConfigService applicationConfigService) {
         super(REQUEST_NAME, ListApplicationsRequest.class, ListApplicationsResponse.class);
