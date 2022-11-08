@@ -9,6 +9,7 @@ import com.runsidekick.broker.util.ApplicationAwareProbeQueryFilter;
 import com.runsidekick.broker.util.ProbeUtil;
 import com.runsidekick.repository.BaseDBRepository;
 import lombok.SneakyThrows;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -102,6 +103,17 @@ public class ApplicationConfigRepositoryImpl extends BaseDBRepository implements
                         " WHERE id = ?",
                 attach ? 0 : 1,
                 id);
+    }
+
+    @Override
+    public List<ApplicationConfig> listByWorkspaceId(String workspaceId) {
+        try {
+            String sql = "SELECT * FROM " + TABLE_NAME + " WHERE workspace_id = ?";
+            Object[] args = {workspaceId};
+            return jdbcTemplate.query(sql, rowMapper, args);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     private List<ApplicationConfig> filterApplicationConfigs(List<ApplicationConfig> applicationConfigs,

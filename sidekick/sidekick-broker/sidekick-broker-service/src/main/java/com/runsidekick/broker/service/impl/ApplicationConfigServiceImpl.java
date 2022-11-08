@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author yasin.kalafat
@@ -47,6 +48,11 @@ public class ApplicationConfigServiceImpl implements ApplicationConfigService {
     public void detachApplication(String workspaceId, ApplicationFilter applicationFilter) {
         ApplicationConfig applicationConfig = getOrCreateApplicationConfig(workspaceId, applicationFilter);
         applicationConfigRepository.attachDetach(applicationConfig.getId(), false);
+    }
+
+    @Override
+    public List<ApplicationConfig> listApplicationConfigs(String workspaceId) {
+        return applicationConfigRepository.listByWorkspaceId(workspaceId);
     }
 
     private ApplicationConfig getOrCreateApplicationConfig(String workspaceId, ApplicationFilter applicationFilter) {
