@@ -15,7 +15,7 @@
         </dependency>
         <dependency>
             <groupId>com.runsidekick</groupId>
-            <artifactId>sidekick-event-history-service</artifactId>
+            <artifactId>sidekick-event-history-helper</artifactId>
         </dependency>
         <dependency>
             <groupId>com.runsidekick</groupId>

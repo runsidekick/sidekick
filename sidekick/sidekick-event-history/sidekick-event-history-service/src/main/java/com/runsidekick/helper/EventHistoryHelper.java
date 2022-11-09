@@ -1,11 +1,11 @@
-package com.runsidekick.listener;
+package com.runsidekick.helper;
 
 import com.runsidekick.model.EventHistory;
 
 /**
  * @author yasin.kalafat
  */
-public interface EventHistoryListener {
+public interface EventHistoryHelper {
 
     default boolean isEventHistoryEnabled(EventHistory eventHistory) {
         return false;

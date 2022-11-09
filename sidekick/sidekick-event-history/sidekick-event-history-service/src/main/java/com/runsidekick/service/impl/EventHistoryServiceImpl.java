@@ -9,10 +9,10 @@ import com.runsidekick.broker.model.event.impl.ErrorStackSnapshotEvent;
 import com.runsidekick.broker.model.event.impl.LogPointEvent;
 import com.runsidekick.broker.model.event.impl.TracePointSnapshotEvent;
 import com.runsidekick.broker.service.ApplicationService;
+import com.runsidekick.helper.EventHistoryHelper;
 import com.runsidekick.model.EventHistory;
 import com.runsidekick.model.request.EventHistoryRequest;
 import com.runsidekick.repository.EventHistoryRepository;
-import com.runsidekick.listener.EventHistoryListener;
 import com.runsidekick.service.EventHistoryService;
 import io.thundra.swark.utils.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class EventHistoryServiceImpl implements EventHistoryService {
     private EventHistoryRepository eventHistoryRepository;
 
     @Autowired
-    private EventHistoryListener eventHistoryListener;
+    private EventHistoryHelper eventHistoryHelper;
 
     private ExecutorService executorService;
 
@@ -108,7 +108,7 @@ public class EventHistoryServiceImpl implements EventHistoryService {
     }
 
     private void saveEventHistory(EventHistory eventHistory) {
-        if (eventHistoryListener.isEventHistoryEnabled(eventHistory)) {
+        if (eventHistoryHelper.isEventHistoryEnabled(eventHistory)) {
             eventHistoryRepository.save(eventHistory);
         }
     }
