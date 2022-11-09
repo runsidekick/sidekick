@@ -123,6 +123,14 @@ CREATE TABLE ProbeTag (
   CONSTRAINT probe_tag UNIQUE (workspace_id, tag)
 );
 
+CREATE TABLE ApplicationConfig (
+    id                                  VARCHAR(64)         NOT NULL PRIMARY KEY,
+    workspace_id                        VARCHAR(64),
+    application_filter                  JSON,
+    config                              JSON,
+    detached                            BOOLEAN             NOT NULL DEFAULT 0
+);
+
 CREATE TABLE EventHistory (
     id                                  VARCHAR(255)        NOT NULL PRIMARY KEY,
     workspace_id                        VARCHAR(64),
@@ -141,5 +149,3 @@ CREATE TABLE EventHistory (
     created_at                          TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX (created_at)
 );
-
-

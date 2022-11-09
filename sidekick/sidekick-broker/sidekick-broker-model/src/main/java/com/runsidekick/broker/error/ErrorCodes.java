@@ -35,4 +35,14 @@ public interface ErrorCodes {
                     4000,
                     "Error occurred while putting reference event to probe %s with type %s from client %s: %s");
 
+    CodedError ATTACH_FAILED =
+            new CodedError(
+                    5000,
+                    "Error occurred while attaching agents from client %s: %s");
+
+    CodedError DETACH_FAILED =
+            new CodedError(
+                    5001,
+                    "Error occurred while detaching agents from client %s: %s");
+
 }

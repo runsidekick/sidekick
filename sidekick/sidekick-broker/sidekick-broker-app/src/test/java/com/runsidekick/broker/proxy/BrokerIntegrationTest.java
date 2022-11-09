@@ -1069,7 +1069,7 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
 
                 webSocketAppClient1a.send(putTracePointResponse);
 
-                // Put tracepoint response should not be received by client
+                // Put tracepoint response should be received by client
                 PutTracePointResponse receivedPutTracePointResponse =
                         webSocketUserClient.read(PutTracePointResponse.class, 30, TimeUnit.SECONDS);
                 assertNotNull(receivedPutTracePointResponse);
@@ -2326,7 +2326,7 @@ public class BrokerIntegrationTest extends BrokerBaseIntegrationTest {
 
                 webSocketAppClient1a.send(putLogPointResponse);
 
-                // Put logpoint response should not be received by client
+                // Put logpoint response should be received by client
                 PutLogPointResponse receivedPutLogPointResponse =
                         webSocketUserClient.read(PutLogPointResponse.class, 30, TimeUnit.SECONDS);
                 assertNotNull(receivedPutLogPointResponse);
