@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @author yasin.kalafat
  */
@@ -23,4 +25,12 @@ public class EventHistoryRequest {
     private String client;
     private String probeName;
     private String tag;
+    private boolean withEventData;
+    private Date startDate;
+    private Date endDate;
+    private GroupBy groupBy;
+
+    public enum GroupBy {
+        DAIILY, HOURLY
+    }
 }

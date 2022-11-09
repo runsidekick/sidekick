@@ -11,6 +11,7 @@ import com.runsidekick.broker.model.event.impl.TracePointSnapshotEvent;
 import com.runsidekick.broker.service.ApplicationService;
 import com.runsidekick.helper.EventHistoryHelper;
 import com.runsidekick.model.EventHistory;
+import com.runsidekick.model.EventHitCount;
 import com.runsidekick.model.request.EventHistoryRequest;
 import com.runsidekick.repository.EventHistoryRepository;
 import com.runsidekick.service.EventHistoryService;
@@ -105,6 +106,11 @@ public class EventHistoryServiceImpl implements EventHistoryService {
     @Override
     public List<EventHistory> queryEventHistory(EventHistoryRequest request, int page, int size) {
         return eventHistoryRepository.queryEventHistory(request, page, size);
+    }
+
+    @Override
+    public List<EventHitCount> getCountsGroupedByDate(EventHistoryRequest request) {
+        return eventHistoryRepository.countsGroupedByDate(request);
     }
 
     private void saveEventHistory(EventHistory eventHistory) {

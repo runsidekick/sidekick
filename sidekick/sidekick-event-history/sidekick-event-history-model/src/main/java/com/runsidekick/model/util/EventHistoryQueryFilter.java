@@ -18,6 +18,7 @@ public class EventHistoryQueryFilter {
     private List<Object> args;
 
     public EventHistoryQueryFilter() {
+        filtersExpr = new StringBuilder();
         args = new ArrayList<>();
     }
 
@@ -57,6 +58,18 @@ public class EventHistoryQueryFilter {
             filtersExpr.append(hasFilter ? " AND " : " WHERE ");
             filtersExpr.append("type = ?");
             args.add(request.getType().name());
+            hasFilter = true;
+        }
+        if (request.getStartDate() != null) {
+            filtersExpr.append(hasFilter ? " AND " : " WHERE ");
+            filtersExpr.append("created_at >= ?");
+            args.add(request.getStartDate());
+            hasFilter = true;
+        }
+        if (request.getEndDate() != null) {
+            filtersExpr.append(hasFilter ? " AND " : " WHERE ");
+            filtersExpr.append("created_at <= ?");
+            args.add(request.getEndDate());
             hasFilter = true;
         }
 

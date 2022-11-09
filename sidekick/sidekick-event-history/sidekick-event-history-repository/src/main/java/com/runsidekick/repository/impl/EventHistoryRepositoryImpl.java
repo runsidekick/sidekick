@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.runsidekick.broker.model.ApplicationFilter;
 import com.runsidekick.model.EventHistory;
+import com.runsidekick.model.EventHitCount;
 import com.runsidekick.model.EventType;
 import com.runsidekick.model.request.EventHistoryRequest;
 import com.runsidekick.model.util.EventHistoryQueryFilter;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.beans.PropertyDescriptor;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,11 +31,25 @@ public class EventHistoryRepositoryImpl extends BaseDBRepository implements Even
 
     private static final String TABLE_NAME = "EventHistory";
 
-    private RowMapper<EventHistory> eventHistoryRowMapper;
+    private static final List<String> SELECT_FIELDS = new ArrayList<String>() {{
+        add("id");
+        add("workspace_id");
+        add("type");
+        add("file_name");
+        add("line_no");
+        add("client");
+        add("application_filter");
+        add("probe_name");
+        add("probe_tags");
+        add("created_at");
+    }};
+
+    private RowMapper<EventHistory> rowMapper;
+    private RowMapper<EventHitCount> hitCountRowMapper = new BeanPropertyRowMapper<>(EventHitCount.class);
 
     @PostConstruct
     public void init() {
-        eventHistoryRowMapper = createEventHistoryRowMapper(mapper);
+        rowMapper = createEventHistoryRowMapper(mapper);
     }
 
     private RowMapper<EventHistory> createEventHistoryRowMapper(ObjectMapper mapper) {
@@ -94,10 +110,51 @@ public class EventHistoryRepositoryImpl extends BaseDBRepository implements Even
     @Override
     public List<EventHistory> queryEventHistory(EventHistoryRequest request, int page, int size) {
         EventHistoryQueryFilter eventHistoryQueryFilter = new EventHistoryQueryFilter().prepareFilter(request);
-        String sql = "SELECT * FROM " + TABLE_NAME + eventHistoryQueryFilter.getFiltersExpr().toString() +
-                " ORDER BY created_at desc " + pagination(page, size);
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ")
+                .append(String.join(",", SELECT_FIELDS));
+        if (request.isWithEventData()) {
+            sql.append(", event_data ");
+        }
+        sql.append(" FROM ")
+                .append(TABLE_NAME)
+                .append(" ")
+                .append(eventHistoryQueryFilter.getFiltersExpr().toString())
+                .append(" ORDER BY created_at DESC ")
+                .append(pagination(page, size));
         try {
-            return jdbcTemplate.query(sql, eventHistoryRowMapper, eventHistoryQueryFilter.getArgs().toArray());
+            return jdbcTemplate.query(sql.toString(), rowMapper, eventHistoryQueryFilter.getArgs().toArray());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<EventHitCount> countsGroupedByDate(EventHistoryRequest request) {
+        EventHistoryQueryFilter eventHistoryQueryFilter = new EventHistoryQueryFilter().prepareFilter(request);
+        String dateFormat = "%Y-%m-%d";
+        switch (request.getGroupBy()) {
+            case HOURLY:
+                dateFormat += " %H";
+                break;
+            default:
+                break;
+        }
+        String dateField = "STR_TO_DATE(DATE_FORMAT(created_at, '" + dateFormat + "'), '" + dateFormat + "')";
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT count(1) AS hit_count, ")
+                .append(dateField)
+                .append(" AS hit_date ")
+                .append(" FROM ")
+                .append(TABLE_NAME)
+                .append(" ")
+                .append(eventHistoryQueryFilter.getFiltersExpr().toString())
+                .append(" GROUP BY ")
+                .append(dateField);
+        try {
+            return jdbcTemplate.query(sql.toString(), hitCountRowMapper,
+                    eventHistoryQueryFilter.getArgs().toArray());
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

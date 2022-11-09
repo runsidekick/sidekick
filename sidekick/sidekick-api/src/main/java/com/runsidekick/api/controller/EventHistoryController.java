@@ -3,6 +3,7 @@ package com.runsidekick.api.controller;
 import com.runsidekick.api.service.ApiAuthService;
 import com.runsidekick.broker.service.BrokerService;
 import com.runsidekick.model.EventHistory;
+import com.runsidekick.model.EventHitCount;
 import com.runsidekick.model.request.EventHistoryRequest;
 import com.runsidekick.service.EventHistoryService;
 import io.swagger.annotations.Api;
@@ -38,6 +39,12 @@ public class EventHistoryController extends ControllerBase {
             @RequestBody EventHistoryRequest request) {
         request.setWorkspaceId(getWorkspaceId());
         return ResponseEntity.ok(eventHistoryService.queryEventHistory(request, page, size));
+    }
+
+    @PostMapping("/count")
+    public ResponseEntity<List<EventHitCount>> getCountsGroupedByDate(@RequestBody EventHistoryRequest request) {
+        request.setWorkspaceId(getWorkspaceId());
+        return ResponseEntity.ok(eventHistoryService.getCountsGroupedByDate(request));
     }
 
 }
