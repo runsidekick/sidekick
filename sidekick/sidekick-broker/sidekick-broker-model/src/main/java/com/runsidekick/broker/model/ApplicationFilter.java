@@ -1,7 +1,10 @@
 package com.runsidekick.broker.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -11,44 +14,15 @@ import java.util.Objects;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class ApplicationFilter {
 
     private String name;
     private String version;
     private String stage;
     private Map<String, String> customTags;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getStage() {
-        return stage;
-    }
-
-    public void setStage(String stage) {
-        this.stage = stage;
-    }
-
-    public Map<String, String> getCustomTags() {
-        return customTags;
-    }
-
-    public void setCustomTags(Map<String, String> customTags) {
-        this.customTags = customTags;
-    }
 
     @Override
     public String toString() {
