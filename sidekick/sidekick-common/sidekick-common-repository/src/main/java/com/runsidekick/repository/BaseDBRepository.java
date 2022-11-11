@@ -25,4 +25,8 @@ public class BaseDBRepository {
     @Autowired
     protected ObjectMapper mapper;
 
+    protected String pagination(int pageNo, int pageSize) {
+        return "LIMIT " + pageSize + " OFFSET " + (pageNo * pageSize);
+    }
+
 }

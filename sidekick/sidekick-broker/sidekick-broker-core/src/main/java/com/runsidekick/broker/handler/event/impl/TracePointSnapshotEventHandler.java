@@ -5,6 +5,7 @@ import com.runsidekick.broker.model.NotificationType;
 import com.runsidekick.broker.model.TracePoint;
 import com.runsidekick.broker.model.TracePointConfig;
 import com.runsidekick.broker.model.event.EventAck;
+import com.runsidekick.broker.model.event.impl.BaseEvent;
 import com.runsidekick.broker.model.event.impl.TracePointSnapshotEvent;
 import com.runsidekick.broker.model.request.impl.tracepoint.RemoveTracePointRequest;
 import com.runsidekick.broker.proxy.ChannelInfo;
@@ -37,6 +38,8 @@ public class TracePointSnapshotEventHandler extends BaseProbeEventHandler<TraceP
         String tracePointId = event.getTracePointId();
         TracePointConfig tracePointConfig =
                 tracePointService.getTracePoint(channelInfo.getWorkspaceId(), tracePointId);
+
+        saveEventHistory(channelInfo, event, context.getRawMessage(), tracePointConfig);
         sendWebhookMessage(context.getRawMessage(), tracePointConfig);
 
         CompletableFuture<Boolean> completableFuture = tracePointService.
@@ -79,6 +82,19 @@ public class TracePointSnapshotEventHandler extends BaseProbeEventHandler<TraceP
             if (!CollectionUtils.isEmpty(tracePoint.getWebhookIds())) {
                 webhookMessageService.publishTracePointWebhookMessage(messageRaw, tracePoint);
             }
+        } catch (Throwable t) {
+            logger.error(t);
+        }
+    }
+
+    @Override
+    protected void saveEventHistory(ChannelInfo channelInfo, BaseEvent event, String messageRaw,
+                                    TracePoint tracePoint) {
+        try {
+            eventHistoryService.addTracePointEventHistory(channelInfo.getWorkspaceId(),
+                    (TracePointSnapshotEvent) event,
+                    tracePoint,
+                    messageRaw);
         } catch (Throwable t) {
             logger.error(t);
         }

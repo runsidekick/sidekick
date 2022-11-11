@@ -3,6 +3,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ## --
 DELETE FROM Application;
 DELETE FROM ApplicationConfig;
+DELETE FROM EventHistory;
 DELETE FROM LogPoint;
 DELETE FROM ProbeTag;
 DELETE FROM ReferenceEvent;

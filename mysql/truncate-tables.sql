@@ -3,6 +3,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ## --
 TRUNCATE TABLE Application;
 TRUNCATE TABLE ApplicationConfig;
+TRUNCATE TABLE EventHistory;
 TRUNCATE TABLE LogPoint;
 TRUNCATE TABLE ProbeTag;
 TRUNCATE TABLE ReferenceEvent;

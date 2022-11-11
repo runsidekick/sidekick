@@ -26,6 +26,10 @@
             <groupId>com.runsidekick</groupId>
             <artifactId>sidekick-statistics-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.runsidekick</groupId>
+            <artifactId>sidekick-event-history-service</artifactId>
+        </dependency>
         <!-- Thundra dependencies                       -->
         <!-- ========================================== -->
         <dependency>

@@ -15,6 +15,10 @@
         </dependency>
         <dependency>
             <groupId>com.runsidekick</groupId>
+            <artifactId>sidekick-event-history-helper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.runsidekick</groupId>
             <artifactId>sidekick-probetag-service</artifactId>
         </dependency>
         <dependency>

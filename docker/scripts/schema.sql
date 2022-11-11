@@ -130,4 +130,23 @@ CREATE TABLE ApplicationConfig (
     config                              JSON,
     detached                            BOOLEAN             NOT NULL DEFAULT 0
 );
+
+CREATE TABLE EventHistory (
+    id                                  VARCHAR(255)        NOT NULL PRIMARY KEY,
+    workspace_id                        VARCHAR(64),
+    type                                ENUM(
+      "TRACEPOINT",
+      "LOGPOINT",
+      "ERRORSNAPSHOT"
+      )                                 NOT NULL,
+    file_name                           VARCHAR(255)        NOT NULL,
+    line_no                             INT                 NOT NULL,
+    client                              VARCHAR(64),
+    application_filter                  JSON,
+    event_data                          JSON,
+    probe_name                          VARCHAR(255),
+    probe_tags                          JSON,
+    created_at                          TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX (created_at)
+);
     

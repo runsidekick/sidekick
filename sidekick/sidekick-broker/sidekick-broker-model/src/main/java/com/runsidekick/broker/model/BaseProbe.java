@@ -31,7 +31,7 @@ public abstract class BaseProbe {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LogPoint that = (LogPoint) o;
+        BaseProbe that = (BaseProbe) o;
         return lineNo == that.lineNo &&
                 Objects.equals(fileName, that.fileName) &&
                 Objects.equals(client, that.client);
