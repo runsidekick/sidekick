@@ -40,7 +40,7 @@ public class LogPointEventHandler extends BaseProbeEventHandler<LogPoint, LogPoi
                 logPointService.getLogPoint(channelInfo.getWorkspaceId(), logPointId);
 
         saveEventHistory(channelInfo, event, context.getRawMessage(), logPointConfig);
-        sendWebhookMessage(context.getRawMessage(), logPointConfig);
+        sendWebhookMessage(channelInfo, context.getRawMessage(), logPointConfig);
 
         CompletableFuture<Boolean> completableFuture = logPointService.
                 checkExpireAndDecrementLogPointExpireCount(channelInfo.getWorkspaceId(), logPointId);
@@ -77,7 +77,7 @@ public class LogPointEventHandler extends BaseProbeEventHandler<LogPoint, LogPoi
     }
 
     @Override
-    protected void sendWebhookMessage(String messageRaw, LogPoint logPoint) {
+    protected void sendWebhookMessage(ChannelInfo channelInfo, String messageRaw, LogPoint logPoint) {
         try {
             if (!CollectionUtils.isEmpty(logPoint.getWebhookIds())) {
                 webhookMessageService.publishLogPointWebhookMessage(messageRaw, logPoint);

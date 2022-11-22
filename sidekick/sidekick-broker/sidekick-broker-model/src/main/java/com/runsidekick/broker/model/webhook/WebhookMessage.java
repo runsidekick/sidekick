@@ -21,8 +21,12 @@ public class WebhookMessage<P extends BaseProbe> {
     protected final List<String> webhookIds;
 
     protected WebhookMessage(String messageRaw, P probe, WebhookMessageType type) {
+        this(messageRaw, type, probe.getWebhookIds());
+    }
+
+    public WebhookMessage(String messageRaw, WebhookMessageType type, List<String> webhookIds) {
         this.messageRaw = messageRaw;
-        this.webhookIds = probe.getWebhookIds();
         this.type = type.getValue();
+        this.webhookIds = webhookIds;
     }
 }

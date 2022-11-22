@@ -2,8 +2,10 @@ package com.runsidekick.broker.service.impl;
 
 import com.runsidekick.broker.model.LogPoint;
 import com.runsidekick.broker.model.TracePoint;
+import com.runsidekick.broker.model.webhook.ErrorSnapshotWebhookMessage;
 import com.runsidekick.broker.model.webhook.LogPointWebhookMessage;
 import com.runsidekick.broker.model.webhook.TracePointWebhookMessage;
+import com.runsidekick.broker.model.webhook.WebhookMessage;
 import com.runsidekick.broker.service.WebhookMessageService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -31,11 +33,21 @@ public class WebhookMessageServiceImpl implements WebhookMessageService {
 
     @Override
     public void publishTracePointWebhookMessage(String messageRaw, TracePoint tracePoint) {
-        rabbitTemplate.convertAndSend(queueName, new TracePointWebhookMessage(messageRaw, tracePoint));
+        publishWebhookMessage(new TracePointWebhookMessage(messageRaw, tracePoint));
     }
 
     @Override
     public void publishLogPointWebhookMessage(String messageRaw, LogPoint logPoint) {
-        rabbitTemplate.convertAndSend(queueName, new LogPointWebhookMessage(messageRaw, logPoint));
+        publishWebhookMessage(new LogPointWebhookMessage(messageRaw, logPoint));
+    }
+
+    @Override
+    public void publishErrorStackWebhookMessage(String messageRaw, String webhookId) {
+        publishWebhookMessage(new ErrorSnapshotWebhookMessage(messageRaw, webhookId));
+    }
+
+    @Override
+    public void publishWebhookMessage(WebhookMessage webhookMessage) {
+        rabbitTemplate.convertAndSend(queueName, webhookMessage);
     }
 }

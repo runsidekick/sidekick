@@ -44,7 +44,7 @@ public abstract class BaseProbeEventHandler<P extends BaseProbe, E extends Event
         this.notificationType = notificationType;
     }
 
-    protected abstract void sendWebhookMessage(String messageRaw, P probe);
+    protected abstract void sendWebhookMessage(ChannelInfo channelInfo, String messageRaw, P probe);
 
     protected abstract void saveEventHistory(ChannelInfo channelInfo, BaseEvent event, String messageRaw, P probe);
 
