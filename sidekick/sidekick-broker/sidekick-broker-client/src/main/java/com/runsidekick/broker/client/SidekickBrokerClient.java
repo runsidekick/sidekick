@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.runsidekick.broker.exception.RequestTimeoutException;
 import com.runsidekick.broker.model.ApplicationFilter;
 import com.runsidekick.broker.model.response.impl.ApplicationAwareProbeResponse;
+import com.runsidekick.broker.model.response.impl.ApplicationAwareResponse;
 import com.runsidekick.broker.model.response.impl.CompositeResponse;
 import io.thundra.swark.utils.ExceptionUtils;
 import okhttp3.OkHttpClient;
@@ -387,9 +388,15 @@ public final class SidekickBrokerClient extends WebSocketListener {
                         //Broker response
                         List<String> applicationInstanceIds = extractArrayProp(jsonNode, "applicationInstanceIds");
                         try {
-                            ApplicationAwareProbeResponse applicationResponse = (ApplicationAwareProbeResponse)
-                                    OBJECT_MAPPER.readValue(text, inFlightRequest.responseClass);
-                            inFlightRequest.applicationResponseMap.put("-", applicationResponse);
+                            Object response = OBJECT_MAPPER.readValue(text, inFlightRequest.responseClass);
+                            if (response instanceof ApplicationAwareProbeResponse) {
+                                ApplicationAwareResponse applicationResponse =
+                                        (ApplicationAwareResponse) response;
+                                inFlightRequest.applicationResponseMap.put("-", applicationResponse);
+                            } else if (response instanceof ApplicationAwareResponse) {
+                                ApplicationAwareResponse applicationResponse = (ApplicationAwareResponse) response;
+                                inFlightRequest.applicationResponseMap.put("-", applicationResponse);
+                            }
                         } catch (JsonProcessingException e) {
                             inFlightRequest.completableFuture.completeExceptionally(
                                     new IOException("Unable to deserialize response: " + text, e));
