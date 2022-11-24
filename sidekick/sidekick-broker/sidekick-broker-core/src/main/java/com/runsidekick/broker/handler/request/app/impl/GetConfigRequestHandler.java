@@ -46,7 +46,7 @@ public class GetConfigRequestHandler extends BaseAppRequestHandler<GetConfigRequ
 
         GetConfigResponse response = new GetConfigResponse();
         response.setApplicationInstanceId(channelMetadata.getInstanceId());
-        response.setConfig(applicationConfig.getConfig());
+        response.setConfig(applicationConfig != null ? applicationConfig.getConfig() : null);
         response.setRequestId(request.getId());
 
         return response;
