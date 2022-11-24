@@ -25,12 +25,20 @@ public class ErrorStackSnapshotEventHandler extends BaseProbeEventHandler<BasePr
         probeEventListener.onProbeEvent(channelInfo, event, context);
         context.setBroadcast(true);
         saveEventHistory(channelInfo, event, context.getRawMessage(), null);
+        sendWebhookMessage(channelInfo, context.getRawMessage(), null);
         return null;
     }
 
     @Override
-    protected void sendWebhookMessage(String messageRaw, BaseProbe probe) {
-        //TODO common webhook endpoint will be set for error snapshots
+    protected void sendWebhookMessage(ChannelInfo channelInfo, String messageRaw, BaseProbe probe) {
+        try {
+            String webhookId = probeEventListener.getErrorSnapshotWebhookId(channelInfo);
+            if (webhookId != null) {
+                webhookMessageService.publishErrorStackWebhookMessage(messageRaw, webhookId);
+            }
+        } catch (Throwable t) {
+            logger.error(t);
+        }
     }
 
     @Override

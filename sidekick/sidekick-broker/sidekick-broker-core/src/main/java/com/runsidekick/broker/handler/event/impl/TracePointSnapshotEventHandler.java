@@ -40,7 +40,7 @@ public class TracePointSnapshotEventHandler extends BaseProbeEventHandler<TraceP
                 tracePointService.getTracePoint(channelInfo.getWorkspaceId(), tracePointId);
 
         saveEventHistory(channelInfo, event, context.getRawMessage(), tracePointConfig);
-        sendWebhookMessage(context.getRawMessage(), tracePointConfig);
+        sendWebhookMessage(channelInfo, context.getRawMessage(), tracePointConfig);
 
         CompletableFuture<Boolean> completableFuture = tracePointService.
                 checkExpireAndDecrementTracePointExpireCount(channelInfo.getWorkspaceId(), tracePointId);
@@ -77,7 +77,7 @@ public class TracePointSnapshotEventHandler extends BaseProbeEventHandler<TraceP
     }
 
     @Override
-    protected void sendWebhookMessage(String messageRaw, TracePoint tracePoint) {
+    protected void sendWebhookMessage(ChannelInfo channelInfo, String messageRaw, TracePoint tracePoint) {
         try {
             if (!CollectionUtils.isEmpty(tracePoint.getWebhookIds())) {
                 webhookMessageService.publishTracePointWebhookMessage(messageRaw, tracePoint);

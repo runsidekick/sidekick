@@ -4,7 +4,7 @@ package com.runsidekick.broker.model.webhook;
  * @author yasin.kalafat
  */
 public enum WebhookMessageType {
-    TRACEPOINT(0), LOGPOINT(1);
+    TRACEPOINT(0), LOGPOINT(1), ERROR_SNAPSHOT(2);
 
     private int value;
 

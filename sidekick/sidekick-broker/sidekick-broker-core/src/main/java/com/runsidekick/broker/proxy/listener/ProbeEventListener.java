@@ -11,4 +11,8 @@ public interface ProbeEventListener {
 
     default void onProbeEvent(ChannelInfo channelInfo, BaseEvent event, EventContext context) {
     }
+
+    default String getErrorSnapshotWebhookId(ChannelInfo channelInfo) {
+        return null;
+    }
 }
