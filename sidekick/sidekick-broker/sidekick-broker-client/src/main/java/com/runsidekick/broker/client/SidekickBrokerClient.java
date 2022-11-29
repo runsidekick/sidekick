@@ -390,8 +390,7 @@ public final class SidekickBrokerClient extends WebSocketListener {
                         try {
                             Object response = OBJECT_MAPPER.readValue(text, inFlightRequest.responseClass);
                             if (response instanceof ApplicationAwareProbeResponse) {
-                                ApplicationAwareResponse applicationResponse =
-                                        (ApplicationAwareResponse) response;
+                                ApplicationAwareResponse applicationResponse = (ApplicationAwareResponse) response;
                                 inFlightRequest.applicationResponseMap.put("-", applicationResponse);
                             } else if (response instanceof ApplicationAwareResponse) {
                                 ApplicationAwareResponse applicationResponse = (ApplicationAwareResponse) response;
@@ -420,9 +419,16 @@ public final class SidekickBrokerClient extends WebSocketListener {
                         String applicationInstanceId = extractStringProp(jsonNode, "applicationInstanceId");
                         try {
                             if (inFlightRequest.containsApplicationInstance(applicationInstanceId)) {
-                                ApplicationAwareProbeResponse applicationResponse = (ApplicationAwareProbeResponse)
-                                        OBJECT_MAPPER.readValue(text, inFlightRequest.responseClass);
-                                inFlightRequest.applicationResponseMap.put(applicationInstanceId, applicationResponse);
+                                Object response = OBJECT_MAPPER.readValue(text, inFlightRequest.responseClass);
+                                if (response instanceof ApplicationAwareProbeResponse) {
+                                    ApplicationAwareResponse applicationResponse = (ApplicationAwareResponse) response;
+                                    inFlightRequest.applicationResponseMap.put(
+                                            applicationInstanceId, applicationResponse);
+                                } else if (response instanceof ApplicationAwareResponse) {
+                                    ApplicationAwareResponse applicationResponse = (ApplicationAwareResponse) response;
+                                    inFlightRequest.applicationResponseMap.put(
+                                            applicationInstanceId, applicationResponse);
+                                }
                             }
                         } catch (JsonProcessingException e) {
                             inFlightRequest.applicationResponseMap.put(applicationInstanceId,
@@ -506,7 +512,8 @@ public final class SidekickBrokerClient extends WebSocketListener {
         public int getCompletedInstanceCount() {
             return applicationResponseMap.values().stream()
                     .filter(response -> response instanceof IOException
-                            || response instanceof ApplicationAwareProbeResponse)
+                            || response instanceof ApplicationAwareProbeResponse
+                            || response instanceof ApplicationAwareResponse)
                     .collect(Collectors.toList()).size();
         }
 
