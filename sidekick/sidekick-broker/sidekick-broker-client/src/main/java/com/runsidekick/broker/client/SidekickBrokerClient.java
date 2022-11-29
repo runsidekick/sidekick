@@ -512,7 +512,8 @@ public final class SidekickBrokerClient extends WebSocketListener {
         public int getCompletedInstanceCount() {
             return applicationResponseMap.values().stream()
                     .filter(response -> response instanceof IOException
-                            || response instanceof ApplicationAwareProbeResponse)
+                            || response instanceof ApplicationAwareProbeResponse
+                            || response instanceof ApplicationAwareResponse)
                     .collect(Collectors.toList()).size();
         }
 
