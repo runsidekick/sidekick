@@ -64,7 +64,8 @@ public class CommunicatorImpl extends Communicator {
             if (sessionGroup != null) {
                 for (ChannelInfo channelInfo : sessionGroup.values()) {
                     if (workspaceId.equals(channelInfo.workspaceId)
-                            && channelInfo.channelType.equals(ChannelType.CLIENT)) {
+                            && (channelInfo.channelType.equals(ChannelType.CLIENT)
+                            || channelInfo.channelType.equals(ChannelType.API))) {
                         channelInfo.channel.writeAndFlush(message.copy());
                     }
                 }
@@ -90,7 +91,8 @@ public class CommunicatorImpl extends Communicator {
         Map<String, ChannelInfo> sessionMap = sessionService.getSessionMap(workspaceId);
         if (sessionMap != null) {
             for (ChannelInfo ci : sessionMap.values()) {
-                if (ci.channelType == ChannelType.CLIENT) {
+                if (ci.channelType.equals(ChannelType.CLIENT)
+                || ci.channelType.equals(ChannelType.API)) {
                     ClientMetadata clientMetadata = (ClientMetadata) ci.getChannelMetadata();
                     try {
                         ci.channel.writeAndFlush(new TextWebSocketFrame(messageJson));
