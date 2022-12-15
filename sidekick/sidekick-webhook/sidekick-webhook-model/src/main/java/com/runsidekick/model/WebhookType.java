@@ -12,7 +12,9 @@ public enum WebhookType {
     SUMOLOGIC,
     LOGGLY,
     NEWRELIC,
-    ELASTIC;
+    ELASTIC,
+    LOKI,
+    CORALOGIX;
 
     public static String[] getAllWebhookTypes() {
         return Arrays.stream(WebhookType.values()).map(Enum::name).toArray(String[]::new);
