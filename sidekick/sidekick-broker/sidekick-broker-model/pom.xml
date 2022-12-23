@@ -12,6 +12,10 @@
     <dependencies>
         <dependency>
             <groupId>com.runsidekick</groupId>
+            <artifactId>sidekick-probetag-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.runsidekick</groupId>
             <artifactId>sidekick-webhook-model</artifactId>
         </dependency>
         <dependency>
