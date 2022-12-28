@@ -34,6 +34,17 @@ public class ProbeTagRepositoryImpl extends BaseDBRepository implements ProbeTag
     }
 
     @Override
+    public ProbeTag getByWorkspaceId(String workspaceId, String tag) {
+        try {
+            String sql = "SELECT * FROM " + TABLE_NAME + " WHERE workspace_id = ? AND tag = ?";
+            Object[] args = {workspaceId, tag};
+            return jdbcTemplate.queryForObject(sql, rowMapper, args);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
     public List<ProbeTag> listByWorkspaceId(String workspaceId) {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE workspace_id = ? ";
         Object[] args = {workspaceId};
