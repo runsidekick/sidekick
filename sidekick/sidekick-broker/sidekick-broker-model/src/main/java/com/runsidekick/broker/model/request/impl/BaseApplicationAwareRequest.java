@@ -1,6 +1,5 @@
 package com.runsidekick.broker.model.request.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;
