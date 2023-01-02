@@ -11,6 +11,8 @@ public interface ProbeTagRepository {
 
     ProbeTag findById(String id);
 
+    ProbeTag getByWorkspaceId(String workspaceId, String tag);
+
     List<ProbeTag> listByWorkspaceId(String workspaceId);
 
     void save(ProbeTag probeTag);

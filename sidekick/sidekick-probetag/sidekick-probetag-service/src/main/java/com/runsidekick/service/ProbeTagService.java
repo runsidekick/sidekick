@@ -17,6 +17,8 @@ public interface ProbeTagService {
 
     ProbeTag get(String id);
 
+    ProbeTag getByWorkspaceId(String workspaceId, String tag);
+
     void delete(String id);
 
     void disableTag(String workspaceId, String tag);

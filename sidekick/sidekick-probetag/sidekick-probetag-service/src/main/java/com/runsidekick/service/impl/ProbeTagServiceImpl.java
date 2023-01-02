@@ -44,6 +44,11 @@ public class ProbeTagServiceImpl implements ProbeTagService {
     }
 
     @Override
+    public ProbeTag getByWorkspaceId(String workspaceId, String tag) {
+        return probeTagRepository.getByWorkspaceId(workspaceId, tag);
+    }
+
+    @Override
     public List<ProbeTag> listByWorkspaceId(String workspaceId) {
         return probeTagRepository.listByWorkspaceId(workspaceId);
     }

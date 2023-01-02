@@ -35,7 +35,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author tolgatakir
+ * @author yasin.kalafat
  */
 @TestPropertySource(properties = {"broker.port: 4242"})
 public class AgentConfigIntegrationTest extends BrokerBaseIntegrationTest {

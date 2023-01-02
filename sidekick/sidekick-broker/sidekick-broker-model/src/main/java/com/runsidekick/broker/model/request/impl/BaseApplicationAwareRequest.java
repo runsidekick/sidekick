@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class BaseApplicationAwareRequest extends BaseClientRequest {
 
     protected List<String> applications;
-    protected boolean persist = false;
+    protected boolean persist = true;
     // WorkspaceId for api-broker websocket connection
     protected String workspaceId;
 
@@ -23,4 +23,7 @@ public abstract class BaseApplicationAwareRequest extends BaseClientRequest {
         applications.add(application);
     }
 
+    public boolean isPersist() {
+        return true;
+    }
 }
