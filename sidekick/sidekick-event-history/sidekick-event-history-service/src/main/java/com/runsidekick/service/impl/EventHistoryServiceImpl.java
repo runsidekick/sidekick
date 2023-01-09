@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,6 +71,7 @@ public class EventHistoryServiceImpl implements EventHistoryService {
                 .type(TRACEPOINT)
                 .probeName(tracePoint.getProbeName())
                 .probeTags(tracePoint.getTags())
+                .createdAt(LocalDateTime.now())
                 .build()));
     }
 
@@ -86,6 +88,7 @@ public class EventHistoryServiceImpl implements EventHistoryService {
                 .type(LOGPOINT)
                 .probeName(logPoint.getProbeName())
                 .probeTags(logPoint.getTags())
+                .createdAt(LocalDateTime.now())
                 .build()));
     }
 
@@ -100,6 +103,7 @@ public class EventHistoryServiceImpl implements EventHistoryService {
                 .client(event.getClient())
                 .eventData(rawMessage)
                 .type(ERRORSNAPSHOT)
+                .createdAt(LocalDateTime.now())
                 .build()));
     }
 
