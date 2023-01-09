@@ -96,13 +96,14 @@ public class EventHistoryRepositoryImpl extends BaseDBRepository implements Even
                             "(id, workspace_id, type, " +
                             "file_name, line_no, client, " +
                             "event_data, probe_name, " +
-                            "application_filter, probe_tags) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+                            "application_filter, probe_tags, created_at) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
                     eventHistory.getId(), eventHistory.getWorkspaceId(), eventHistory.getType().toString(),
                     eventHistory.getFileName(), eventHistory.getLineNo(), eventHistory.getClient(),
                     eventHistory.getEventData(), eventHistory.getProbeName(),
                     mapper.writeValueAsString(eventHistory.getApplicationFilter()),
-                    mapper.writeValueAsString(eventHistory.getProbeTags()));
+                    mapper.writeValueAsString(eventHistory.getProbeTags()),
+                    eventHistory.getCreatedAt());
         } catch (Exception e) {
         }
     }
