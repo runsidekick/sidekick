@@ -31,6 +31,6 @@ public class EventHistoryRequest {
     private GroupBy groupBy;
 
     public enum GroupBy {
-        DAIILY, HOURLY
+        DAILY, HOURLY
     }
 }
