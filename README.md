@@ -300,7 +300,7 @@ Check out [docs](https://docs.runsidekick.com/?utm_source=sidekick-readme) to le
     
 
 - ##### REST API
-    [Sidekick REST API Doc](https://api.service.runsidekick.com/swagger-ui.html)
+    [Sidekick REST API Doc](https://api.service.runsidekick.com/swagger-ui/index.html)
     
     
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
