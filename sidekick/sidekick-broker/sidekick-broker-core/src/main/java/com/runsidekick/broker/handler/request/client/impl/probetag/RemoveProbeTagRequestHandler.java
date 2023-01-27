@@ -50,9 +50,8 @@ public class RemoveProbeTagRequestHandler
         ProbeTag probeTag = probeTagService.getByWorkspaceId(channelInfo.getWorkspaceId(), request.getTag());
         if (probeTag != null) {
             probeTagService.delete(probeTag.getId());
-            // TODO what will happen to probes with this tag?
             logPointService.deleteTag(channelInfo.getWorkspaceId(), request.getTag());
-            tracePointService.deleteTag(channelInfo.getWorkspaceId(),request.getTag());
+            tracePointService.deleteTag(channelInfo.getWorkspaceId(), request.getTag());
         }
 
         List<String> applicationInstanceIds = new ArrayList<>(filterApplications(channelInfo.getWorkspaceId()));
