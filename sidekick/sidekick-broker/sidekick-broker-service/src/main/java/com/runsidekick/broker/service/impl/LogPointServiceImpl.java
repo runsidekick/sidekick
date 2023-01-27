@@ -118,4 +118,9 @@ public class LogPointServiceImpl implements LogPointService {
             String workspaceId, String tag) {
         return logPointRepository.queryLogPointsByTag(workspaceId, tag);
     }
+
+    @Override
+    public void deleteTag(String workspaceId, String tag) {
+        logPointRepository.deleteTag(workspaceId, tag);
+    }
 }

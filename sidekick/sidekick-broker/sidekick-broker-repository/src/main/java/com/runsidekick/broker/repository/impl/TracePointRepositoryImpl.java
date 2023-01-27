@@ -267,6 +267,15 @@ public class TracePointRepositoryImpl extends BaseDBRepository implements TraceP
         return tracePointConfigs.stream().collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteTag(String workspaceId, String tag) {
+        jdbcTemplate.update(
+                "UPDATE TracePoint " +
+                        "SET tags = JSON_REMOVE(tags, JSON_UNQUOTE(JSON_SEARCH(tags, 'one', ?))) " +
+                        "WHERE workspace_id = ?",
+                tag, workspaceId);
+    }
+
     private List<TracePoint> filterTracePoints(Collection<TracePointConfig> tracePointConfigs,
                                                ApplicationFilter filter) {
         Collection<TracePointConfig> filteredTracePoints = ProbeUtil.filterProbes(tracePointConfigs, filter);

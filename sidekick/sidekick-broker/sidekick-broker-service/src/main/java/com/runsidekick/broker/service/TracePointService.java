@@ -39,4 +39,6 @@ public interface TracePointService {
     TracePoint queryTracePoint(String workspaceId, String tracePointId, ApplicationFilter filter);
 
     List<TracePointConfig> queryTracePointsByTag(String workspaceId, String tag);
+
+    void deleteTag(String workspaceId, String tag);
 }
