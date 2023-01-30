@@ -3,7 +3,7 @@
     <parent>
         <artifactId>sidekick-oss</artifactId>
         <groupId>com.runsidekick</groupId>
-        <version>0.0.17-SNAPSHOT</version>
+        <version>0.0.17</version>
     </parent>
     <artifactId>sidekick-api</artifactId>
     <modelVersion>4.0.0</modelVersion>
