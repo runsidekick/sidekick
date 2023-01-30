@@ -118,4 +118,9 @@ public class TracePointServiceImpl implements TracePointService {
             String workspaceId, String tag) {
         return tracePointRepository.queryTracePointsByTag(workspaceId, tag);
     }
+
+    @Override
+    public void deleteTag(String workspaceId, String tag) {
+        tracePointRepository.deleteTag(workspaceId, tag);
+    }
 }

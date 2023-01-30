@@ -1,13 +1,13 @@
 package com.runsidekick.broker.model.request.impl.probetag;
 
-import com.runsidekick.broker.model.request.impl.BaseClientRequest;
+import com.runsidekick.broker.model.request.impl.BaseApplicationAwareRequest;
 import lombok.Data;
 
 /**
  * @author yasin.kalafat
  */
 @Data
-public class RemoveProbeTagRequest extends BaseClientRequest {
+public class RemoveProbeTagRequest extends BaseApplicationAwareRequest {
 
     private String tag;
 }

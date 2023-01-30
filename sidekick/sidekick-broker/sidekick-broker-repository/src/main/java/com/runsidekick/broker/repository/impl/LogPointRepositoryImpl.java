@@ -269,6 +269,15 @@ public class LogPointRepositoryImpl extends BaseDBRepository implements LogPoint
         return logPointConfigs.stream().collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteTag(String workspaceId, String tag) {
+        jdbcTemplate.update(
+                "UPDATE LogPoint " +
+                        "SET tags = JSON_REMOVE(tags, JSON_UNQUOTE(JSON_SEARCH(tags, 'one', ?))) " +
+                        "WHERE workspace_id = ?",
+                tag, workspaceId);
+    }
+
     private List<LogPoint> filterLogPoints(Collection<LogPointConfig> logPointConfigs,
                                            ApplicationFilter filter) {
         Collection<LogPointConfig> filteredLogPoints = ProbeUtil.filterProbes(logPointConfigs, filter);

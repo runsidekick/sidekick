@@ -36,4 +36,6 @@ public interface LogPointRepository {
     LogPoint queryLogPoint(String workspaceId, String logPointId, ApplicationFilter applicationFilter);
 
     List<LogPointConfig> queryLogPointsByTag(String workspaceId, String tag);
+
+    void deleteTag(String workspaceId, String tag);
 }
